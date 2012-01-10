@@ -1,0 +1,14 @@
+RC1.1 - 1/10/2012
+
+- Added note that php-mysql is required to be compiled into apache.
+- Changed install.py to be compatible with Python 2.4, at the cost of better error codes.
+- Fixed debug error message for showTrapIconsFooter as it was referring to variables of another function.
+- Fixed reference to CONST_VER is curly brackets in frontend::openSite()
+- Fixed trap read CSS, was missing tr rule for text-decoration.
+- Removed all @ symbols from mysql relevant functions.
+- Removed search.php as it had deprecated.
+- Fixed dangling $_GET request
+RC1.0 - 1/9/2012
+
+- Initial commit.
+- Added INSTALL and README files. 

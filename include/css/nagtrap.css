@@ -199,6 +199,10 @@ td.message{
     text-align:left;
     }
 
+tr.read{
+    text-decoration:line-through;
+    }
+
 .checkbox{
     width:6%;
     }

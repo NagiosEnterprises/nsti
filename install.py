@@ -46,9 +46,9 @@ def create_db( user , password , table , client ):
     #~ Connect to database
     try:
         db      = MySQLdb.connect( host = mysql_host , user = mysql_root , passwd = mysql_pass , port = mysql_port )
-    except Exception as exp:
+    except :
         #~ If cant connect, print error message and bail
-        print 'ERROR: Could not connect to database.\n' + ' - '.join(map(str,exp.args))
+        print 'ERROR: Could not connect to database.\n'
         sys.exit(1)
     else:
         print 'Sucessfully connected to database.'
@@ -59,9 +59,9 @@ def create_db( user , password , table , client ):
     #~ Create user in DB
     try:
         pipe.execute('create user ' + snmptt_user)
-    except Exception as exp:
+    except :
         #~ User cannot be created
-        print 'ERROR creating user. User may already be created. Continuing with given information.\n' + ' - '.join(map(str,exp.args))
+        print 'ERROR creating user. User may already be created. Continuing with given information.\n'
     else:
         print 'User created sucessfully.'
         
@@ -69,9 +69,9 @@ def create_db( user , password , table , client ):
     
     try:
         pipe.execute('create database ' + snmptt_table )
-    except Exception as exp:
+    except :
         #~ Table cannot be created
-        print 'Error creating database. Database may already be created. \n' + ' - '.join(map(str,exp.args))
+        print 'Error creating database. Database may already be created. \n'
     else:
         'Database created successfully.'
         
@@ -89,8 +89,8 @@ def create_db( user , password , table , client ):
     #~ Add permissions to mysql for snmptt user
     try:
         pipe.execute( permstring )
-    except  Exception as exp:
-        print 'Error adding permissions to user.\n' + ' - '.join(map(str,exp.args))
+    except  :
+        print 'Error adding permissions to user.\n'
         print 'This error indicates that the install has failed. Please make sure you have entered'
         print 'the proper root credentials and rerun the script.'
         sys.exit(1)
@@ -103,8 +103,8 @@ def create_db( user , password , table , client ):
     
     try:
         db      = MySQLdb.connect( host = mysql_host , user = user , passwd = password , port = mysql_port , db = table)
-    except Exception as exp:
-        print 'Could not connect to database with new credentials.\n' + ' - '.join(map(str,exp.args))
+    except :
+        print 'Could not connect to database with new credentials.\n'
         print 'This error indicates that the install has failed. Please contact the developer.'
         print 'Or if you are using a complex MySQL setup make sure the crendentials entered are valid.'
         sys.exit(1)
@@ -158,8 +158,8 @@ def get_user():
         mysql_client = temp
     print "What is the primary Nagios appplication [core|xi]?"
     temp = raw_input("Default: [" + corexi + "]: ")
-    if not (temp is 'xi' or temp is 'core'):
-        print 'Input was out of not xi ore core. Using default.'
+    if not (temp == 'xi' or temp == 'core'):
+        print 'Input was out of not xi or core. Using default.'
     elif temp == 'core':
         corexi = 'core'
     
@@ -228,8 +228,8 @@ def edit_snmptt():
     
     try:
         inplacefile = fileinput.input( snmptt_base + 'snmptt.ini' , inplace = 1)
-    except Exception as exp:
-        print 'Unable to open file.\n' + ' - '.join(map(str,exp.args))
+    except :
+        print 'Unable to open file.\n'
         print 'Cannot continue with install.'
         sys.exit(1)
     else:
@@ -254,8 +254,8 @@ def edit_snmptt():
 def apache_config():
     try:
         os.system('cp dist/nsti.conf ' + httpd_path + ' -f')
-    except Exception as exp:
-        print 'Could not move apache configuration from dist/nsti.conf to ' + httpd_path + '\n' + ' - '.join(map(str,exp.args))
+    except :
+        print 'Could not move apache configuration from dist/nsti.conf to ' + httpd_path + '\n'
         print 'If you are using a non-RHEL based system, edit the script variable httpd_path to reflect your own.'
         sys.exit(1)
     else:
@@ -274,8 +274,8 @@ def edit_nsti_conf():
     
     try:
         inplacefile = fileinput.input( 'etc/config.ini' , inplace = 1)
-    except Exception as exp:
-        print 'Unable to open file.\n' + ' - '.join(map(str,exp.args))
+    except :
+        print 'Unable to open file.\n'
         print 'Cannot continue with install.'
         sys.exit(1)
     else:
@@ -302,8 +302,8 @@ def do_index():
     movestring = 'cp dist/index.php.' + corexi + ' index.php'
     try:
         os.system( movestring )
-    except Exception as exp:
-        print 'Unable to copy index.php files from dist/.\n' + ' - '.join(map(str,exp.args))
+    except :
+        print 'Unable to copy index.php files from dist/.\n'
         print 'Cannot continue with install.'
         sys.exit(1)
     else:
@@ -314,8 +314,8 @@ def do_move():
     copystring = 'cp . /usr/local/nsti/ -rf'
     try:
         os.system( copystring )
-    except Exception as exp:
-        print 'Unable to copy nsti folder to /usr/local.\n' + ' - '.join(map(str,exp.args))
+    except :
+        print 'Unable to copy nsti folder to /usr/local.\n'
         print 'Cannot continue with install.'
         sys.exit(1)
     else:

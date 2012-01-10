@@ -54,7 +54,7 @@ class frontend {
         $this->site[] = "<html>";
         $this->site[] = "   <head>";
         $this->site[] = "       <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>";
-        $this->site[] = "       <title>Nagios SNMP Trap Interface - {$CONST_VERSION}</title>";
+        $this->site[] = "       <title>Nagios SNMP Trap Interface - ".CONST_VERSION."</title>";
         $this->site[] = "       <script type='text/javascript' src='./include/js/nagtrap.js'></script>";
         $this->site[] = "       <script type='text/javascript' src='./include/js/overlib.js'></script>";
         $this->site[] = "       <script type='text/javascript' src='./include/js/prototype.js'></script>";
@@ -107,9 +107,9 @@ class frontend {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::constructorHeader()');
         global $table;
         $retstr  = "<div id='header'>";
-        $retstr .= "    ".frontend::createInfoBox();     // Current Trap Log Box
-        $retstr .= "    ".frontend::createDescribe();  // Show Description/Title
-        $retstr .= "    ".frontend::createOptBox();      // Trap Selection Box #trapselect
+        $retstr .= "    ".$this->createInfoBox();     // Current Trap Log Box
+        $retstr .= "    ".$this->createDescribe();  // Show Description/Title
+        $retstr .= "    ".$this->createOptBox();      // Trap Selection Box #trapselect
         $retstr .= "</div> <!-- closes header -->";
         $this->site[] = $retstr;
         if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::constructorHeader()');
@@ -166,8 +166,9 @@ class frontend {
     * @author Nicholas Scott <nscott@nagios.com>
     */
     function createFilter() {
-       if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createFilter()');
-       global $hostname, $languageXML, $configINI;
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createFilter()');
+        global $hostname, $languageXML, $configINI;
+        $retstr  = "";
         $retstr .= "<thead>\n";
         $retstr .= "    <tr>\n";
         $retstr .= "        <td colspan='2'>{$languageXML['LANG']['HEADER']['FILTER']['DISPLAYFILTERS']}:</td>\n";    
@@ -204,6 +205,7 @@ class frontend {
     function createDateInfoBox($trapInfo) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createNavBox()');
         global $languageXML;
+        $retstr  = "";
         $retstr .= "<thead>\n";
         $retstr .= "    <tr>\n";
         $retstr .= "        <td colspan='5'>{$languageXML['LANG']['HEADER']['NAVBOX']['DATES']}</td>\n";
@@ -230,7 +232,8 @@ class frontend {
     */
     function createOptBox() {
        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createOptBox()');
-       global $languageXML; 
+       global $languageXML;
+       $retstr  = "";
        $retstr .= "<div id='trapselect'>\n";
        $retstr .= "     <table class='OptionsTable'>\n";
        $retstr .= "         <thead>\n";
@@ -278,7 +281,7 @@ class frontend {
        $retstr .= "         <tr class='odd'>\n";
        $retstr .= "             <td class='left'></td>\n";
        $retstr .= "             <td class='right'><input type='submit' value='{$languageXML['LANG']['HEADER']['OPTBOX']['UPDATEBUTTON']}' ></td>\n";
-       $retstr .= "             <input type='hidden' name='hostname' value='{$_GET['hostname']}'>\n";
+       $retstr .= "             <input type='hidden' name='hostname' value='".grab_request_var('hostname')."'>\n";
        $retstr .= "         </tr>\n";
        $retstr .= "         </form>\n";
        $retstr .= "     </table>\n";
@@ -418,4 +421,4 @@ class frontend {
        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::constructorFooter()');
     }
 }
-php?>
+?>

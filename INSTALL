@@ -3,7 +3,7 @@ INSTALLATION INSTRUCTIONS:
 Notes:
 
 1 - For purposes of this installer I am going to assume that you have already installed 
-  - SNMPTT and MySQL.
+  - SNMPTT and MySQL and php-mysql.
 2 - If running the installer script provided with this SVN checkout is made explicitly for 
   - RHEL based systems. See the TODO as I've put packaging in there. I'll describe both ways 
   - of installing.
@@ -29,6 +29,9 @@ Easy install -- Only if running a RHEL based system:
     - Print results.
 2 - Restart httpd service
 3 - Restart snmptt service
+4 - If using Core authentication you'll need to edit in the /etc/httpd/conf.d/nsti.conf the location of your
+  - passwd file for Nagios Core. If you do note you will need to turn of useAuthentification in the
+  - etc/config.ini.
 4 - Navigate to http://<your nagios instance>/nsti
 
 Manual Install -- If you have a previously configured snmptt.ini or are using non-RHEL based system
@@ -50,5 +53,6 @@ Manual Install -- If you have a previously configured snmptt.ini or are using no
 8 - Restart snmptt
 9 - Move the nsti/ folder to the location you specified under the apache conf
 10- Make sure folder permissions are readable/executable by apache user.
+11- If installing for Core be sure to add users allowed in the etc/config.ini
 
 FOR BOTH: YOU NEED TO EDIT YOUR FIREWALL TO ALLOW SNMP TRAPS.

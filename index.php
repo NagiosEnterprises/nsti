@@ -31,26 +31,17 @@ error_reporting(E_ALL ^ E_NOTICE);
 require "./include/defines/global.php";
 
 require "./include/functions/functions.debug.php";
+require "./include/functions/request.inc.php";
 
 require "./include/classes/class.main.php";
 require "./include/classes/class.frontend.php";
 require "./include/classes/class.common.php";
 require "./include/classes/class.mysqlDB.php";
 
-require_once("/usr/local/nagiosxi/html/includes/common.inc.php");
-pre_init();
+// Start our session
+session_start();
 
-// start session
-init_session();
-
-// grab GET or POST variables 
 grab_request_vars();
-
-// check prereqs
-check_prereqs();
-
-// check authentication -- this is done in individual pages
-check_authentication();
 
 if (grab_request_var('state')){
     $_SESSION['state'] = grab_request_var('state');
@@ -112,7 +103,7 @@ if ($MAIN->checkUser() == "0") {
             $DATABASE->handleTrap("archive", $trapID, $table['name']);
         }
     }
-    print_r($_SESSION);
+
     $FRONTEND->constructorMain();
     $FRONTEND->constructorFooter();
 }

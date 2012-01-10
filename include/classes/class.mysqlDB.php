@@ -63,10 +63,10 @@ class database {
             $value = stripslashes($value);
         }
         //if this fails ($newValue is false), we know we need to fall back on the PHP4 way
-        $newValue = @mysql_real_escape_string($value);
+        $newValue = mysql_real_escape_string($value);
         //if no connection handler can be found use this instead
         if(FALSE === $newValue) {
-            $newValue = @mysql_escape_string($value);
+            $newValue = mysql_escape_string($value);
         }
         return $newValue;
     }
@@ -80,8 +80,8 @@ class database {
     function connect() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::connect()');
         global $configINI, $FRONTEND;
-        $connect = @mysql_connect($configINI['database']['host'], $configINI['database']['user'], $configINI['database']['password']);
-        $dbSelect['code'] = @mysql_select_db($configINI['database']['name'], $connect);
+        $connect = mysql_connect($configINI['database']['host'], $configINI['database']['user'], $configINI['database']['password']);
+        $dbSelect['code'] = mysql_select_db($configINI['database']['name'], $connect);
 
        // On error, create a array entry with the mysql error
         if(!$dbSelect['code']) {
@@ -111,7 +111,7 @@ class database {
             // Search in the database
 
             $query = "SELECT DISTINCT ".$type." FROM ".$table['name']." WHERE ".$type." LIKE '%".$safe_search."%'";
-            $result = @mysql_query($query);
+            $result = mysql_query($query);
             $safe_search = escape( $search );
             // On error, create a array entry with the mysql error
             if(!$result) {
@@ -119,7 +119,7 @@ class database {
                 exit;
             }
 
-            while($line = @mysql_fetch_array($result)) {
+            while($line = mysql_fetch_array($result)) {
                 $searchResult[] = $line[$type];
             }
             if (DEBUG&&DEBUGLEVEL&1) debug('End method database::search(): Array(...)');
@@ -129,7 +129,7 @@ class database {
     /**
     * Count traps in a given table
     *
-    * @param string $hostname
+    * param string $hostname
     * @param array $table
     *
     * @author Nicholas Scott <nscott@nagios.com>
@@ -138,8 +138,8 @@ class database {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::countTraps()');
         global $table;
         $query = "select count(*) from `".$table['name']."`;";
-        $result = @mysql_query($query);
-        $temp = @mysql_fetch_array($result);
+        $result = mysql_query($query);
+        $temp = mysql_fetch_array($result);
         $count = $temp[0];
         if (DEBUG&&DEBUGLEVEL&2) debug('Method database::countTraps()-> query: '.$query.' result: '.$result);
 
@@ -199,7 +199,7 @@ class database {
         // Read traps from database
         $query = "SELECT * FROM ".$table['name']." ".$dbQuery." ORDER BY id ".$sort." LIMIT ".$limit;
         if (DEBUG&&DEBUGLEVEL&2) debug('Method database::readTraps()-> query: '.$query);
-        $result = @mysql_query($query);
+        $result = mysql_query($query);
 
         // On error, create a array entry with the mysql error
         if(!$result) {
@@ -210,7 +210,7 @@ class database {
             exit; 
         }
    
-        while($line = @mysql_fetch_array($result)) {      
+        while($line = mysql_fetch_array($result)) {      
             $traps[] = $line;
         }
         if (DEBUG&&DEBUGLEVEL&1) debug('End method database::readTraps(): Array(...)');
@@ -281,8 +281,8 @@ class database {
             $trapTime[] = $line['traptime']; 
         }
         if($trapTime[0] != "") {
-            $trap[last] = array_pop($trapTime);
-            $trap[first] = array_pop(array_reverse($trapTime));
+            $trap['last'] = array_pop($trapTime);
+            $trap['first'] = array_pop(array_reverse($trapTime));
         }
         if (DEBUG&&DEBUGLEVEL&1) debug('End method database::infoTrap(): Array(...)');
         return($trap);

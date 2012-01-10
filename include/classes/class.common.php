@@ -72,7 +72,7 @@ class common extends frontend
     function doTrapsHeader() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::doTrapsHeader');
         global $languageXML;
-        $state   = ($_SESSION['state']) ? $_SESSION['state'] : 'init';
+        $state   = (empty($_SESSION['state'])) ? 'init' : $_SESSION['state'];
         $retstr  = "<thead>\n";
         // Draw titles and headings
         $retstr .= "    <tr>\n";
@@ -109,6 +109,7 @@ class common extends frontend
     }
     
     function doTrapsBody($traps) {
+        global $configINI;
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::doTrapsHeader');
         $retstr  = "<tbody>\n";
         $retstr .= "    <form name='selectors' action='./index.php' method='post'>\n";
@@ -221,7 +222,7 @@ class common extends frontend
         if($useUnknownTraps == "1") {
             $retstr = "<option value='UNKNOWN' ".common::selected("UNKNOWN",grab_request_var('trapSelect'),'selected="selected"')." >{$languageXML['LANG']['HEADER']['OPTBOX']['SELECTTRAPVALUE']['TRAPUNKNOWN']}</option>\n";
         }
-        if (DEBUG&&DEBUGLEVEL&1) debug('End method common::checkIfEnableUnknownTraps(): '.$option);
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method common::checkIfEnableUnknownTraps()');
         return $retstr;   
     }
     
@@ -303,7 +304,7 @@ class common extends frontend
     * 
     */
     function showTrapMenuIconFooter($menuIcon) {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::showTrapMenuIcons('.$menuIcon.','.$trapID.','.$severity.','.$hostname.')');
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::showTrapMenuIconFooter('.$menuIcon.')');
         global $configINI, $languageXML;
         $onlydelete = (grab_request_var('trapselect') == 'UNKNOWN') ? 1 : 0;
         if ($menuIcon == "mark" && !$onlydelete) {
@@ -424,6 +425,7 @@ class common extends frontend
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::createCategoryFilter()');
         global $table,$languageXML;
         if ($table['name'] != "snmptt_unknown") {
+            $retstr  = "";
             $retstr .= "<td class='left'>{$languageXML['LANG']['HEADER']['OPTBOX']['CATEGORY']}:</td>\n";
             $retstr .= "<td class='right'>\n";
             $retstr .= "    <select name='category'>\n";
@@ -518,4 +520,4 @@ class common extends frontend
         return $retstr;
     }
 }
-php?>
+?>

@@ -1,0 +1,54 @@
+INSTALLATION INSTRUCTIONS:
+
+Notes:
+
+1 - For purposes of this installer I am going to assume that you have already installed 
+  - SNMPTT and MySQL.
+2 - If running the installer script provided with this SVN checkout is made explicitly for 
+  - RHEL based systems. See the TODO as I've put packaging in there. I'll describe both ways 
+  - of installing.
+3 - The install script does not touch your firewall.
+4 - Please note the installer script DOES edit your snmptt.ini file. It edits in the dbi variables
+5 - I am just going to assume that you are running apache that can handle PHP and have MySQL and
+  - snmptt installed.
+
+Easy install -- Only if running a RHEL based system:
+
+1 - Navigate to the base nsti/ directory and execute ./install.py
+  ? What does ./install.py do?
+    - Tries to install python-MySQL
+    - Check to make sure you already have snmptt installed. If you don't, it will exit.
+    - Ask you for information about your MySQL setup (user/pass)
+    - Use that information to create the database.
+    - Use its SQL information (located in dist/) to populate the database.
+    - Edit the snmptt.ini file to log to the MySQL database @ /etc/snmp/snmptt.ini
+    - Insert the proper apache config into /etc/httpd/conf.d/
+    - Edit dist/nsti.conf based on given information
+    - Move the proper index.php from dist/, used for differentiating between XI and Core installs.
+    - Move everything under the basedir to /usr/local/nsti/
+    - Print results.
+2 - Restart httpd service
+3 - Restart snmptt service
+4 - Navigate to http://<your nagios instance>/nsti
+
+Manual Install -- If you have a previously configured snmptt.ini or are using non-RHEL based system
+
+1 - Create a user in MySQL and grant rights to this user on some table for at least SELECT,
+  - UPDATE and INSERT.
+2 - Dump the snmptt-1.2.sql into the database.
+3 - Edit your snmptt.ini to enable dbi logging.
+  - For instructions please consult:
+  - http://snmptt.sourceforge.net/docs/snmptt.shtml#LoggingDatabase-MySQL
+4 - If you're using Nagios Core move this dist/index.php.core to index.php
+5 - Edit the etc/config.ini
+  - useAuthentification -> If using Core you can use core authentification by setting this to 1.
+  - allowedUser         -> User allowed to access this
+  - Under [database]
+  - Set these to your MySQL information, with the user that was created in step 1.
+6 - Create your apache conf, you can use etc/nsti.conf as a guideline.
+7 - Restart apache
+8 - Restart snmptt
+9 - Move the nsti/ folder to the location you specified under the apache conf
+10- Make sure folder permissions are readable/executable by apache user.
+
+FOR BOTH: YOU NEED TO EDIT YOUR FIREWALL TO ALLOW SNMP TRAPS.

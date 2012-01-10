@@ -1,0 +1,240 @@
+/*
+###########################################################################
+#
+# nagtrap.css -  NagTrap class with funtions to create the frontend
+#
+# Copyright (c) 2006 - 2007 Michael Luebben (nagtrap@nagtrap.org)
+# Last Modified: 25.12.2007
+#
+# License:
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+###########################################################################*/
+
+/* ******************** ----- Layout Divs ******************** */
+#all{
+    font-family:"Arial";
+    font-size:8pt;
+}
+
+#header{
+    height:300px;
+    margin-left:auto;
+    margin-right:auto;
+    width:1000px;
+}
+#trapbody{
+    padding-top:60px;
+    width:100%;
+}
+
+input[type="text"]{
+    display:block;
+    width:100%;
+}
+
+table.control {width: 75px;}
+
+#trapbodyheader{
+    height:30px;
+    width:100%;
+}
+
+#traps{
+    float:bottom;
+    width:100%;
+}
+
+#navigation{
+    width:200px;
+    text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#infobox{
+    margin-left:5px;
+    width:300px;
+    display:block;
+    float:left;
+}
+
+#description{
+    margin-left:10px;
+    float:left;
+    width:380px;
+    top:50px;
+    }
+
+p.nstititle{
+    line-height:70%;
+    color:gray;
+    font-size:18pt;
+    font-weight:bold;
+    }
+
+p.info{
+    line-height:50%;
+    color:black;
+    font-size:12pt;
+    }
+
+#trapselect{
+    float:right; 
+    width:300px;
+    margin-left:5px;
+    display:block;
+}
+
+#navbox{
+    float:right;
+}
+
+/* ******************** ----- Tables ---- ******************** */
+
+table{
+    font-size:10pt;
+    font-family:arial;
+}
+
+table.OptionsTable{
+    border-style:double;
+    border-color:silver;
+    border-collapse:collapse;
+    border-width:2px;
+    }
+
+table.OptionsTable thead{
+    text-align:center;
+    font-weight:bold;
+    background-color:#D3D3D3;
+    }
+    
+table.OptionsTable tr{
+    }
+    
+table.OptionsTable tr.even{
+    background-color:#E8E8E8;
+    }   
+    
+table.OptionsTable td{
+    padding:5px;
+    }
+    
+table.OptionsTable td.right{
+    text-align:right;
+    }
+
+td.checkbox{
+    vertical-align:middle;
+    }
+    
+div.controls{
+    float:left;
+    }
+
+table.MainTable{
+    margin:5px;
+    border-style:gray;
+    border-color:gray;
+    border-width:2px;
+    width:100%;
+    border-collapse:collapse;
+    }
+
+table.MainTable thead{
+    text-align:center;
+    background-color:#D3D3D3;
+    }
+    
+    
+table.MainTable tr:hover td{
+    background:#E0E0E0;
+    }
+    
+table.MainTable tr.even{
+    background-color:#E8E8E8;
+    } 
+
+td.checkbox , th.checkbox{
+    width:6%;
+    }
+    
+td.time , th.time{
+    width:11%;
+    }
+    
+td.trapoid , th.trapoid{
+    width:14%;
+    }
+    
+td.host , th.host{
+    width:10%;
+    }
+    
+td.category , th.category{
+    width:8%;
+    }
+    
+td.severity , th.severity{
+    width:8%;
+    }
+
+th.message{
+    width:*;
+    }
+
+td.message{
+    text-align:left;
+    }
+
+.checkbox{
+    width:6%;
+    }
+    
+table.MainTable td{
+    text-align:center;
+    border: thin silver solid;
+    border-width:1px;
+    padding:5px;
+    margin: 0;
+    padding: 0;
+    }
+    
+table.MainTable td.right{
+    text-align:right;
+    }
+
+table.control td{
+    text-align:center;
+    border-width:0px;
+    }
+
+/* ******************** ----- Links ----- ******************** */
+a:link  {
+   color: #000000;
+   text-decoration: none;
+}
+
+a:visited { 
+   color: #000000;
+   text-decoration: none;
+}
+    
+a:hover {
+   color: #339966;
+   text-decoration: none;
+}
+
+

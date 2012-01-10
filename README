@@ -1,0 +1,25 @@
+What is nsti?
+
+nsti stands for Nagios SNMP Trap Interface that is based on the NagTrap developed by Michael Luebben.
+It is meant to make it easier to handle SNMP traps received the host. It allows for filtering to
+easily see what traps have been received.
+
+How do I install nsti?
+
+See the INSTALL document in this same directory.
+
+What is on the roadmap for this project:
+
+H - Web accessible and defineable checks of the snmptt database using nsca/nrdp/nrpe
+H - Packaging updates, .deb and .rpms
+H - Prune unused code
+
+M - Increased filtering and tagging capabilities for traps.
+M - Self defined authentification
+
+L - Eating, sleeping, etc
+
+Who do I contact about this?
+
+Me! nscott@nagios.com 
+Or use the sourceforge mailing list.

@@ -261,6 +261,10 @@ class common extends frontend
     function showTrapMenuIcons($menuIcon,$trapID,$severity,$hostname) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::showTrapMenuIcons('.$menuIcon.','.$trapID.','.$severity.','.$hostname.')');
         global $configINI,$languageXML;
+        if (grab_request_var('trapSelect') == "ARCHIVED" && $menuIcon != "delete") {
+            $empty_string = '';
+            return $empty_string;
+        }
         if ($menuIcon == "mark") {
             if (grab_request_var('trapSelect') == "" or grab_request_var('trapSelect') == "all") {
                 $imgsrc = $configINI['global']['images'].$configINI['global']['iconStyle'].'/mark.png';
@@ -306,7 +310,8 @@ class common extends frontend
     function showTrapMenuIconFooter($menuIcon) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::showTrapMenuIconFooter('.$menuIcon.')');
         global $configINI, $languageXML;
-        $onlydelete = (grab_request_var('trapselect') == 'UNKNOWN') ? 1 : 0;
+        $trapSelect = grab_request_var('trapSelect');
+        $onlydelete = ( $trapSelect == 'UNKNOWN' || $trapSelect == 'ARCHIVED' ) ? 1 : 0;
         if ($menuIcon == "mark" && !$onlydelete) {
             if (grab_request_var('trapSelect') == "" or grab_request_var('trapSelect') == "all") {
                 $src    = $configINI['global']['images'].$configINI['global']['iconStyle'].'/mark.png';
@@ -326,6 +331,9 @@ class common extends frontend
             $name   = 'deleteTraps[0]';
             $title  = $languageXML['LANG']['MAIN']['TRAPTABLEENTRY']['OPTIONDELETE'];
             $alt    = 'Delete';
+        }
+        else {
+            return;
         }
         $this->site[] = "<input type='image' src='{$src}' name='{$name}' title='{$title}' />"; 
         if (DEBUG&&DEBUGLEVEL&1) debug('End method common::showTrapMenuIcons()');
@@ -424,8 +432,8 @@ class common extends frontend
     function createCategoryFilter() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::createCategoryFilter()');
         global $table,$languageXML;
+        $retstr = "";
         if ($table['name'] != "snmptt_unknown") {
-            $retstr  = "";
             $retstr .= "<td class='left'>{$languageXML['LANG']['HEADER']['OPTBOX']['CATEGORY']}:</td>\n";
             $retstr .= "<td class='right'>\n";
             $retstr .= "    <select name='category'>\n";
@@ -477,26 +485,6 @@ class common extends frontend
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::checkForAttentions()');
         //if (DEBUG) common::printAttention($languageXML['LANG']['HEADER']['ATTENTION']['ENABLEDDEBUG']);
         if (DEBUG&&DEBUGLEVEL&1) debug('End method common::checkForAttentions()');
-    }
-
-    /**
-    * Create serachfield 
-    *
-    * @param string $searchFieldname
-    * @param string $searchType
-    * @param string $fieldWidth
-    * @param string $inputSize
-    *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    */
-    function  printSearchfield($searchFieldname,$searchType,$fieldWidth) {
-        $this->site[] = '         <TD CLASS="searchField" WIDTH="'.$fieldWidth.'">';
-        $this->site[] = '            <INPUT CLASS="searchField" ID="search'.$searchFieldname.'" NAME="search'.$searchFieldname.'" AUTOCOMPLETE="off" TYPE="text/">';
-        //$this->site[] = '            <DIV CLASS="updateSearch" ID="update'.$searchFieldname.'"></DIV>';
-        $this->site[] = '            <SCRIPT TYPE="text/javascript" LANGUAGE="javascript" CHARSET="utf-8">';
-        $this->site[] = '               new Ajax.Autocompleter(\'search'.$searchFieldname.'\',\'update'.$searchFieldname.'\',\'./search.php?searchType='.$searchType.'\', {minChars: 1 });';
-        $this->site[] = '            </SCRIPT>';
-        $this->site[] = '         </TD>';
     }
     
     /**

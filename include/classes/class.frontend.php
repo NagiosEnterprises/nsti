@@ -134,6 +134,7 @@ class frontend {
     function createInfoBox() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createInfoBox()');
         global $languageXML;
+        $last    = (isset($trapInfo['last'])) ? $trapInfo['last'] : "None";
         $trapInfo = common::readTrapInfo();
         $retstr  = "<div id='infobox'>\n";
         $retstr .= "    <table class='OptionsTable'>\n";
@@ -145,7 +146,7 @@ class frontend {
         $retstr .= "        <tbody>\n";     
         $retstr .= "            <tr class='odd'>\n";    
         $retstr .= "                <td class='left'> {$languageXML['LANG']['HEADER']['INFOBOX']['LASTUPDATE']}</td>\n";
-        $retstr .= "                <td class='right'>{$trapInfo['last']}</td>\n";     
+        $retstr .= "                <td class='right'>{$last}</td>\n";     
         $retstr .= "            </tr>\n";
         // Creates date box
         $retstr .= "            ".frontend::createDateInfoBox($trapInfo);
@@ -205,6 +206,9 @@ class frontend {
     function createDateInfoBox($trapInfo) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createNavBox()');
         global $languageXML;
+        // If trap table is empty, set dates to be displayed to None.
+        $first   = (isset($trapInfo['first'])) ? $trapInfo['first'] : "None";
+        $last    = (isset($trapInfo['last'])) ? $trapInfo['last'] : "None";
         $retstr  = "";
         $retstr .= "<thead>\n";
         $retstr .= "    <tr>\n";
@@ -213,11 +217,11 @@ class frontend {
         $retstr .= "</thead>\n";       
         $retstr .= "<tr class='odd'>\n";    
         $retstr .= "    <td class='left'>{$languageXML['LANG']['HEADER']['NAVBOX']['BEGIN']}</td>\n";   
-        $retstr .= "    <td class='right'>{$trapInfo['first']}</td>\n";
+        $retstr .= "    <td class='right'>{$first}</td>\n";
         $retstr .= "</tr>\n";   
         $retstr .= "<tr class='even'>\n";
         $retstr .= "    <td class='left'>{$languageXML['LANG']['HEADER']['NAVBOX']['LAST']}</td>\n";   
-        $retstr .= "    <td class='right'>{$trapInfo['last']}</td>\n";
+        $retstr .= "    <td class='right'>{$last}</td>\n";
         $retstr .= "</tr>\n";    
         $retstr .= "<!-- Closes navbox -->\n";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::createNavBox()');

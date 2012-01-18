@@ -5,7 +5,8 @@
 #                      MySQL-Database
 #
 # Copyright (c) 2006 - 2007 Michael Luebben (nagtrap@nagtrap.org)
-# Last Modified: 13.10.2007
+#               2011 - 2012 Nicholas Scott (nscott@nagios.com)
+# Last Modified: 1.17.2012
 #
 # License:
 #
@@ -27,7 +28,7 @@
 * This Class handles database-connection and - queries
 */
 class database {
-  
+
     /**
     * Constructor
     *
@@ -41,113 +42,106 @@ class database {
        if (DEBUG&&DEBUGLEVEL&1) debug('End method database::contructor()');
     }
     
-    /* Escapes the passed value so it is ready to be inserted into the database. Takes magic quotes into
-     * consideration as well.
-     *
-     * @param    string    parameter
-     * @return    string    escaped parameter
-     */
-    /*
-     * escape
-     * 
-     * Abstraction for properly escaping mysql strings.
-     * 
-     * @param $value = string to be escaped
-     * @return escaped $value string
-     * 
-     * @author Michi Kono
-     */
-    function escape($value) {
-        //stripslashes only if necessary
-        if (get_magic_quotes_gpc()) {
-            $value = stripslashes($value);
-        }
-        //if this fails ($newValue is false), we know we need to fall back on the PHP4 way
-        $newValue = mysql_real_escape_string($value);
-        //if no connection handler can be found use this instead
-        if(FALSE === $newValue) {
-            $newValue = mysql_escape_string($value);
-        }
-        return $newValue;
-    }
     /**
     * Make a connection to the database
     *
-    * @param array $configINI
+    * Rewrote to use the redbean ORM -NS 1/17/12
+    * Removed unecessary variable declarations. -NS 1/17/12
     *
     * @author Michael Luebben <nagtrap@nagtrap.org>
+    * @author Nicholas Scott <nscott@nagios.com>
+    * 
     */  
     function connect() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::connect()');
         global $configINI, $FRONTEND;
-        $connect = mysql_connect($configINI['database']['host'], $configINI['database']['user'], $configINI['database']['password']);
-        $dbSelect['code'] = mysql_select_db($configINI['database']['name'], $connect);
-
-       // On error, create a array entry with the mysql error
-        if(!$dbSelect['code']) {
-            $FRONTEND->printError("DBCONNECTION",mysql_error());
+        
+        // Rename host, user, database and password for clarity
+        $hostname = $configINI['database']['host'];
+        $username = $configINI['database']['user'];
+        $password = $configINI['database']['password'];
+        $db_table = $configINI['database']['name'];
+        $db_type  = $configINI['database']['type'];
+        
+        // Create connection string to give to redbean
+        $conn_str = "$db_type:host=$hostname;dbname=$db_table";
+        if (DEBUG&&DEBUGLEVEL&1) debug('Connecting to database with string '.$conn_str);
+        
+        // Attempt to create database
+        try {
+            R::setup($conn_str , $username , $password);
+            R::count($db_table);
+        }
+        // If the database opening fails, catch exception and close site:
+        catch(Exception $e) {
+            // Give printError the exception string
+            $FRONTEND->printError("DBCONNECTION",$e->getMessage());
             $FRONTEND->closeSite();
             $FRONTEND->printSite();
-            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::connect(): FALSE -'.mysql_error());
+            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::connect(): FALSE -'.$e->getMessage());
             exit;
         }
         if (DEBUG&&DEBUGLEVEL&1) debug('End method database::connect(): TRUE');
         return($dbSelect);
     }
 
-        /**
-        * Cache all Traps from database in a array
-        *
-        * @param array $table
-        * @param array $type
-        * @param array $search
-        *
-        * @author Michael Luebben <nagtrap@nagtrap.org>
-        */
-        function search($type,$search) {
-            if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::search()');
-            global $table;
-
-            // Search in the database
-
-            $query = "SELECT DISTINCT ".$type." FROM ".$table['name']." WHERE ".$type." LIKE '%".$safe_search."%'";
-            $result = mysql_query($query);
-            $safe_search = escape( $search );
-            // On error, create a array entry with the mysql error
-            if(!$result) {
-                if (DEBUG&&DEBUGLEVEL&1) debug('End method database::search(): FALSE - '.mysql_error());
-                exit;
-            }
-
-            while($line = mysql_fetch_array($result)) {
-                $searchResult[] = $line[$type];
-            }
-            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::search(): Array(...)');
-            return($searchResult);
+    /*
+    * Cache all Traps from database in a array
+    *
+    * Refactored to use Redbean -NS 1/17/12
+    * 
+    * @param array $table
+    * @param array $type
+    * @param array $search
+    *
+    * @author Michael Luebben <nagtrap@nagtrap.org>
+    * @author Nicholas Scott <nscott@nagios.com>
+    */
+    function search($type,$search) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::search()');
+        global $table;
+        
+        // Search in the database
+        try {
+            $searchResult = R::find($table['name'],"$type LIKE '%$search%'");
         }
+        // On error, create a array entry with the mysql error
+        catch(Exception $e) {
+            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::search(): FALSE - '.$e->getMessage());
+            exit;
+        }
+        // For legacy reasons, turn them all back into arrays
+        $searchResult = R::exportAll($searchResult);
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method database::search(): Array(...)');
+        return($searchResult);
+    }
     
     /**
     * Count traps in a given table
     *
-    * param string $hostname
+    * Refactored to use Redbean -NS
+    * 
     * @param array $table
+    * 
+    * @return integer $count
     *
     * @author Nicholas Scott <nscott@nagios.com>
     */
     function countTraps() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::countTraps()');
         global $table;
-        $query = "select count(*) from `".$table['name']."`;";
-        $result = mysql_query($query);
-        $temp = mysql_fetch_array($result);
-        $count = $temp[0];
-        if (DEBUG&&DEBUGLEVEL&2) debug('Method database::countTraps()-> query: '.$query.' result: '.$result);
+        $count = R::count($table['name']);
+        if (DEBUG&&DEBUGLEVEL&2) debug('End method database::countTraps()');
 
         return $count;
     }
  
     /**
     * Read Traps from database
+    * 
+    * Refactored variables names. -NS 1/17/12
+    * Refactored if statement. -NS 1/17/12
+    * Refactored to use Redbean. -NS 1/17/12
     *
     * @param string $sort
     * @param boolean $limit
@@ -160,58 +154,59 @@ class database {
     function readTraps($limit) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::readTraps('.$limit.')');
         global $hostname, $table, $FRONTEND;
+        // Read data from POST and GET
+        $severity       = grab_request_var('severity');
+        $hostname       = grab_request_var('hostname');
+        $category       = grab_request_var('category');
+        $searchOID      = grab_request_var('searchTrapoid');
+        $searchHostname = grab_request_var('searchHostname');
+        $searchCategory = rawurldecode(grab_request_var('searchCategory'));
+        $searchSeverity = grab_request_var('searchSeverity');
+        $searchMesssage = grab_request_var('searchMessage'); 
+        
 
-        // Create WHERE clause
-        if(grab_request_var('severity') == "" and grab_request_var('hostname') == "" and grab_request_var('category') == "" and grab_request_var('searchTrapoid') == "" and grab_request_var('searchHostname') == "" and grab_request_var('searchCategory') == "" and grab_request_var('searchSeverity') == "" and grab_request_var('searchMessage') == "" or grab_request_var('severity') == "UNKNOWN") {
-            $dbQuery = "";
-        } else {
-            if(grab_request_var('searchTrapoid') != "") {
-                $dbQuerySet[] = "trapoid LIKE '%".database::escape(grab_request_var('searchTrapoid'))."%'"; 
-            }
-            if(grab_request_var('searchHostname') != "") {
-                $dbQuerySet[] = "hostname LIKE '%".database::escape(grab_request_var('searchHostname'))."%'"; 
-            } elseif(grab_request_var('hostname') != "") {
-                $dbQuerySet[] = "hostname = '".grab_request_var('hostname')."'"; 
-            }
-            if(grab_request_var('searchCategory') != "") {
-                $dbQuerySet[] = "category LIKE '%".database::escape(rawurldecode(grab_request_var('searchCategory')))."%'"; 
-            } elseif(grab_request_var('category') != "") {
-                $dbQuerySet[] = "category = '".rawurldecode(grab_request_var('category'))."'"; 
-            }
-            if(grab_request_var('searchSeverity') != "") {
-                $dbQuerySet[] = "severity LIKE '%".database::escape(grab_request_var('searchSeverity'))."%'"; 
-            } elseif(grab_request_var('severity') != "") {
-                $dbQuerySet[] = "severity = '".grab_request_var('severity')."'"; 
-            }
-            if(grab_request_var('searchMessage') != "") {
-                $dbQuerySet[] = "formatline LIKE '%".database::escape(grab_request_var('searchMessage'))."%'"; 
-            }
-            $dbQuery = "WHERE ".implode($dbQuerySet," AND ");
-        }
-
+        /* Create WHERE clause by checking each search variable from
+         * the server variables and adding the SQL if any of the server
+         * variables exist 
+         */
+        if($searchOID)
+            $dbQuery[] = "trapoid LIKE '%$searchOID%'"; 
+        if($searchHostname)
+            $dbQuery[] = "hostname LIKE '%$searchHostname%'"; 
+        if($hostname)
+            $dbQuery[] = "hostname = '$hostname'"; 
+        if($searchCategory)
+            $dbQuery[] = "category LIKE '%$searchCategory%'"; 
+        if($category)
+            $dbQuery[] = "category = '$category'"; 
+        if($searchSeverity)
+            $dbQuery[] = "severity LIKE '%$searchSeverity%'"; 
+        if($severity)
+            $dbQuery[] = "severity = '$severity'"; 
+        if($searchMessage)
+            $dbQuery[] = "formatline LIKE '%$searchMessage%'"; 
+        
+        /* Combine all items created in the above if statements together
+         * with a space in the front (required for redbean) with an AND
+         */
+        $dbQuery = (isset($dbQuery)) ? "WHERE ".implode($dbQuery," AND ") : "";
         // Set which trap must read first from database
-        if (grab_request_var('oldestfirst') == "on") {
-            $sort = "ASC";
-        } else {
-            $sort = "DESC";
-        }
+        $sort = (grab_request_var('oldestfirst') == "on") ? "ASC" : "DESC";
  
         // Read traps from database
         $query = "SELECT * FROM ".$table['name']." ".$dbQuery." ORDER BY id ".$sort." LIMIT ".$limit;
         if (DEBUG&&DEBUGLEVEL&2) debug('Method database::readTraps()-> query: '.$query);
-        $result = mysql_query($query);
-
+        
+        try {
+            $traps = R::getAll($query);
+        }
         // On error, create a array entry with the mysql error
-        if(!$result) {
-            $FRONTEND->printError("DBTABLE",mysql_error());
+        catch(Exception $e) {
+            $FRONTEND->printError("DBTABLE",$e->getMessage());
             $FRONTEND->closeSite();
             $FRONTEND->printSite(); 
-            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::readTraps(): FALSE - '.mysql_error());
+            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::readTraps(): FALSE - '.$e->getMessage());
             exit; 
-        }
-   
-        while($line = mysql_fetch_array($result)) {      
-            $traps[] = $line;
         }
         if (DEBUG&&DEBUGLEVEL&1) debug('End method database::readTraps(): Array(...)');
         return($traps);
@@ -220,38 +215,60 @@ class database {
     /**
     * Handle a Traps in the database
     *
+    * Refactored to use Redbean ORM. -NS 1/17/12
+    * 
+    * TODO: Catch exceptions in a better way.
+    * 
     * @param string $handle
     * @param boolean $trapID
     * @param string $tableName
     *
     * @author Michael Luebben <nagtrap@nagtrap.org>
+    * @author Nicholas Scott <nscott@nagios.com>
     */  
-    function handleTrap($handle,$trapID,$tableName) {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::handleTrap('.$handle.','.$trapID.','.$tableName.')');
+    function handleTrap($handle,$trapID,$tablename) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::handleTrap('.$handle.','.$trapID.','.$tablename.')');
         global $FRONTEND;
-        if($handle == "mark") {
-            $query = "UPDATE $tableName SET trapread = 1 WHERE id = $trapID";
-            $result = mysql_query($query);
-        } elseif($handle == "delete") {
-            $query = "DELETE FROM $tableName WHERE id = $trapID";
-            $result = mysql_query($query);
-        } elseif($handle == "archive") {
-            $result = mysql_query("SELECT * FROM $tableName WHERE id = $trapID");
-            $trap = mysql_fetch_array($result);
-            $query = "INSERT INTO snmptt_archive (snmptt_id, eventname, eventid, trapoid, enterprise, community,
-                                                hostname, agentip, category, severity, uptime, traptime,formatline, trapread) 
-                    VALUES ('$trap[id]', '$trap[eventname]', '$trap[eventid]', '$trap[trapoid]', '$trap[enterprise]', '$trap[community]',
-                                '$trap[hostname]','$trap[agentip]', '$trap[category]', '$trap[severity]', '$trap[uptime]', '$trap[traptime]',
-                            '$trap[formatline]', '$trap[trapread]')";
-            $result = mysql_query($query);
-            $query = "DELETE FROM $tableName WHERE id = $trapID";
-            $result = mysql_query($query);
+        /* Derive our bean from the database using the $trapID */
+        $trap = R::load($tablename,$trapID);
+        /* If our trap has a non-zero ID, then we can continue
+         * However if it has a zero ID then we must give an error.
+         * This logic is handled using an if/else statement based off
+         * $trap->id
+         */
+        if ($trap->id || 1) {
+            switch($handle) {
+                case 'mark':
+                    // Set trapRead value to 1 and save it
+                    $trap->trapRead = 1;
+                    R::store($trap);
+                    break;
+                case 'delete':
+                    // Simply trash the trap
+                    R::trash($trap);
+                    break;
+                case 'archive':
+                    /* Create new archive trap and delete from snmptt
+                     * table.
+                     * 
+                     * This is achieved by dumping the trap into an array
+                     * and unsetting the id and trapRead keys of the array. */
+                    $arch_trap = R::dispense('snmptt_archive');
+                    $archive_array = $trap->export();
+                    unset($archive_array['id']);
+                    unset($archive_array['trapRead']);
+                    $arch_trap->import($archive_array);
+                    R::store($arch_trap);
+                    break;
+                default:
+                    break;
+            }
         }     
-        if(!$result) {
-            $FRONTEND->printError("DBHANDLETRAP",mysql_error());
+        else {
+            $FRONTEND->printError("DBHANDLETRAP","Unable to read database.");
             $FRONTEND->closeSite();
             $FRONTEND->printSite(); 
-            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::handleTrap(): FALSE - '.mysql_error());
+            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::handleTrap(): FALSE - Unable to read database.');
             exit; 
         }
         if (DEBUG&&DEBUGLEVEL&1) debug('End method database::handleTrap(): '.$result);
@@ -261,28 +278,29 @@ class database {
     /**
     * Read Trap-Infromation from the database
     *
+    * Refactored to use redbean ORM -NS 1/17/12
+    * 
     * @param string $tableName
     *
     * @author Michael Luebben <nagtrap@nagtrap.org>
+    * @author Nicholas Scott <nscott@nagios.com>
     */  
     function infoTrap($tableName) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::infoTrap('.$tableName.')');
         global $FRONTEND;
-        $query = "SELECT id,traptime FROM $tableName ORDER BY id";
-        $result = mysql_query($query);
-        if(!$result) {
+        /* Determine time of the first and last trap, return as tuple */
+        try {
+            $trap['last']= R::getCell("select traptime from $tableName ORDER BY id DESC LIMIT 1");
+            $trap['first']= R::getCell("select traptime from $tableName ORDER BY id ASC LIMIT 1");
+            //~ print_r($trap);
+            //~ die;
+        }
+        catch(Exception $e) {
             $FRONTEND->printError("DBREADTRAP",mysql_error());
             $FRONTEND->closeSite();
             $FRONTEND->printSite(); 
-            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::infoTrap(): FALSE - '.mysql_error());
+            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::infoTrap(): FALSE - '.$e->getMessage());
             exit; 
-        }
-        while($line = mysql_fetch_array($result)) {
-            $trapTime[] = $line['traptime']; 
-        }
-        if($trapTime[0] != "") {
-            $trap['last'] = array_pop($trapTime);
-            $trap['first'] = array_pop(array_reverse($trapTime));
         }
         if (DEBUG&&DEBUGLEVEL&1) debug('End method database::infoTrap(): Array(...)');
         return($trap);
@@ -291,24 +309,29 @@ class database {
     /**
     * Read category from database
     *
+    * Refactored to use Redbean ORM -NS 1/17/12
+    * 
     * @author Michael Luebben <nagtrap@nagtrap.org>
-    *
+    * @author Nicholas Scott <nscott@nagios.com>
     */
     function readCategory($tableName) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::readCategory('.$tableName.')');
         global $FRONTEND;
-        $query = "SELECT DISTINCT category FROM $tableName";
-        $result = mysql_query($query);
-        if(!$result) {
-            $FRONTEND->printError("DBREADCATEGORY",mysql_error());
+        
+        try{
+            /* getCol only returns column as array, not as multidimensional
+             * array. 
+             */
+            $category = R::getCol("SELECT DISTINCT category FROM $tableName");
+        }
+        catch(Exception $e) {
+            $FRONTEND->printError("DBREADCATEGORY",$e->getMessage());
             $FRONTEND->closeSite();
             $FRONTEND->printSite(); 
-            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::readCategory(): FALSE - '.mysql_error());
+            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::readCategory(): FALSE - '.$e->getMessage());
             exit; 
         }
-        while ($line = mysql_fetch_array($result)) {
-            $category[] = $line['category'];
-        }
+        
         if (DEBUG&&DEBUGLEVEL&1) debug('End method database::readCategory(): Array(...)');
         return($category);
     } 

@@ -1,14 +1,14 @@
 <?php
 /**
- * index.php -  Nagios Trap Interface
+ * index.php -  Nagios SNMP Trap Interface
  * 
  * PHP Version 5.2
  * 
  * @category SNMP_Management
- * @package  Nagios_Trap_Interface
+ * @package  Nagios_SNMP_Trap_Interface
  * @author   Nicholas Scott <nscott@nagios.com>
  * @license  GNU - http://www.gnu.org/licenses/gpl-2.0.html
- * @version  SVN: Alpha2
+ * @version  SVN: RC1.2
  * @link     http://exchange.nagios.org/nagiostrapinterface
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -32,11 +32,13 @@ require "./include/defines/global.php";
 
 require "./include/functions/functions.debug.php";
 require "./include/functions/request.inc.php";
+require "./include/functions/redbean/rb.php";
 
 require "./include/classes/class.main.php";
 require "./include/classes/class.frontend.php";
 require "./include/classes/class.common.php";
 require "./include/classes/class.mysqlDB.php";
+
 
 // Start our session
 session_start();
@@ -69,15 +71,17 @@ $FRONTEND = new frontend($configINI);
 
 $FRONTEND->openSite();
 
-$FRONTEND->constructorHeader();
+
 
 
 if ($MAIN->checkUser() == "0") {
     $FRONTEND->printError("AUTHENTIFICATION", null);
-} else {
+} 
+else {
     $DATABASE = new database($configINI);
     $DATABASE->connect();
-
+    
+    
     // If set action, then mark, delete or archive a trap in the database
     if (grab_request_var('action') == "mark" or grab_request_var('action') == "delete" or grab_request_var('action') == "archive") {
         $DATABASE->handleTrap(grab_request_var('action'), grab_request_var('trapID'), $table['name']); 
@@ -103,7 +107,8 @@ if ($MAIN->checkUser() == "0") {
             $DATABASE->handleTrap("archive", $trapID, $table['name']);
         }
     }
-
+    
+    $FRONTEND->constructorHeader();
     $FRONTEND->constructorMain();
     $FRONTEND->constructorFooter();
 }

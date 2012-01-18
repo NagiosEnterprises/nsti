@@ -134,7 +134,7 @@ class frontend {
     function createInfoBox() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createInfoBox()');
         global $languageXML;
-        $last    = (isset($trapInfo['last'])) ? $trapInfo['last'] : "None";
+        //~ $last    = (isset($trapInfo['last'])) ? $trapInfo['last'] : "None";
         $trapInfo = common::readTrapInfo();
         $retstr  = "<div id='infobox'>\n";
         $retstr .= "    <table class='OptionsTable'>\n";
@@ -304,13 +304,13 @@ class frontend {
     * @author Nicholas Scott <nscott@nagios.com>
     */ 
     function printError($error,$systemError) {
-       if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::printError('.$error.','.$systemError.')');
-       global $errorXML;
-       $this->site[] = "<hr>";
-       $this->site[] = "   <div class='errorMessage'>{$errorXML['ERROR'][$error]['MESSAGE']}</div>";
-       common::printErrorLines($errorXML['ERROR'][$error]['DESCRIPTION'],$systemError);
-       $this->site[] = "</hr>";
-       if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::printError()');
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::printError('.$error.','.$systemError.')');
+        global $errorXML;
+        $this->site[] = "<hr>";
+        $this->site[] = "   <div class='errorMessage'>{$errorXML['ERROR'][$error]['MESSAGE']}</div>";
+        common::printErrorLines($errorXML['ERROR'][$error]['DESCRIPTION'],$systemError);
+        $this->site[] = "</hr>";
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::printError()');
     }
 
     // ======================== Contructor and functions for the main of the frontend =======================
@@ -342,49 +342,6 @@ class frontend {
         $this->site[] = "<!-- closes trapbody -->";     
         if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::contructorMain()');
     }
-    
-    /**
-    * Create a Java Infobox
-    *
-    * @param string $formatline
-    *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    */ 
-    function javaInfoBox($formatline) {
-       if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::javaInfoBox('.$formatline.')');
-       $infoBox = 'onmouseover="return overlib(\'';
-       $infoBox .= $formatline;
-       $infoBox .= '\', CAPTION, \'Trap-Message\', VAUTO);" onmouseout="return nd();" ';
-       if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::javaInfoBox(): '.$infoBox);
-       return($infoBox);
-    }
-    
-    /**
-    * Show traps
-    *
-    * @param array  $trap
-    * @param string $rowColor
-    * @param string $styleLine
-    * 
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    * @auther Nicholas Scott <nscott@nagios.com>
-    */ 
-    //~ function showTrap($trap,$rowColor,$styleLine) {
-        //~ if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::javaInfoBox('.$formatline.')');
-        //~ global $configINI, $languageXML, $hostname;
-        //~ $this->site[] = "<tr class='{$rowColor}'>";
-        //~ $this->site[] = "<td class='checkbox'>";
-        //~ $this->site[] = common::doTrapControls($trap);
-        //~ $this->site[] = "</td>";
-        //~ $this->site[] = "<td width='7%' class='{$rowColor}'><p {$styleLine}>{$trap['traptime']}</p></td>";
-        //~ $this->site[] = '        <td width="10%" class="'.$rowColor.'"><p '.$styleLine.'>'.$trap['trapoid'].'</p></td>';
-        //~ // Select host
-        //~ $this->site[] = '      <td width="10%" class="'.$rowColor.'"><a href="./index.php?trapSelect='.$_REQUEST['trapSelect'].'&severity='.$_REQUEST['severity'].'&category='.rawurlencode($_REQUEST['category']).'&hostname='.$trap['hostname'].'"><P '.$styleLine.'>'.$trap['hostname'].'</p></a></td>';
-        //~ common::showTrapFields("entry",$trap,$rowColor,$styleLine);
-        //~ $this->site[] = '      <td width="*" class="'.$rowColor.'"><p '.$styleLine.' '.$this->javaInfoBox($trap['orgFormatline']).'class="formatline">'.htmlentities($trap['formatline']).'</p></td>';
-        //~ $this->site[] = '   </tr>';
-        //~ if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::javaInfoBox()');
-    //~ }
     
     // ======================= Contructor and functions for the footer of the frontend ====================== 
     

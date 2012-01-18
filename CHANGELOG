@@ -1,3 +1,11 @@
+RC1.2 - 1/17/2012
+
+- Made move to RedbeanPHP for database abstraction
+- Added lots of comments to mysqldb.php function class
+- Added rb.php to includes/
+- Fixed trap counting that needed to fixed by reload by moving 
+  location of where the trap count happened
+
 RC1.1 - 1/10/2012
 
 - Added note that php-mysql is required to be compiled into apache.

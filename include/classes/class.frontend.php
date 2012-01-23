@@ -23,7 +23,14 @@
 ###########################################################################
 
 /**
-* This Class creates the Web-Frontend for the Nagtrap Frontend
+* This Class is the template for all pages created for NSTI.
+* 
+* When adding a new page, simply extend this class, put your functions
+* for creating content in functions and call them in the constructor for
+* the class. Obviously, you can do it your own way, but thats they way
+* I'm trying for this project. See index.php and includes/classes/class.index.php
+* for examples.
+* 
 */
 
 class frontend {
@@ -35,10 +42,11 @@ class frontend {
     *
     * @author Michael Luebben <nagtrap@nagtrap.org>
     */  
-    function frontend(&$configINI) {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::contructor()');
+    function __construct(&$configINI) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::__construct()');
         $this->configINI = &$configINI;
-        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::contructor()');
+        $this->openSite();
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::__construct()');
     }
 
     // ==================================== Functions to create the page ====================================
@@ -55,17 +63,33 @@ class frontend {
         $this->site[] = "   <head>";
         $this->site[] = "       <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>";
         $this->site[] = "       <title>Nagios SNMP Trap Interface - ".CONST_VERSION."</title>";
-        $this->site[] = "       <script type='text/javascript' src='./include/js/nagtrap.js'></script>";
-        $this->site[] = "       <script type='text/javascript' src='./include/js/overlib.js'></script>";
-        $this->site[] = "       <script type='text/javascript' src='./include/js/prototype.js'></script>";
-        $this->site[] = "       <script type='text/javascript' src='./include/js/scriptaculous.js'></script>";
         $this->site[] = "       <script type='text/javascript' src='./include/js/jquery.js'></script>";
+        $this->site[] = "       <script type='text/javascript' src='./include/js/anytimec.js'></script>";
         $this->site[] = "       <script type='text/javascript' src='./include/js/start.js'></script>";
-        $this->site[] = "       <link href='./include/css/nagtrap.css' rel='stylesheet' type='text/css'>";                
+        $this->site[] = "       <script type='text/javascript' src='./include/js/nsti.js'></script>";
+        $this->site[] = "       <link href='./include/css/nsti.css' rel='stylesheet' type='text/css' />";
+        $this->site[] = "       <link href='./include/css/anytimec.css' rel='stylesheet' type='text/css' />";                
         $this->site[] = "   </head>";
         $this->site[] = "   <body>";
+        $this->site[] = "       <div id='logo'>NSTI v".CONST_VERSION."</div>";
         $this->site[] = "       <div id='all'>";
+        $this->site[] = "           <div id='topmenu'>";
+        $this->site[] = "               <div id='topmenuleft'>";
+        $this->drawTopLeftMenu();
+        $this->site[] = "               </div>";
+        $this->site[] = "           </div>";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::openSite()');
+    }
+    /**
+     * Draws top left menu links.
+     * 
+     * @author Nicholas Scott
+     */
+    function drawTopLeftMenu() {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::drawTopLeftMenu()');
+        $this->site[] = "<a href='./index.php'>Traps</a>";
+        $this->site[] = "<a href='./filters.php'>Filters</a>";
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::drawTopLeftMenu()');
     }
     
     /**
@@ -95,205 +119,7 @@ class frontend {
         if (DEBUG&&DEBUGLEVEL&4) debugFinalize();
     }
     
-    // ======================= Contructor and functions for the header of the frontend ======================
-    
-    /**
-    * Constructor for the header
-    *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    * @auther Nicholas Scott <nscott@nagios.com>
-    */
-    function constructorHeader() {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::constructorHeader()');
-        global $table;
-        $retstr  = "<div id='header'>";
-        $retstr .= "    ".$this->createInfoBox();     // Current Trap Log Box
-        $retstr .= "    ".$this->createDescribe();  // Show Description/Title
-        $retstr .= "    ".$this->createOptBox();      // Trap Selection Box #trapselect
-        $retstr .= "</div> <!-- closes header -->";
-        $this->site[] = $retstr;
-        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::constructorHeader()');
-    }
-    
-    function createDescribe() {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createDescribe()');
-        $retstr  = "<div id='description'>\n";
-        $retstr .= "    <p class='nstititle'>>Nagios SNMP Trap Interface<</p>\n";
-        $retstr .= "    <p class='info'>Version: ".CONST_VERSION."</p>\n";
-        $retstr .= "    <p class='info'>Total Traps: ".database::countTraps()."</p>\n";
-        $retstr .= "</div>\n";
-        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::createDescribe()');
-        return $retstr;
-    }
-    /**
-    * Create a Info-Box
-    *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    * @author Nicholas Scott <nscott@nagios.com>
-    */
-    function createInfoBox() {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createInfoBox()');
-        global $languageXML;
-        //~ $last    = (isset($trapInfo['last'])) ? $trapInfo['last'] : "None";
-        $trapInfo = common::readTrapInfo();
-        $retstr  = "<div id='infobox'>\n";
-        $retstr .= "    <table class='OptionsTable'>\n";
-        $retstr .= "        <thead>\n";
-        $retstr .= "            <tr>\n";
-        $retstr .= "                <td colspan='2'>{$languageXML['LANG']['HEADER']['INFOBOX']['CURRENTTRAPLOG']}</td>\n";    
-        $retstr .= "            </tr>\n";
-        $retstr .= "        </thead>\n";    
-        $retstr .= "        <tbody>\n";     
-        $retstr .= "            <tr class='odd'>\n";    
-        $retstr .= "                <td class='left'> {$languageXML['LANG']['HEADER']['INFOBOX']['LASTUPDATE']}</td>\n";
-        $retstr .= "                <td class='right'>{$last}</td>\n";     
-        $retstr .= "            </tr>\n";
-        // Creates date box
-        $retstr .= "            ".frontend::createDateInfoBox($trapInfo);
-        // Create the filter section of the table
-        $retstr .= "            ".frontend::createFilter();
-        $retstr .= "        </tbody>\n";
-        $retstr .= "    </table>\n";
-        $retstr .= "</div>\n";
-        $retstr .= "<!-- Closes Info Box -->\n";       
-        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::createInfoBox()');
-        return $retstr;
-    }
-    
-    /**
-    * Create a Filter-Box
-    *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    * @author Nicholas Scott <nscott@nagios.com>
-    */
-    function createFilter() {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createFilter()');
-        global $hostname, $languageXML, $configINI;
-        $retstr  = "";
-        $retstr .= "<thead>\n";
-        $retstr .= "    <tr>\n";
-        $retstr .= "        <td colspan='2'>{$languageXML['LANG']['HEADER']['FILTER']['DISPLAYFILTERS']}:</td>\n";    
-        $retstr .= "    </tr>\n";
-        $retstr .= "</thead>\n";
-        $retstr .= "<tr class='even'>\n";
-        $retstr .= "    <td class='left'>{$languageXML['LANG']['HEADER']['FILTER']['HOST']}:</td>\n";
-        $retstr .= "    <td class='right'>".common::checkRequest(grab_request_var('hostname'))."</td>\n";
-        $retstr .= "</tr>\n";
-        $retstr .= "<tr class='odd'>\n";
-        $retstr .= "    <td class='left'>{$languageXML['LANG']['HEADER']['FILTER']['SEVERITYLEVEL']}:</td>\n";
-        $retstr .= "    <td class='right'>".common::checkRequest(grab_request_var('severity'))."</td>\n";
-        $retstr .= "</tr>\n";
-        $retstr .= "<tr class='even'>\n";
-        $retstr .= "    <td class='left'>{$languageXML['LANG']['HEADER']['FILTER']['CATEGORY']}:</td>\n";
-        $retstr .= "    <td class='right'>".common::checkRequest(rawurldecode(grab_request_var('category')))."</td>\n";
-        $retstr .= "</tr>\n";
-        $retstr .= "<tr class='odd'>\n";
-        $retstr .= "    <td class='left'><a href='./index.php'><b><i>{$languageXML['LANG']['HEADER']['FILTER']['RESET']}</i></b></a></td>\n";
-        $retstr .= "</tr>\n";
-        $retstr .= "<!-- Closes filterbox -->\n";       
-        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::createFilter()');
-        return $retstr;
-    }  
-    
-    /**
-    * Create a Date Information
-    *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    * 
-    * This function is called to populate the upper right hand corner
-    * "nav
-    */
-    function createDateInfoBox($trapInfo) {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createNavBox()');
-        global $languageXML;
-        // If trap table is empty, set dates to be displayed to None.
-        $first   = (isset($trapInfo['first'])) ? $trapInfo['first'] : "None";
-        $last    = (isset($trapInfo['last'])) ? $trapInfo['last'] : "None";
-        $retstr  = "";
-        $retstr .= "<thead>\n";
-        $retstr .= "    <tr>\n";
-        $retstr .= "        <td colspan='5'>{$languageXML['LANG']['HEADER']['NAVBOX']['DATES']}</td>\n";
-        $retstr .= "    </tr>\n";
-        $retstr .= "</thead>\n";       
-        $retstr .= "<tr class='odd'>\n";    
-        $retstr .= "    <td class='left'>{$languageXML['LANG']['HEADER']['NAVBOX']['BEGIN']}</td>\n";   
-        $retstr .= "    <td class='right'>{$first}</td>\n";
-        $retstr .= "</tr>\n";   
-        $retstr .= "<tr class='even'>\n";
-        $retstr .= "    <td class='left'>{$languageXML['LANG']['HEADER']['NAVBOX']['LAST']}</td>\n";   
-        $retstr .= "    <td class='right'>{$last}</td>\n";
-        $retstr .= "</tr>\n";    
-        $retstr .= "<!-- Closes navbox -->\n";
-        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::createNavBox()');
-        return $retstr;
-    }
-      
-    /**
-    * Create a Box for Options
-    *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    * @author Nicholas Scott <nscott@nagios.com>
-    */
-    function createOptBox() {
-       if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::createOptBox()');
-       global $languageXML;
-       $retstr  = "";
-       $retstr .= "<div id='trapselect'>\n";
-       $retstr .= "     <table class='OptionsTable'>\n";
-       $retstr .= "         <thead>\n";
-       $retstr .= "             <tr>\n";
-       $retstr .= "                 <td colspan='5'>Trap Selection</td>\n";   
-       $retstr .= "             </tr>\n";
-       $retstr .= "         </thead>\n";   
-       $retstr .= "         <form method='get' action='./index.php'>\n";
-       $retstr .= "         <tr class='even'>\n";
-       $retstr .= "             <td class='title'> {$languageXML['LANG']['HEADER']['OPTBOX']['SELECTTRAP']} :</td>\n";
-       $retstr .= "             <td class='right'>\n";
-       $retstr .= "                 <select name='trapSelect'>\n";
-       $retstr .= "                     <option value='all' ".common::selected('all',grab_request_var('trapSelect'),'selected="selected"')." > {$languageXML['LANG']['HEADER']['OPTBOX']['SELECTTRAPVALUE']['TRAPACTUEL']}</option>\n";
-       $retstr .= "                     <option value='ARCHIVED' ".common::selected('ARCHIVED',grab_request_var('trapSelect'),"selected='selected'")." > {$languageXML["LANG"]["HEADER"]["OPTBOX"]["SELECTTRAPVALUE"]["TRAPARCHIVED"]}</option>\n";
-       $retstr .= "                     ". common::checkIfEnableUnknownTraps($this->configINI['global']['useUnknownTraps']);
-       $retstr .= "                 </select>\n";
-       $retstr .= "             </td>\n";
-       $retstr .= "         </tr>\n";
-       $retstr .= "         <tr class='odd'>\n";
-       $retstr .= "             <td>{$languageXML['LANG']['HEADER']['OPTBOX']['SEVERITYDETAIL']}:</td>\n";
-       $retstr .= "             <td class='right'>\n";
-       $retstr .= "                 <select name='severity'>\n";
-       $retstr .= "                     <option value='' ".common::selected('',grab_request_var('severity'),"selected='selected'")." > {$languageXML["LANG"]["HEADER"]["OPTBOX"]["OPTION"]["VALUEALL"]}</option>\n";
-       $retstr .= "                     <option value='OK' ".common::selected('OK',grab_request_var('severity'),"selected='selected'")." >Traps OK</option>\n";
-       $retstr .= "                     <option value='WARNING' ".common::selected('WARNING',grab_request_var('severity'),"selected='selected'")." >Traps Warning</option>\n";
-       $retstr .= "                     <option value='CRITICAL' ".common::selected('CRITICAL',grab_request_var('severity'),"selected='selected'")." >Traps Critical</option>\n";
-       $retstr .= "                 </select>\n";
-       $retstr .= "             </td>\n";
-       $retstr .= "         </tr>\n";
-       $retstr .= "         <tr class='even'>\n";
-       $retstr .= "             <td>{$languageXML['LANG']['HEADER']['OPTBOX']['PERPAGE']}</td>\n";
-       $retstr .= "             <td class='right'>\n";
-       $retstr .= "                 <select name='perpage'>\n";
-       $retstr .= "                     ".common::determinePageMenu();
-       $retstr .= "                 </select>\n";
-       $retstr .= "             </td>\n";
-       $retstr .= "         </tr>\n";
-       $retstr .= "         <tr class='odd'>\n";      
-       $retstr .= "             ".common::createCategoryFilter();
-       $retstr .= "         </tr>\n";     
-       $retstr .= "         <tr class='even'>\n";
-       $retstr .= "             <td class='left'>{$languageXML['LANG']['HEADER']['OPTBOX']['OLDERENTRIESFIRST']}:</td>\n";
-       $retstr .= "             <td class='right'><input type='checkbox' name='oldestfirst' ".common::selected('on',grab_request_var('oldestfirst'),"checked")." ></td>\n";
-       $retstr .= "         </tr>\n";
-       $retstr .= "         <tr class='odd'>\n";
-       $retstr .= "             <td class='left'></td>\n";
-       $retstr .= "             <td class='right'><input type='submit' value='{$languageXML['LANG']['HEADER']['OPTBOX']['UPDATEBUTTON']}' ></td>\n";
-       $retstr .= "             <input type='hidden' name='hostname' value='".grab_request_var('hostname')."'>\n";
-       $retstr .= "         </tr>\n";
-       $retstr .= "         </form>\n";
-       $retstr .= "     </table>\n";
-       $retstr .= "</div> <!-- closes trapselect -->\n";
-       if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::createOptBox()');
-       return $retstr;
-    }
-
+ 
     /**
     * Create a error-message
     *
@@ -313,73 +139,5 @@ class frontend {
         if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::printError()');
     }
 
-    // ======================== Contructor and functions for the main of the frontend =======================
-    
-    /**
-    * Constructor for the main
-    *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    * @auther Nicholas Scott <nscott@nagios.com>
-    */
-    function constructorMain() {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::contructorMain()');
-        global $languageXML, $traps, $hostname, $configINI;;
-
-        // Check database connection and read traps from database
-        $this->site[] = "<div id='trapbody'>";
-        $this->site[] = "   <div id='trapbodyheader'>";
-        $traps = common::readTraps();
-        $this->site[] = "   </div>";
-        $this->site[] = "<!-- Closes trapbodyheader -->";
-        $this->site[] = "   <div id='traps'>";
-        $this->site[] = "       <table class='MainTable'>";
-        $this->site[] = "           ".common::doTrapsHeader();
-        $this->site[] = "           ".common::doTrapsBody($traps);
-        $this->site[] = "       </table>";     
-        $this->site[] = "   </div>";
-        $this->site[] = "   <!-- closes traps -->";
-        $this->site[] = "</div>";
-        $this->site[] = "<!-- closes trapbody -->";     
-        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::contructorMain()');
-    }
-    
-    // ======================= Contructor and functions for the footer of the frontend ====================== 
-    
-    /**
-    * Constructor for the main
-    *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    * @author Nicholas Scott <nscott@nagios.com>
-    */
-    function constructorFooter() {
-       if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::constructorFooter()');
-       global $configINI, $languageXML, $hostname, $table;
-       $this->site[] = "<table width='100%' border='0'>";
-       $this->site[] = "  <tr>";
-       $this->site[] = "     <td class='checkbox'>";
-       $this->site[] = "        <div class='controls'>";
-       $this->site[] = "        <img src='{$configINI['global']['images']}{$configINI['global']['iconStyle']}/arrow.png' border='0'>";
-       $this->site[] = "        <input type='checkbox' name='checkbox' value='checkbox' class='bigone' > &nbsp; (Mark all)";
-       $this->site[] = "        </div>";
-       $this->site[] = "        <div class='controls mark'>";
-       common::showTrapMenuIconFooter('mark');
-       $this->site[] = "        </div>";
-       $this->site[] = "        <div class='controls delete'>";
-       common::showTrapMenuIconFooter('delete');
-       $this->site[] = "        </div>";
-       $this->site[] = "        <div class='controls archive'>";
-       common::showTrapMenuIconFooter('archive');
-       $this->site[] = "        </div>";
-       $this->site[] = "        <input type='hidden' name='oldestfirst' value='".grab_request_var('oldestfirst')."' />";
-       $this->site[] = "        <input type='hidden' name='severity' value='".grab_request_var('severity')."' />";
-       $this->site[] = "        <input type='hidden' name='category' value='".grab_request_var('category')."' />";
-       $this->site[] = "        <input type='hidden' name='hostname' value='".grab_request_var('hostname')."' />";
-       $this->site[] = "        <input type='hidden' name='trapSelect' value='".grab_request_var('trapSelect')."' />";
-       $this->site[] = "      </td>";      
-       $this->site[] = "   </tr>";
-       $this->site[] = "</table>";
-       $this->site[] = "</form>";
-       if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::constructorFooter()');
-    }
 }
 ?>

@@ -3,7 +3,7 @@
    <header>
       <infoBox>
          <currentTrapLog>Current Trap Log</currentTrapLog>
-         <lastUpdate>Last Update</lastUpdate>
+         <totaltraps>Total Traps</totaltraps>
          <loggedInAs>Logged in as</loggedInAs>
       </infoBox>
       <filter>

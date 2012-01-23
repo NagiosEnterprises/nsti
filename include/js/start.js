@@ -28,5 +28,7 @@ $(document).ready(function(event){
         $('#initiate').hide();
         $('#searchrow').hide();
         $.post('./index.php',{'state':mini});
-    });    
+    });
+    $('.timepicker').AnyTime_picker(
+        { format: "%a %b %d %T %Y" });
 });

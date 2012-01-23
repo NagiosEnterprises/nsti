@@ -71,13 +71,14 @@ class database {
         try {
             R::setup($conn_str , $username , $password);
             R::count($db_table);
+            //~ R::freeze(true);
         }
         // If the database opening fails, catch exception and close site:
         catch(Exception $e) {
             // Give printError the exception string
-            $FRONTEND->printError("DBCONNECTION",$e->getMessage());
-            $FRONTEND->closeSite();
-            $FRONTEND->printSite();
+            frontend::printError("DBCONNECTION",$e->getMessage());
+            frontend::closeSite();
+            frontend::printSite();
             if (DEBUG&&DEBUGLEVEL&1) debug('End method database::connect(): FALSE -'.$e->getMessage());
             exit;
         }
@@ -139,6 +140,7 @@ class database {
     /**
     * Read Traps from database
     * 
+    * Added filter processing this function. 1/23/12
     * Refactored variables names. -NS 1/17/12
     * Refactored if statement. -NS 1/17/12
     * Refactored to use Redbean. -NS 1/17/12
@@ -164,37 +166,94 @@ class database {
         $searchSeverity = grab_request_var('searchSeverity');
         $searchMesssage = grab_request_var('searchMessage'); 
         
-
+        $filterlist     = $_SESSION['applied_filters'];
+        // Determine how the ALL the filter will be combined
+        $boolean        = (isset($_SESSION['boolean_combiner'])) ? $_SESSION['boolean_combiner'] : 'AND';
+        // ftQuery is the query string made from filters
+        $ftQuery = array();
+        // If filter list has contents, make an array of all of the filter ids
+        if($filterlist) {
+            foreach($filterlist as $id => $name)
+                $filterids[] = $id;
+            // Grab all matching beans
+            $filters = R::batch('filters',$filterids);
+            // Make an array of column names to iterate through
+            $colname = array(   'eventname'
+                            ,   'eventid'
+                            ,   'trapoid'
+                            ,   'enterprise'
+                            ,   'hostname'
+                            ,   'category'
+                            ,   'severity'
+                            ,   'formatline' );
+            foreach($filters as $filter) {
+                /* For each filter applied, check to see which field are
+                 * not blank. For those that are not blank, formulate 
+                 * the SQL query for it. */
+                $tmpQuery    = array();
+                foreach($colname as $filterfield) {
+                    if($filter[$filterfield]) {
+                        $columnquery = $filterfield.'query';
+                        $querytype   = $filter[$columnquery];
+                        switch($querytype) {
+                            case 'exactly':
+                                $tmpQuery[] = "{$filterfield} in ({$filter[$filterfield]})";
+                                break;
+                            case 'notexactly':
+                                $tmpQuery[] = "{$filterfield} not in ({$filter[$filterfield]})";
+                                break;
+                            case 'contain':
+                                $tmpQuery[] = "{$filterfield} LIKE '%{$filter[$filterfield]}%'";
+                                break;
+                            case 'notcontain':
+                                $tmpQuery[] = "{$filterfield} NOT LIKE '%{$filter[$filterfield]}%'";
+                                break;
+                            default:
+                                break;
+                        }
+                        
+                    }
+                }
+                $ftQuery[] = '('.implode($tmpQuery," AND ").')';
+                unset($tmpQuery);
+            }
+        }
+        
         /* Create WHERE clause by checking each search variable from
          * the server variables and adding the SQL if any of the server
          * variables exist 
          */
         if($searchOID)
-            $dbQuery[] = "trapoid LIKE '%$searchOID%'"; 
+            $dbQuery[] = "trapoid LIKE '%{$searchOID}%'"; 
         if($searchHostname)
-            $dbQuery[] = "hostname LIKE '%$searchHostname%'"; 
+            $dbQuery[] = "hostname LIKE '%{$searchHostname}%'"; 
         if($hostname)
-            $dbQuery[] = "hostname = '$hostname'"; 
+            $dbQuery[] = "hostname = '{$hostname}'"; 
         if($searchCategory)
-            $dbQuery[] = "category LIKE '%$searchCategory%'"; 
+            $dbQuery[] = "category LIKE '%{$searchCategory}%'"; 
         if($category)
-            $dbQuery[] = "category = '$category'"; 
+            $dbQuery[] = "category = '{$category}'"; 
         if($searchSeverity)
-            $dbQuery[] = "severity LIKE '%$searchSeverity%'"; 
+            $dbQuery[] = "severity LIKE '%{$searchSeverity}%'"; 
         if($severity)
-            $dbQuery[] = "severity = '$severity'"; 
+            $dbQuery[] = "severity = '{$severity}'"; 
         if($searchMessage)
-            $dbQuery[] = "formatline LIKE '%$searchMessage%'"; 
+            $dbQuery[] = "formatline LIKE '%{$searchMessage}%'"; 
         
         /* Combine all items created in the above if statements together
          * with a space in the front (required for redbean) with an AND
          */
+        
         $dbQuery = (isset($dbQuery)) ? "WHERE ".implode($dbQuery," AND ") : "";
+        $flBegin = ($dbQuery) ? " AND " : "WHERE ";
+        $flQuery = ($ftQuery) ? $flBegin.implode($ftQuery," {$boolean} ") : "";
+        $totalQuery = $dbQuery.$flQuery;
+        print $totalQuery;
         // Set which trap must read first from database
         $sort = (grab_request_var('oldestfirst') == "on") ? "ASC" : "DESC";
  
         // Read traps from database
-        $query = "SELECT * FROM ".$table['name']." ".$dbQuery." ORDER BY id ".$sort." LIMIT ".$limit;
+        $query = "SELECT * FROM ".$table['name']." ".$totalQuery." ORDER BY id ".$sort." LIMIT ".$limit;
         if (DEBUG&&DEBUGLEVEL&2) debug('Method database::readTraps()-> query: '.$query);
         
         try {
@@ -202,9 +261,9 @@ class database {
         }
         // On error, create a array entry with the mysql error
         catch(Exception $e) {
-            $FRONTEND->printError("DBTABLE",$e->getMessage());
-            $FRONTEND->closeSite();
-            $FRONTEND->printSite(); 
+            frontend::printError("DBTABLE",$e->getMessage());
+            frontend::closeSite();
+            frontend::printSite(); 
             if (DEBUG&&DEBUGLEVEL&1) debug('End method database::readTraps(): FALSE - '.$e->getMessage());
             exit; 
         }
@@ -228,7 +287,6 @@ class database {
     */  
     function handleTrap($handle,$trapID,$tablename) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::handleTrap('.$handle.','.$trapID.','.$tablename.')');
-        global $FRONTEND;
         /* Derive our bean from the database using the $trapID */
         $trap = R::load($tablename,$trapID);
         /* If our trap has a non-zero ID, then we can continue
@@ -239,8 +297,8 @@ class database {
         if ($trap->id || 1) {
             switch($handle) {
                 case 'mark':
-                    // Set trapRead value to 1 and save it
-                    $trap->trapRead = 1;
+                    // Toggle value for trapRead
+                    $trap->trapRead = !$trap->trapRead;
                     R::store($trap);
                     break;
                 case 'delete':
@@ -265,9 +323,9 @@ class database {
             }
         }     
         else {
-            $FRONTEND->printError("DBHANDLETRAP","Unable to read database.");
-            $FRONTEND->closeSite();
-            $FRONTEND->printSite(); 
+            frontend::printError("DBHANDLETRAP","Unable to read database.");
+            frontend::closeSite();
+            frontend::printSite(); 
             if (DEBUG&&DEBUGLEVEL&1) debug('End method database::handleTrap(): FALSE - Unable to read database.');
             exit; 
         }
@@ -287,7 +345,6 @@ class database {
     */  
     function infoTrap($tableName) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::infoTrap('.$tableName.')');
-        global $FRONTEND;
         /* Determine time of the first and last trap, return as tuple */
         try {
             $trap['last']= R::getCell("select traptime from $tableName ORDER BY id DESC LIMIT 1");
@@ -296,9 +353,9 @@ class database {
             //~ die;
         }
         catch(Exception $e) {
-            $FRONTEND->printError("DBREADTRAP",mysql_error());
-            $FRONTEND->closeSite();
-            $FRONTEND->printSite(); 
+            frontend::printError("DBREADTRAP",mysql_error());
+            frontend::closeSite();
+            frontend::printSite(); 
             if (DEBUG&&DEBUGLEVEL&1) debug('End method database::infoTrap(): FALSE - '.$e->getMessage());
             exit; 
         }
@@ -316,8 +373,6 @@ class database {
     */
     function readCategory($tableName) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::readCategory('.$tableName.')');
-        global $FRONTEND;
-        
         try{
             /* getCol only returns column as array, not as multidimensional
              * array. 
@@ -325,9 +380,9 @@ class database {
             $category = R::getCol("SELECT DISTINCT category FROM $tableName");
         }
         catch(Exception $e) {
-            $FRONTEND->printError("DBREADCATEGORY",$e->getMessage());
-            $FRONTEND->closeSite();
-            $FRONTEND->printSite(); 
+            frontend::printError("DBREADCATEGORY",$e->getMessage());
+            frontend::closeSite();
+            frontend::printSite(); 
             if (DEBUG&&DEBUGLEVEL&1) debug('End method database::readCategory(): FALSE - '.$e->getMessage());
             exit; 
         }
@@ -335,6 +390,117 @@ class database {
         if (DEBUG&&DEBUGLEVEL&1) debug('End method database::readCategory(): Array(...)');
         return($category);
     } 
+    
+    /**
+     * Get list of all filters
+     * 
+     * @author Nicholas Scott <nscott@nagios.com>
+     */
+    function getFilters() {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::getFilters()');
+        try {
+            $filters = R::find('filters');
+        }
+        catch(Exception $e) {
+            frontend::printError("DBREADCATEGORY",$e->getMessage());
+            frontend::closeSite();
+            frontend::printSite(); 
+            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::getFilters(): FALSE - '.$e->getMessage());
+            exit; 
+        }
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::getFilters()');
+        return $filters;
+    }
+    
+    /**
+    * getItem - Grabs filter of that id
+    * 
+    * @TODO - Generalize these database functions so I don't have to write
+    * one for each database access. 
+    * 
+    * 1/21/12 - First attempt at testing getItem as the general.
+    * 
+    * @author Nicholas Scott <nscott@nagios.com>
+    *
+    **/
+    function getItem($table,$id) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::getItem('.$table.','.$id.')');
+        try {
+            $item = R::load($table,$id);
+        }
+        catch(Exception $e) {
+            frontend::printError("DBREADCATEGORY",$e->getMessage());
+            frontend::closeSite();
+            frontend::printSite(); 
+            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::getItem(): FALSE - '.$e->getMessage());
+            exit; 
+        }
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method database::getItem()');
+        return $item;
+    }
+    
+    /**
+    * deleteItem - Deletes item of id from table
+    * 
+    * @param id
+    * 
+    * id of the item in the table
+    * 
+    * @param table
+    * 
+    * table that item exists in
+    * 
+    * @author Nicholas Scott <nscott@nagios.com>
+    *
+    **/
+    function deleteItem($table,$id) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::deleteItem()');
+        try {
+            $item = R::load($table,$id);
+            R::trash($item);
+        }
+        catch(Exception $e) {
+            frontend::printError("DBREADCATEGORY",$e->getMessage());
+            frontend::closeSite();
+            frontend::printSite(); 
+            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::deleteItem(): FALSE - '.$e->getMessage());
+            exit; 
+        }
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method database::deleteItem()');
+        return;
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method database::deleteItem()');
+    }
+    
+    
+    /**
+    * saveForm - Saves form into a bean of the type determined by the form
+    * 
+    * @author Nicholas Scott <nscott@nagios.com>
+    *
+    * @param formarray
+    * 
+    * The $_REQUEST array associated with the form.
+    * 
+    **/
+    function saveForm($formarray,$filterid = 0) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::saveForm()');
+        // If an id was passed, we need to update the bean with that id
+        if($filterid) {
+            $updatebean = $this->getItem('filters',$filterid);
+            foreach($formarray as $column => $value)
+                $updatebean->$column = $value;
+            R::store($updatebean);
+        }
+        // Otherwise create a new bean and use that
+        else {
+            $newbean = R::graph($formarray);
+            print $newbean;
+            R::store($newbean);
+        }
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method database::saveForm()');
+    }
+    
+    
 
 }
 

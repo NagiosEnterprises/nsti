@@ -1,4 +1,4 @@
-<?PHP
+<?php
 /**
  * Here are defined some constants for use in NagTrap
  *
@@ -14,9 +14,9 @@ define('DEBUG',TRUE);
  * 4: render time
  */
 define('DEBUGLEVEL', 1);
-define('DEBUGFILE', '/tmp/nagtrap-debug.log');
+define('DEBUGFILE', '/tmp/nsti-debug.log');
 
-define('CONST_VERSION', 'RC1.1');
+define('CONST_VERSION', 'RC1.3');
 define('CONST_MAINCFG', './etc/config.ini');
 define('RED', '#FF795F');
 define('YELLOW','#FEFF5F');

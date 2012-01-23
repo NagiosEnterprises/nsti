@@ -22,11 +22,28 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ###########################################################################*/
 
+body{
+    margin:0;
+    padding:0;
+    }
+
 /* ******************** ----- Layout Divs ******************** */
 #all{
     font-family:"Arial";
     font-size:8pt;
 }
+
+#logo{
+    margin:0;
+    padding:0;
+    font-family:Courier;
+    font-size:36px;
+    font-weight:bold;
+    color:#708090;
+    position:absolute;
+    right:10px;
+    top:4px;
+    }
 
 #header{
     height:300px;
@@ -39,7 +56,28 @@
     width:100%;
 }
 
-input[type="text"]{
+#topmenu{
+    margin-top:36px;
+    margin-bottom:30px;
+    height:35px;
+    width:100%;
+    background-color:#708090;
+    }
+    
+#topmenu a{
+    color:white;
+    font-size:12pt;
+    font-weight:bold;
+    padding:15px;
+    }
+    
+#topmenuleft{
+    width:50%;
+    height:20px;
+    padding:8px;
+    }
+    
+.MainTable input[type="text"]{
     display:block;
     width:100%;
 }
@@ -52,7 +90,6 @@ table.control {width: 75px;}
 }
 
 #traps{
-    float:bottom;
     width:100%;
 }
 
@@ -70,26 +107,6 @@ table.control {width: 75px;}
     float:left;
 }
 
-#description{
-    margin-left:10px;
-    float:left;
-    width:380px;
-    top:50px;
-    }
-
-p.nstititle{
-    line-height:70%;
-    color:gray;
-    font-size:18pt;
-    font-weight:bold;
-    }
-
-p.info{
-    line-height:50%;
-    color:black;
-    font-size:12pt;
-    }
-
 #trapselect{
     float:right; 
     width:300px;
@@ -100,6 +117,25 @@ p.info{
 #navbox{
     float:right;
 }
+
+#filtermain{
+    margin:0 auto;
+    width:60%;
+    }
+    
+    .filterinput{
+        padding:10px;
+        }
+    
+        span.filterlabel{
+            font-size:12px;
+            }
+
+    
+div.controlpiece{
+    margin:0 auto;
+    width:80%;
+    }
 
 /* ******************** ----- Tables ---- ******************** */
 
@@ -118,7 +154,7 @@ table.OptionsTable{
 table.OptionsTable thead{
     text-align:center;
     font-weight:bold;
-    background-color:#D3D3D3;
+    background-color:#b8c0c8;
     }
     
 table.OptionsTable tr{
@@ -142,11 +178,14 @@ td.checkbox{
     
 div.controls{
     float:left;
+    padding-top:10px;
+/*
+    padding-bottom:-5px;
+*/
     }
 
 table.MainTable{
-    margin:5px;
-    border-style:gray;
+    border-style:none;
     border-color:gray;
     border-width:2px;
     width:100%;
@@ -155,7 +194,7 @@ table.MainTable{
 
 table.MainTable thead{
     text-align:center;
-    background-color:#D3D3D3;
+    background-color:#b8c0c8;
     }
     
     
@@ -192,7 +231,7 @@ td.severity , th.severity{
     }
 
 th.message{
-    width:*;
+    width:'*';
     }
 
 td.message{
@@ -211,9 +250,11 @@ table.MainTable td{
     text-align:center;
     border: thin silver solid;
     border-width:1px;
+/*
     padding:5px;
-    margin: 0;
-    padding: 0;
+*/
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
     }
     
 table.MainTable td.right{
@@ -223,6 +264,20 @@ table.MainTable td.right{
 table.control td{
     text-align:center;
     border-width:0px;
+    }
+    
+/* Filter table specs */
+
+table.MainTable th.controls{
+    width:10%;
+    }
+
+table.MainTable th.name{
+    width:15%;
+    }
+    
+table.MainTable th.description{
+    width:'*';
     }
 
 /* ******************** ----- Links ----- ******************** */
@@ -238,7 +293,5 @@ a:visited {
     
 a:hover {
    color: #339966;
-   text-decoration: none;
+   text-decoration: underline;
 }
-
-

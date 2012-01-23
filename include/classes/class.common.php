@@ -19,8 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-class common extends frontend 
-{
+class common {
   
     /**
     * Check the Request (OK, WARNING, ......)
@@ -232,18 +231,17 @@ class common extends frontend
     * @param string $lines
     *
     * @author Michael Luebben <nagtrap@nagtrap.org>
+    * @author Nicholas Scott <nscott@nagios.com
     */
 
     function printErrorLines($errorLines,$systemError) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::printErrorLines('.$errorLines.','.$systemError.')');
-        $this->site[] = '   <div class="errorDescription">';
-        foreach ($errorLines as $lines) {
-            $this->site[] = '      '.$lines.'<BR>';  
-        }
-        if ($systemError) {
-            $this->site[] = '      Error: <i>'.$systemError.'</i>';
-        }
-        $this->site[] = '   </div>';
+        $this->site[] = "   <div class='errorDescription'>";
+        foreach ($errorLines as $lines)
+            $this->site[] = "   ".$lines."<br />";  
+        if ($systemError)
+            $this->site[] = "      Error: <i>".$systemError."</i>";
+        $this->site[] = "   </div>";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method common::printErrorLines()');
     }
 

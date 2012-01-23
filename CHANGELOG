@@ -1,3 +1,13 @@
+RC1.3 - 1/23/2012
+
+- Added beta support for filters. Still a work in progress
+  but have been added.
+- Changed lots of CSS things around, and changed NSTI's interface
+  to look more streamlined, more like Nagios XI's.
+- Added datetimepicker widget for fields, dates are not fully supported
+  in the current versioning of filters, but thats on the roadmap for next release.
+- Fixed some more PHP flag issues in global.php
+
 RC1.2 - 1/17/2012
 
 - Made move to RedbeanPHP for database abstraction
@@ -16,6 +26,7 @@ RC1.1 - 1/10/2012
 - Removed all @ symbols from mysql relevant functions.
 - Removed search.php as it had deprecated.
 - Fixed dangling $_GET request
+
 RC1.0 - 1/9/2012
 
 - Initial commit.

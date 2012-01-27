@@ -41,7 +41,6 @@ class filters extends frontend {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method filters::__construct()');
         // Load frontend's constructor
         parent::__construct($configINI);
-        // Draw index.php's logic
         if (DEBUG&&DEBUGLEVEL&1) debug('End method filters::__construct()');
     }
 
@@ -123,7 +122,8 @@ class filters extends frontend {
         $this->site[] = "       </tr>";
         $this->site[] = "   </thead>";
         $this->site[] = "   <tbody>";
-        if(!$filters) $this->site[] = "   <tr><td colspan=4>No Filters In Database</td></tr>";
+        if(!$filters) 
+            $this->site[] = "   <tr><td colspan=4>No Filters In Database</td></tr>";
         else {
             $rowcount = 0;
             foreach($filters as $filter) {
@@ -151,25 +151,25 @@ class filters extends frontend {
     function drawViewControls($filterid) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method filters::drawViewControls()');
         $this->site[] = "<div class='controlpiece'>";
-        $this->site[] = "<div class='controls delete'>";
+        $this->site[] = "<div class='fcontrols delete'>";
         $this->site[] = "<form method='post' action='filters.php'>";
         $this->site[] = "   <input type='hidden' name='fid' value='{$filterid}' />";
         $this->site[] = "   <input type='hidden' name='mode' value='delete' />";
-        $this->site[] = "   <input type='image' src='images/webset/action_delete.png' />";
+        $this->site[] = "   <input type='image' title='Delete Filter' src='images/webset/action_delete.png' />";
         $this->site[] = "</form>";
         $this->site[] = "</div>";
-        $this->site[] = "<div class='controls viewfilter'>";
+        $this->site[] = "<div class='fcontrols viewfilter'>";
         $this->site[] = "<form method='post' action='filters.php'>";
         $this->site[] = "   <input type='hidden' name='fid' value='{$filterid}' />";
         $this->site[] = "   <input type='hidden' name='mode' value='viewfilter' />";
-        $this->site[] = "   <input type='image' src='images/webset/search.png'>";
+        $this->site[] = "   <input type='image' title='View Filter' src='images/webset/search.png'>";
         $this->site[] = "</form>";
         $this->site[] = "</div>";
-        $this->site[] = "<div class='controls edit'>";
+        $this->site[] = "<div class='fcontrols edit'>";
         $this->site[] = "<form method='post' action='filters.php'>";
         $this->site[] = "   <input type='hidden' name='fid' value='{$filterid}' />";
         $this->site[] = "   <input type='hidden' name='mode' value='edit' />";
-        $this->site[] = "   <input type='image' src='images/webset/application.png' />";
+        $this->site[] = "   <input type='image' title='Edit Filter' src='images/webset/application.png' />";
         $this->site[] = "</form>";
         $this->site[] = "</div>";
         $this->site[] = "</div>";

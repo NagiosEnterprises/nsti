@@ -53,9 +53,10 @@ class index extends frontend {
     */
     function constructorHeader() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method index::constructorHeader()');
+        $trapinfo = common::readTrapInfo();
         $this->site[] = "<div id='header'>";
         $this->createInfoBox();     // Current Trap Log Box
-        $this->createOptBox();      // Trap Selection Box #trapselect
+        $this->createOptBox($trapinfo);      // Trap Selection Box #trapselect
         $this->site[] = "</div> <!-- closes header -->";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method index::constructorHeader()');
     }
@@ -72,18 +73,6 @@ class index extends frontend {
         $trapInfo = common::readTrapInfo();
         $this->site[] = "<div id='infobox'>";
         $this->site[] = "    <table class='OptionsTable'>";
-        $this->site[] = "        <thead>";
-        $this->site[] = "            <tr>";
-        $this->site[] = "                <td colspan='2'>{$languageXML['LANG']['HEADER']['INFOBOX']['CURRENTTRAPLOG']}</td>";    
-        $this->site[] = "            </tr>";
-        $this->site[] = "        </thead>";    
-        $this->site[] = "        <tbody>";     
-        $this->site[] = "            <tr class='odd'>";    
-        $this->site[] = "                <td class='left'>{$languageXML['LANG']['HEADER']['INFOBOX']['TOTALTRAPS']}</td>";
-        $this->site[] = "                <td class='right'>".database::countTraps()."</td>";     
-        $this->site[] = "            </tr>";
-        // Creates date box
-        $this->createDateInfoBox($trapInfo);
         // Create the filter section of the table
         $this->createFilter();
         $this->site[] = "        </tbody>";
@@ -129,10 +118,10 @@ class index extends frontend {
                 $rownum   = !$rownum;
                 $this->site[] = "<tr class='{$rowclass}'>";
                 $this->site[] = "   <td class='left'>{$name}</td>";
-                $this->site[] = "   <td class='right'>";
+                $this->site[] = "   <td class='right filtertd'>";
                 $this->site[] = "       <form method='post' action=''>";
                 $this->site[] = "           <input type='hidden' name='remfilter' value='{$id}' />";
-                $this->site[] = "           <input type='image' src='./images/webset/action_remove.png' />";
+                $this->site[] = "           <input type='image' class='nomargin' src='./images/webset/action_remove.png' />";
                 $this->site[] = "       </form>";
                 $this->site[] = "   </td>";
                 $this->site[] = "</tr>";
@@ -141,7 +130,7 @@ class index extends frontend {
         $this->createFilterSelectBox($applied_filters);
         $this->createRadioBoolean();
         $this->site[] = "<tr class='odd'>";
-        $this->site[] = "    <td class='left'><a href='./index.php'><b><i>{$languageXML['LANG']['HEADER']['FILTER']['RESET']}</i></b></a></td>";
+        $this->site[] = "    <td class='left'><a href='./index.php?remfilter=all'><b><i>{$languageXML['LANG']['HEADER']['FILTER']['RESET']}</i></b></a></td>";
         $this->site[] = "</tr>";
         $this->site[] = "<!-- Closes filterbox -->";       
         if (DEBUG&&DEBUGLEVEL&1) debug('End method index::createFilter()');
@@ -199,7 +188,7 @@ class index extends frontend {
         $enable_form  = ($all_filters) ? '' : 'disabled'; 
         $this->site[] = "<tr class='odd'>";
         $this->site[] = "   <td class='left'>";
-        $this->site[] = "       <form method='post' action=''>";
+        $this->site[] = "       <form method='post' action='./index.php'>";
         $this->site[] = "       <select name='addfilter' {$enable_form}>";
         // If there are any filters left in $all_filters, draw them
         if($all_filters)
@@ -259,62 +248,74 @@ class index extends frontend {
     * @author Michael Luebben <nagtrap@nagtrap.org>
     * @author Nicholas Scott <nscott@nagios.com>
     */
-    function createOptBox() {
-       if (DEBUG&&DEBUGLEVEL&1) debug('Start method index::createOptBox()');
-       global $languageXML;
-       $this->site[] = "<div id='trapselect'>";
-       $this->site[] = "     <table class='OptionsTable'>";
-       $this->site[] = "         <thead>";
-       $this->site[] = "             <tr>";
-       $this->site[] = "                 <td colspan='5'>Trap Selection</td>";   
-       $this->site[] = "             </tr>";
-       $this->site[] = "         </thead>";   
-       $this->site[] = "         <form method='get' action='./index.php'>";
-       $this->site[] = "         <tr class='even'>";
-       $this->site[] = "             <td class='title'> {$languageXML['LANG']['HEADER']['OPTBOX']['SELECTTRAP']} :</td>";
-       $this->site[] = "             <td class='right'>";
-       $this->site[] = "                 <select name='trapSelect'>";
-       $this->site[] = "                     <option value='all' ".common::selected('all',grab_request_var('trapSelect'),'selected="selected"')." > {$languageXML['LANG']['HEADER']['OPTBOX']['SELECTTRAPVALUE']['TRAPACTUEL']}</option>";
-       $this->site[] = "                     <option value='ARCHIVED' ".common::selected('ARCHIVED',grab_request_var('trapSelect'),"selected='selected'")." > {$languageXML["LANG"]["HEADER"]["OPTBOX"]["SELECTTRAPVALUE"]["TRAPARCHIVED"]}</option>";
-       $this->site[] = "                     ". common::checkIfEnableUnknownTraps($this->configINI['global']['useUnknownTraps']);
-       $this->site[] = "                 </select>";
-       $this->site[] = "             </td>";
-       $this->site[] = "         </tr>";
-       $this->site[] = "         <tr class='odd'>";
-       $this->site[] = "             <td>{$languageXML['LANG']['HEADER']['OPTBOX']['SEVERITYDETAIL']}:</td>";
-       $this->site[] = "             <td class='right'>";
-       $this->site[] = "                 <select name='severity'>";
-       $this->site[] = "                     <option value='' ".common::selected('',grab_request_var('severity'),"selected='selected'")." > {$languageXML["LANG"]["HEADER"]["OPTBOX"]["OPTION"]["VALUEALL"]}</option>";
-       $this->site[] = "                     <option value='OK' ".common::selected('OK',grab_request_var('severity'),"selected='selected'")." >Traps OK</option>";
-       $this->site[] = "                     <option value='WARNING' ".common::selected('WARNING',grab_request_var('severity'),"selected='selected'")." >Traps Warning</option>";
-       $this->site[] = "                     <option value='CRITICAL' ".common::selected('CRITICAL',grab_request_var('severity'),"selected='selected'")." >Traps Critical</option>";
-       $this->site[] = "                 </select>";
-       $this->site[] = "             </td>";
-       $this->site[] = "         </tr>";
-       $this->site[] = "         <tr class='even'>";
-       $this->site[] = "             <td>{$languageXML['LANG']['HEADER']['OPTBOX']['PERPAGE']}</td>";
-       $this->site[] = "             <td class='right'>";
-       $this->site[] = "                 <select name='perpage'>";
-       $this->site[] = "                     ".common::determinePageMenu();
-       $this->site[] = "                 </select>";
-       $this->site[] = "             </td>";
-       $this->site[] = "         </tr>";
-       $this->site[] = "         <tr class='odd'>";      
-       $this->site[] = "             ".common::createCategoryFilter();
-       $this->site[] = "         </tr>";     
-       $this->site[] = "         <tr class='even'>";
-       $this->site[] = "             <td class='left'>{$languageXML['LANG']['HEADER']['OPTBOX']['OLDERENTRIESFIRST']}:</td>";
-       $this->site[] = "             <td class='right'><input type='checkbox' name='oldestfirst' ".common::selected('on',grab_request_var('oldestfirst'),"checked")." ></td>";
-       $this->site[] = "         </tr>";
-       $this->site[] = "         <tr class='odd'>";
-       $this->site[] = "             <td class='left'></td>";
-       $this->site[] = "             <td class='right'><input type='submit' value='{$languageXML['LANG']['HEADER']['OPTBOX']['UPDATEBUTTON']}' ></td>";
-       $this->site[] = "             <input type='hidden' name='hostname' value='".grab_request_var('hostname')."'>";
-       $this->site[] = "         </tr>";
-       $this->site[] = "         </form>";
-       $this->site[] = "     </table>";
-       $this->site[] = "</div> <!-- closes trapselect -->";
-       if (DEBUG&&DEBUGLEVEL&1) debug('End method index::createOptBox()');
+    function createOptBox($trapInfo) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method index::createOptBox()');
+        global $languageXML;
+        $this->site[] = "<div id='trapselect'>";
+        $this->site[] = "     <table class='OptionsTable'>";
+        $this->createDateInfoBox($trapInfo);
+        $this->site[] = "        <thead>";
+        $this->site[] = "            <tr>";
+        $this->site[] = "                <td colspan='2'>{$languageXML['LANG']['HEADER']['INFOBOX']['CURRENTTRAPLOG']}</td>";    
+        $this->site[] = "            </tr>";
+        $this->site[] = "        </thead>";    
+        $this->site[] = "        <tbody>";     
+        $this->site[] = "            <tr class='odd'>";    
+        $this->site[] = "                <td class='left'>{$languageXML['LANG']['HEADER']['INFOBOX']['TOTALTRAPS']}</td>";
+        $this->site[] = "                <td class='right'>".database::countTraps()."</td>";     
+        $this->site[] = "            </tr>";
+        $this->site[] = "       </tbody>";
+        $this->site[] = "         <thead>";
+        $this->site[] = "             <tr>";
+        $this->site[] = "                 <td colspan='5'>Trap Selection</td>";   
+        $this->site[] = "             </tr>";
+        $this->site[] = "         </thead>";   
+        $this->site[] = "         <form method='get' action='./index.php'>";
+        $this->site[] = "         <tr class='even'>";
+        $this->site[] = "             <td class='title'> {$languageXML['LANG']['HEADER']['OPTBOX']['SELECTTRAP']} :</td>";
+        $this->site[] = "             <td class='right'>";
+        $this->site[] = "                 <select name='trapSelect'>";
+        $this->site[] = "                     <option value='all' ".common::selected('all',grab_request_var('trapSelect'),'selected="selected"')." > {$languageXML['LANG']['HEADER']['OPTBOX']['SELECTTRAPVALUE']['TRAPACTUEL']}</option>";
+        $this->site[] = "                     <option value='ARCHIVED' ".common::selected('ARCHIVED',grab_request_var('trapSelect'),"selected='selected'")." > {$languageXML["LANG"]["HEADER"]["OPTBOX"]["SELECTTRAPVALUE"]["TRAPARCHIVED"]}</option>";
+        $this->site[] = "                     ". common::checkIfEnableUnknownTraps($this->configINI['global']['useUnknownTraps']);
+        $this->site[] = "                 </select>";
+        $this->site[] = "             </td>";
+        $this->site[] = "         </tr>";
+        $this->site[] = "         <tr class='odd'>";
+        $this->site[] = "             <td>{$languageXML['LANG']['HEADER']['OPTBOX']['SEVERITYDETAIL']}:</td>";
+        $this->site[] = "             <td class='right'>";
+        $this->site[] = "                 <select name='severity'>";
+        $this->site[] = "                     <option value='' ".common::selected('',grab_request_var('severity'),"selected='selected'")." > {$languageXML["LANG"]["HEADER"]["OPTBOX"]["OPTION"]["VALUEALL"]}</option>";
+        $this->site[] = "                     <option value='OK' ".common::selected('OK',grab_request_var('severity'),"selected='selected'")." >Traps OK</option>";
+        $this->site[] = "                     <option value='WARNING' ".common::selected('WARNING',grab_request_var('severity'),"selected='selected'")." >Traps Warning</option>";
+        $this->site[] = "                     <option value='CRITICAL' ".common::selected('CRITICAL',grab_request_var('severity'),"selected='selected'")." >Traps Critical</option>";
+        $this->site[] = "                 </select>";
+        $this->site[] = "             </td>";
+        $this->site[] = "         </tr>";
+        $this->site[] = "         <tr class='even'>";
+        $this->site[] = "             <td>{$languageXML['LANG']['HEADER']['OPTBOX']['PERPAGE']}</td>";
+        $this->site[] = "             <td class='right'>";
+        $this->site[] = "                 <select name='perpage'>";
+        $this->site[] = "                     ".common::determinePageMenu();
+        $this->site[] = "                 </select>";
+        $this->site[] = "             </td>";
+        $this->site[] = "         </tr>";
+        $this->site[] = "         <tr class='odd'>";      
+        $this->site[] = "             ".common::createCategoryFilter();
+        $this->site[] = "         </tr>";     
+        $this->site[] = "         <tr class='even'>";
+        $this->site[] = "             <td class='left'>{$languageXML['LANG']['HEADER']['OPTBOX']['OLDERENTRIESFIRST']}:</td>";
+        $this->site[] = "             <td class='right'><input type='checkbox' name='oldestfirst' ".common::selected('on',grab_request_var('oldestfirst'),"checked")." ></td>";
+        $this->site[] = "         </tr>";
+        $this->site[] = "         <tr class='odd'>";
+        $this->site[] = "             <td class='left'></td>";
+        $this->site[] = "             <td class='right'><input type='submit' value='{$languageXML['LANG']['HEADER']['OPTBOX']['UPDATEBUTTON']}' ></td>";
+        $this->site[] = "             <input type='hidden' name='hostname' value='".grab_request_var('hostname')."'>";
+        $this->site[] = "         </tr>";
+        $this->site[] = "         </form>";
+        $this->site[] = "     </table>";
+        $this->site[] = "</div> <!-- closes trapselect -->";
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method index::createOptBox()');
 
     }
 

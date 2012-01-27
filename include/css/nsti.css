@@ -93,6 +93,14 @@ table.control {width: 75px;}
     width:100%;
 }
 
+input[value='Add']{
+    margin-top:-12px;
+    }
+
+button{
+    border:0px;
+    }
+
 #navigation{
     width:200px;
     text-align:center;
@@ -109,7 +117,7 @@ table.control {width: 75px;}
 
 #trapselect{
     float:right; 
-    width:300px;
+    width:400px;
     margin-left:5px;
     display:block;
 }
@@ -134,7 +142,13 @@ table.control {width: 75px;}
     
 div.controlpiece{
     margin:0 auto;
-    width:80%;
+    width:65%;
+    margin-top:10px;
+    }
+    
+div.fcontrols{
+    float:left;
+    padding:3px;
     }
 
 /* ******************** ----- Tables ---- ******************** */
@@ -145,6 +159,7 @@ table{
 }
 
 table.OptionsTable{
+    width:100%;
     border-style:double;
     border-color:silver;
     border-collapse:collapse;

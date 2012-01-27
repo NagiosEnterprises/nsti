@@ -8,7 +8,7 @@
  * @package  Nagios_SNMP_Trap_Interface
  * @author   Nicholas Scott <nscott@nagios.com>
  * @license  GNU - http://www.gnu.org/licenses/gpl-2.0.html
- * @version  SVN: RC1.2
+ * @version  SVN: RC1.4
  * @link     http://exchange.nagios.org/nagiostrapinterface
  * 
  * This program is free software; you can redistribute it and/or modify

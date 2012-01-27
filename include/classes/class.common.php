@@ -346,7 +346,18 @@ class common {
     */
     function readTraps() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::readTraps()');
-        global $configINI, $hostname, $FRONTEND;
+        global $configINI, $hostname, $FRONTEND;        
+        $passthese = array( 'trapSelect' 
+                        ,   'severity' 
+                        ,   'category' 
+                        ,   'hostname'
+                        ,   'searchTrapoid'
+                        ,   'searchHostname'
+                        ,   'searchCategory'
+                        ,   'searchSeverity'
+                        ,   'searchMessage'
+                        ,   'state' );
+        
         $step = $_SESSION['perpage'];
         if (!grab_request_var('site')){
             $site = 0;
@@ -371,30 +382,32 @@ class common {
         $count = sizeof($traps);
         
         $type = (!grab_request_var('type')) ? 'all' : grab_request_var('type'); 
-        //~ if (!isset(grab_request_var('type'))) {
-            //~ $type = "all";
-        //~ }
-        //~ else {
-            //~ $type = grab_request_var('type');
         
-
-        $this->site[] = '<div id="navigation">';
-        $this->site[] = '	<span id="leftarrow">';
+        $this->site[] = "<div id='navigation'>";
+        $this->site[] = "	<span id='leftarrow'>";
+        $this->site[] = "   <form id='navigation' method='post' action=''>";
+        // Use the previous defined $passthese array to send the strings
+        // on in a hidden form.
+        foreach($passthese as $value) {
+            $temp_value = grab_request_var($value);
+            $this->site[] = "   <input type='hidden' name='{$value}' value='{$temp_value}' />";
+        }
         if ($site != 0)
-            $this->site[] = '   <a href="index.php?site='.($site-1).'&trapSelect='.grab_request_var('trapSelect').'&severity='.grab_request_var('severity').'&category='.rawurlencode(grab_request_var('category')).'&hostname='.grab_request_var('hostname').'&searchTrapoid='.grab_request_var('searchTrapoid').'&searchHostname='.grab_request_var('searchHostname').'&searchCategory='.grab_request_var('searchCategory').'&searchSeverity='.grab_request_var('searchSeverity').'&searchMessage='.grab_request_var('searchMessage').'&state='.grab_request_var('state').'"><img src="'.$configINI['global']['images'].$configINI['global']['iconStyle'].'/previous.png" /></a>'; 
+            $this->site[] = "   <button name='site' value='".($site - 1)."' type='submit'><img src='./images/dropline/previous.png' /></button>"; 
         else
-            $this->site[] = '   <img src="'.$configINI['global']['images'].$configINI['global']['iconStyle'].'/previousgray.png" />'; 
-        $this->site[] = '	</span>';
-        $this->site[] = '   <span id="pageindex">';
-        $this->site[] = ( $to < $total ) ? "<b>{$from} - {$to}</b>" : "<b>{$from} - {$total}</b>"; 
-        $this->site[] = '	</span>';
-        $this->site[] = '	<span id="rightarrow">';
+            $this->site[] = "   <button disabled><img src='./images/dropline/previousgray.png' /></button>"; 
+        $this->site[] = "	</span>";
+        $this->site[] = "   <span id='pageindex'>";
+        $this->site[] = ( $to < $total ) ? "{$from} - {$to}" : "{$from} - {$total}"; 
+        $this->site[] = "	</span>";
+        $this->site[] = "	<span id='rightarrow'>";
         if ($to < $total)
-            $this->site[] = '  	<a href="index.php?site='.($site+1).'&trapSelect='.grab_request_var('trapSelect').'&severity='.grab_request_var('severity').'&category='.rawurlencode(grab_request_var('category')).'&hostname='.grab_request_var('hostname').'&searchTrapoid='.grab_request_var('searchTrapoid').'&searchHostname='.grab_request_var('searchHostname').'&searchCategory='.grab_request_var('searchCategory').'&searchSeverity='.grab_request_var('searchSeverity').'&searchMessage='.grab_request_var('searchMessage').'&state='.grab_request_var('state').'"><img src="'.$configINI['global']['images'].$configINI['global']['iconStyle'].'/next.png" /></a>';
+            $this->site[] = "   <button name='site' value='".($site + 1)."' type='submit'><img src='./images/dropline/next.png' /></button>"; 
         else
-            $this->site[] = '  	<img src="'.$configINI['global']['images'].$configINI['global']['iconStyle'].'/nextgray.png" />';
-        $this->site[] = '   </span>';
-        $this->site[] = '</div>';	   
+            $this->site[] = "   <button disabled><img src='./images/dropline/nextgray.png' /></button>"; 
+        $this->site[] = "   </span>";
+        $this->site[] = "   </form>";
+        $this->site[] = "</div>";	   
         if (DEBUG&&DEBUGLEVEL&1) debug('End method common::readTraps(): Array(...)');
         return($traps);
     }

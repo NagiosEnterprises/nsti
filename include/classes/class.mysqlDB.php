@@ -248,7 +248,7 @@ class database {
         $flBegin = ($dbQuery) ? " AND " : "WHERE ";
         $flQuery = ($ftQuery) ? $flBegin.implode($ftQuery," {$boolean} ") : "";
         $totalQuery = $dbQuery.$flQuery;
-        print $totalQuery;
+        //~ print $totalQuery;
         // Set which trap must read first from database
         $sort = (grab_request_var('oldestfirst') == "on") ? "ASC" : "DESC";
  
@@ -494,7 +494,7 @@ class database {
         // Otherwise create a new bean and use that
         else {
             $newbean = R::graph($formarray);
-            print $newbean;
+            //~ print $newbean;
             R::store($newbean);
         }
         if (DEBUG&&DEBUGLEVEL&1) debug('End method database::saveForm()');

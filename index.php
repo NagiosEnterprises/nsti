@@ -114,7 +114,11 @@ $DATABASE->connect();
         // Remove a filter given in POST
         if (grab_request_var('remfilter')) {
             $filter_id = grab_request_var('remfilter');
-            unset($_SESSION['applied_filters'][$filter_id]);
+            if ($filter_id == 'all')
+                foreach($_SESSION['applied_filters'] as $key => $value)
+                    unset($_SESSION['applied_filters'][$key]);
+            else
+                unset($_SESSION['applied_filters'][$filter_id]);
         }
         
         if (grab_request_var('boolean')) {

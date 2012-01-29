@@ -65,47 +65,68 @@ $languageXML = $MAIN->readXML("./include/xml/language/".$configINI['global']['la
 // Set table
 $table = $MAIN->setTable($tableName, grab_request_var('severity'), grab_request_var('trapSelect'));
 
-$FRONTEND = new frontend($configINI);
+$FRONTEND = new index($configINI,$table);
 
-$FRONTEND->openSite();
+$DATABASE = new database($configINI);
+$DATABASE->connect();
 
-$FRONTEND->constructorHeader();
-
-
-if ($MAIN->checkUser() == "0") {
-    $FRONTEND->printError("AUTHENTIFICATION", null);
-} else {
-    $DATABASE = new database($configINI);
-    $DATABASE->connect();
-
-    // If set action, then mark, delete or archive a trap in the database
-    if (grab_request_var('action') == "mark" or grab_request_var('action') == "delete" or grab_request_var('action') == "archive") {
-        $DATABASE->handleTrap(grab_request_var('action'), grab_request_var('trapID'), $table['name']); 
-    }
-
-    // Mark more as one trap 
-    if (grab_request_var('markTraps') AND grab_request_var('trapIDs')) {
-        foreach (grab_request_var('trapIDs') as $trapID) {
-            $DATABASE->handleTrap("mark", $trapID, $table['name']); 
+    if (main::checkUser() == "0") {
+        $FRONTEND->printError("AUTHENTIFICATION", null);
+    } 
+    else {
+            
+        // If set action, then mark, delete or archive a trap in the database
+        if (grab_request_var('action') == "mark" or grab_request_var('action') == "delete" or grab_request_var('action') == "archive") {
+            $DATABASE->handleTrap(grab_request_var('action'), grab_request_var('trapID'), $table['name']); 
         }
-    }
 
-    // Delete more as one trap 
-    if (grab_request_var('deleteTraps') AND grab_request_var('trapIDs')) {
-        foreach (grab_request_var('trapIDs') as $trapID) {
-            $DATABASE->handleTrap("delete", $trapID, $table['name']);
+        // Mark more as one trap 
+        if (grab_request_var('markTraps') AND grab_request_var('trapIDs')) {
+            foreach (grab_request_var('trapIDs') as $trapID) {
+                $DATABASE->handleTrap("mark", $trapID, $table['name']); 
+            }
         }
-    }
 
-    // Delete more as one trap 
-    if (grab_request_var('archiveTraps') AND grab_request_var('trapIDs')) {
-        foreach (grab_request_var('trapIDs') as $trapID ) {
-            $DATABASE->handleTrap("archive", $trapID, $table['name']);
+        // Delete more as one trap 
+        if (grab_request_var('deleteTraps') AND grab_request_var('trapIDs')) {
+            foreach (grab_request_var('trapIDs') as $trapID) {
+                $DATABASE->handleTrap("delete", $trapID, $table['name']);
+            }
         }
-    }
 
-    $FRONTEND->constructorMain();
-    $FRONTEND->constructorFooter();
+        // Delete more as one trap 
+        if (grab_request_var('archiveTraps') AND grab_request_var('trapIDs')) {
+            foreach (grab_request_var('trapIDs') as $trapID ) {
+                $DATABASE->handleTrap("archive", $trapID, $table['name']);
+            }
+        }
+        
+        // Add a filter given by $_POST
+        if (grab_request_var('addfilter')) {
+            $filter_id = grab_request_var('addfilter');
+            $requested_filter = $DATABASE->getItem('filters',$filter_id);
+            $_SESSION['applied_filters'][$filter_id] = $requested_filter['filtername'];
+        }
+        
+        // Remove a filter given in POST
+        if (grab_request_var('remfilter')) {
+            $filter_id = grab_request_var('remfilter');
+            if ($filter_id == 'all')
+                foreach($_SESSION['applied_filters'] as $key => $value)
+                    unset($_SESSION['applied_filters'][$key]);
+            else
+                unset($_SESSION['applied_filters'][$filter_id]);
+        }
+        
+        if (grab_request_var('boolean')) {
+            $boolean = grab_request_var('boolean');
+            if ($boolean == 'AND' || $boolean == 'OR')
+                $_SESSION['boolean_combiner'] = $boolean;
+        }
+
+        $FRONTEND->constructorHeader();
+        $FRONTEND->constructorMain();
+        $FRONTEND->constructorFooter();
 }
 
 $FRONTEND->closeSite();

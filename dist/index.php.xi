@@ -31,7 +31,6 @@ error_reporting(E_ALL ^ E_NOTICE);
 require "./include/defines/global.php";
 
 require "./include/functions/functions.debug.php";
-require "./include/functions/request.inc.php";
 require "./include/functions/redbean/rb.php";
 
 require "./include/classes/class.frontend.php";

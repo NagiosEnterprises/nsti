@@ -164,7 +164,7 @@ class database {
         $searchHostname = grab_request_var('searchHostname');
         $searchCategory = rawurldecode(grab_request_var('searchCategory'));
         $searchSeverity = grab_request_var('searchSeverity');
-        $searchMesssage = grab_request_var('searchMessage'); 
+        $searchMessage = grab_request_var('searchMessage'); 
         
         $filterlist     = $_SESSION['applied_filters'];
         // Determine how the ALL the filter will be combined
@@ -244,12 +244,6 @@ class database {
         /* Combine all items created in the above if statements together
          * with a space in the front (required for redbean) with an AND
          */
-        //~ $dbQuery = (isset($dbQuery)) ? "WHERE ".implode($dbQuery," AND ") : "";
-        //~ $flBegin = ($dbQuery) ? " AND " : "WHERE ";
-        //~ print $flBegin;
-        //~ $flQuery = ($ftQuery) ? $flBegin.implode($ftQuery," {$boolean} ") : "=";
-        //~ print "flQuery: $flQuery";
-        //~ $totalQuery = (isset($dbQuery)) ? $dbQuery.$flQuery : $flQuery;
         if (count($dbQuery) != 0) 
             $logicQuery .= " (".implode($dbQuery," AND ").") ";
         if (count($ftQuery) != 0) {
@@ -265,7 +259,6 @@ class database {
  
         // Read traps from database
         $query = "SELECT * FROM ".$table['name']." ".$logicQuery." ORDER BY id ".$sort." LIMIT ".$limit;
-        //~ print "Query: $query";
         if (DEBUG&&DEBUGLEVEL&2) debug('Method database::readTraps()-> query: '.$query);
         
         try {

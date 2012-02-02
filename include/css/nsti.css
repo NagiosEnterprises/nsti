@@ -46,12 +46,18 @@ body{
     }
 
 #header{
-    height:300px;
+	position:absolute;
+	top:80px;
+    height:390px;
+/*
     margin-left:auto;
     margin-right:auto;
-    width:1000px;
+*/
+    width:100%;
 }
 #trapbody{
+	position:relative;
+	
     padding-top:60px;
     width:100%;
 }
@@ -93,15 +99,9 @@ table.control {width: 75px;}
     width:100%;
 }
 
-#filterbox{
-    overflow:auto;
-    display:block;
-    height:120px;
-    }
-    
-    td.filter{ 
-        width:80px;
-        }
+#updatefilter{
+	width:100%;
+	}
 
 input[value='Add']{
     margin-top:-12px;
@@ -109,6 +109,7 @@ input[value='Add']{
 
 button{
     border:0px;
+    background-color:white;
     }
 
 #navigation{
@@ -119,17 +120,19 @@ button{
 }
 
 #infobox{
-    margin-left:5px;
-    width:300px;
-    display:block;
-    float:left;
+	position:relative;
+	left:10px;
+	top:0px;
+	height:380px;
+    width:380px;
 }
 
 #trapselect{
-    float:right; 
-    width:400px;
-    margin-left:5px;
-    display:block;
+	position:relative;
+	right:10px;
+	top:0px;
+	width:400px;
+	height:380px;
 }
 
 #navbox{
@@ -152,7 +155,7 @@ button{
     
 div.controlpiece{
     margin:0 auto;
-    width:65%;
+    width:75%;
     margin-top:10px;
     }
     
@@ -170,6 +173,7 @@ table{
 
 table.OptionsTable{
     width:100%;
+    height:100%;
     border-style:double;
     border-color:silver;
     border-collapse:collapse;
@@ -232,7 +236,7 @@ table.MainTable tr.even{
     } 
 
 td.checkbox , th.checkbox{
-    width:6%;
+    width:90px;
     }
     
 td.time , th.time{

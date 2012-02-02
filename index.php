@@ -7,8 +7,8 @@
  * @category SNMP_Management
  * @package  Nagios_SNMP_Trap_Interface
  * @author   Nicholas Scott <nscott@nagios.com>
+ * @author 	 Michael Luebben <nagtrap@nagtrap.com>
  * @license  GNU - http://www.gnu.org/licenses/gpl-2.0.html
- * @version  SVN: RC1.2
  * @link     http://exchange.nagios.org/nagiostrapinterface
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -28,23 +28,7 @@
 // Disable error-message
 error_reporting(E_ALL ^ E_NOTICE);
 
-require "./include/defines/global.php";
-
-require "./include/functions/functions.debug.php";
-require "./include/functions/request.inc.php";
-require "./include/functions/redbean/rb.php";
-
-require "./include/classes/class.frontend.php";
-require "./include/classes/class.main.php";
-require "./include/classes/class.index.php";
-require "./include/classes/class.common.php";
-require "./include/classes/class.mysqlDB.php";
-
-
-// Start our session
-session_start();
-
-grab_request_vars();
+include("header.php");
 
 if (grab_request_var('state')){
     $_SESSION['state'] = grab_request_var('state');
@@ -72,6 +56,8 @@ $FRONTEND = new index($configINI,$table);
 
 $DATABASE = new database($configINI);
 $DATABASE->connect();
+
+print grab_request_var('updatefilter');
 
     if (main::checkUser() == "0") {
         $FRONTEND->printError("AUTHENTIFICATION", null);
@@ -105,21 +91,18 @@ $DATABASE->connect();
         }
         
         // Add a filter given by $_POST
-        if (grab_request_var('addfilter')) {
-            $filter_id = grab_request_var('addfilter');
-            $requested_filter = $DATABASE->getItem('filters',$filter_id);
-            $_SESSION['applied_filters'][$filter_id] = $requested_filter['filtername'];
+        if (grab_request_var('updatefilter') != NULL) {
+			$_SESSION['applied_filters'] = array();
+            $filter_id = grab_request_var('updatefilter');
+            //~ print_r($filterid);
+            foreach($filter_id as $id){
+				if($id != 'empty') {
+					$requested_filter = $DATABASE->getItem('filters',$id);
+					$_SESSION['applied_filters'][$id] = $requested_filter['filtername'];
+				}
+			}
         }
         
-        // Remove a filter given in POST
-        if (grab_request_var('remfilter')) {
-            $filter_id = grab_request_var('remfilter');
-            if ($filter_id == 'all')
-                foreach($_SESSION['applied_filters'] as $key => $value)
-                    unset($_SESSION['applied_filters'][$key]);
-            else
-                unset($_SESSION['applied_filters'][$filter_id]);
-        }
         
         if (grab_request_var('boolean')) {
             $boolean = grab_request_var('boolean');
@@ -130,7 +113,7 @@ $DATABASE->connect();
         $FRONTEND->constructorHeader();
         $FRONTEND->constructorMain();
         $FRONTEND->constructorFooter();
-    }
+        }
         
 $FRONTEND->closeSite();
 $FRONTEND->printSite();

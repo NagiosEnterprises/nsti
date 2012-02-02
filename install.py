@@ -299,11 +299,11 @@ def edit_nsti_conf():
     if sleep: time.sleep(2)
 
 def do_index():
-    movestring = 'cp dist/index.php.' + corexi + ' index.php'
+    movestring = 'cp dist/header.php.' + corexi + ' header.php'
     try:
         os.system( movestring )
     except :
-        print 'Unable to copy index.php files from dist/.\n'
+        print 'Unable to copy header.php files from dist/.\n'
         print 'Cannot continue with install.'
         sys.exit(1)
     else:

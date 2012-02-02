@@ -93,6 +93,16 @@ table.control {width: 75px;}
     width:100%;
 }
 
+#filterbox{
+    overflow:auto;
+    display:block;
+    height:120px;
+    }
+    
+    td.filter{ 
+        width:80px;
+        }
+
 input[value='Add']{
     margin-top:-12px;
     }

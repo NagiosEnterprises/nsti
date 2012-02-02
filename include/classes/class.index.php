@@ -111,22 +111,21 @@ class index extends frontend {
         $this->site[] = "    <td class='left'>{$languageXML['LANG']['HEADER']['FILTER']['CATEGORY']}:</td>";
         $this->site[] = "    <td class='right'>".common::checkRequest(rawurldecode(grab_request_var('category')))."</td>";
         $this->site[] = "</tr>";
+        $this->site[] = "<tbody id='filterbox'>";
         if ($applied_filters) {
             $rownum = 0;
             foreach($applied_filters as $id => $name) {
                 $rowclass = ($rownum) ? 'even' : 'odd';
                 $rownum   = !$rownum;
                 $this->site[] = "<tr class='{$rowclass}'>";
-                $this->site[] = "   <td class='left'>{$name}</td>";
-                $this->site[] = "   <td class='right filtertd'>";
-                $this->site[] = "       <form method='post' action=''>";
-                $this->site[] = "           <input type='hidden' name='remfilter' value='{$id}' />";
-                $this->site[] = "           <input type='image' class='nomargin' src='./images/webset/action_remove.png' />";
-                $this->site[] = "       </form>";
+                $this->site[] = "   <td class='left filter'>{$name}</td>";
+                $this->site[] = "   <td class='right filter'>";
+                $this->site[] = "       <a href='./index.php?remfilter={$id}' >Remove</a>";
                 $this->site[] = "   </td>";
                 $this->site[] = "</tr>";
             }
         }
+        $this->site[] = "</tbody>";
         $this->createFilterSelectBox($applied_filters);
         $this->createRadioBoolean();
         $this->site[] = "<tr class='odd'>";
@@ -146,6 +145,7 @@ class index extends frontend {
     **/
     function createRadioBoolean() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method index::createRadioBoolean()');
+        if(!isset($_SESSION['boolean_combiner'])) $_SESSION['boolean_combiner'] = 'OR';
         $this->site[] = "<tr class='odd'>";
         $this->site[] = "   <td class='left'>";
         $this->site[] = "       <label for='boolean'>Boolean Combine</label>";

@@ -179,13 +179,13 @@ class database {
             $filters = R::batch('filters',$filterids);
             // Make an array of column names to iterate through
             $colname = array(   'eventname'
-                            ,   'eventid'
-                            ,   'trapoid'
-                            ,   'enterprise'
-                            ,   'hostname'
-                            ,   'category'
-                            ,   'severity'
-                            ,   'formatline' );
+                            ,    'eventid'
+                            ,    'trapoid'
+                            ,    'enterprise'
+                            ,    'hostname'
+                            ,    'category'
+                            ,    'severity'
+                            ,    'formatline' );
             foreach($filters as $filter) {
                 /* For each filter applied, check to see which field are
                  * not blank. For those that are not blank, formulate 
@@ -215,7 +215,7 @@ class database {
                     }
                 }
                 $ftQuery[] = '('.implode($tmpQuery," AND ").')';
-                unset($tmpQuery);
+
             }
         }
         
@@ -240,20 +240,32 @@ class database {
         if($searchMessage)
             $dbQuery[] = "formatline LIKE '%{$searchMessage}%'"; 
         
+        $logicQuery = '';
         /* Combine all items created in the above if statements together
          * with a space in the front (required for redbean) with an AND
          */
-        
-        $dbQuery = (isset($dbQuery)) ? "WHERE ".implode($dbQuery," AND ") : "";
-        $flBegin = ($dbQuery) ? " AND " : "WHERE ";
-        $flQuery = ($ftQuery) ? $flBegin.implode($ftQuery," {$boolean} ") : "";
-        $totalQuery = $dbQuery.$flQuery;
-        //~ print $totalQuery;
+        //~ $dbQuery = (isset($dbQuery)) ? "WHERE ".implode($dbQuery," AND ") : "";
+        //~ $flBegin = ($dbQuery) ? " AND " : "WHERE ";
+        //~ print $flBegin;
+        //~ $flQuery = ($ftQuery) ? $flBegin.implode($ftQuery," {$boolean} ") : "=";
+        //~ print "flQuery: $flQuery";
+        //~ $totalQuery = (isset($dbQuery)) ? $dbQuery.$flQuery : $flQuery;
+        if (count($dbQuery) != 0) 
+            $logicQuery .= " (".implode($dbQuery," AND ").") ";
+        if (count($ftQuery) != 0) {
+            if($logicQuery != "")
+                $logicQuery .= " AND ";
+            $logicQuery .= " (".implode($ftQuery," {$boolean} ").") ";
+        }
+        if ($logicQuery != "")
+            $logicQuery = "WHERE ".$logicQuery;
+        //~ print "Total: $logicQuery\n";
         // Set which trap must read first from database
         $sort = (grab_request_var('oldestfirst') == "on") ? "ASC" : "DESC";
  
         // Read traps from database
-        $query = "SELECT * FROM ".$table['name']." ".$totalQuery." ORDER BY id ".$sort." LIMIT ".$limit;
+        $query = "SELECT * FROM ".$table['name']." ".$logicQuery." ORDER BY id ".$sort." LIMIT ".$limit;
+        //~ print "Query: $query";
         if (DEBUG&&DEBUGLEVEL&2) debug('Method database::readTraps()-> query: '.$query);
         
         try {

@@ -1,3 +1,8 @@
+RC1.3.2 - 2/1/2012
+
+- Made the filter box fixed with overflow
+- Fixed possible syntax errors in SQL queries
+
 RC1.3.1 - 1/27/2012
 
 - Implemented the following CSS changes:

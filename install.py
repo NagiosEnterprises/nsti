@@ -2,6 +2,7 @@
 #-*- coding:utf-8 -*-
 
 import os,sys,time
+from subprocess import Popen, PIPE, STDOUT
 
 try:
     import MySQLdb
@@ -329,6 +330,26 @@ def print_final():
     print os.getcwd()
     print 'You need to restart apache.'
     print 'You can access Nagios SNMP Trap Interface at http://<your server>/nsti/'
+	
+def check_php():
+    cmd = 'php -v'
+    p = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
+    phpinfo = p.stdout.read()
+    phpinfo = phpinfo.split(' ')
+
+    next = False
+    version = ''
+    for item in phpinfo:
+        if next:
+            version = item
+            break
+        if item.lower() == 'php':
+            next = True
+
+    if version < '5.2.1':
+        print '!!!CRITICAL!!! Your PHP version is out of date. You will need to update it to at least 5.2.1'
+    else:
+        print 'Your PHP version looks like it is up to date, make sure the php-mysql module is installed.'
 
 def main():
     
@@ -355,6 +376,8 @@ def main():
     do_index()
     #~ Move everything to /usr/local/nsti
     do_move()
+    #~ Do PHP check
+    check_php()
     #~ Print final word
     print_final()
     

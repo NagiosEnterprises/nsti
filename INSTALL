@@ -2,8 +2,10 @@ INSTALLATION INSTRUCTIONS:
 
 Notes:
 
+YOU MUST HAVE PHP 5.2.1 installed, at the very least.
+
 1 - For purposes of this installer I am going to assume that you have already installed 
-  - SNMPTT and MySQL and php-mysql.
+  - SNMPTT and MySQL and php-mysql. ALSO, PLEASE NOT YOU WILL NEED AT LEAST PHP 5.2.1
 2 - If running the installer script provided with this SVN checkout is made explicitly for 
   - RHEL based systems. See the TODO as I've put packaging in there. I'll describe both ways 
   - of installing.

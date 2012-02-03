@@ -397,24 +397,24 @@ class database {
     } 
     
     /**
-     * Get list of all filters
+     * Get list of all given type
      * 
      * @author Nicholas Scott <nscott@nagios.com>
      */
-    function getFilters() {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::getFilters()');
+    function getType($type) {
+        if (DEBUG&&DEBUGLEVEL&1) debug("Start method database::getType($type)");
         try {
-            $filters = R::find('filters');
+            $types = R::find($type);
         }
         catch(Exception $e) {
             frontend::printError("DBREADCATEGORY",$e->getMessage());
             frontend::closeSite();
             frontend::printSite(); 
-            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::getFilters(): FALSE - '.$e->getMessage());
+            if (DEBUG&&DEBUGLEVEL&1) debug("End method database::getType($type): FALSE - ".$e->getMessage());
             exit; 
         }
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::getFilters()');
-        return $filters;
+        if (DEBUG&&DEBUGLEVEL&1) debug("Start method database::getType($type)");
+        return $types;
     }
     
     /**

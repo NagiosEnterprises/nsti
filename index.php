@@ -30,6 +30,8 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 include("header.php");
 
+require "./include/classes/class.index.php";
+
 if (grab_request_var('state')){
     $_SESSION['state'] = grab_request_var('state');
     die();

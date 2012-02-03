@@ -1,10 +1,10 @@
 /*
 ###########################################################################
 #
-# nagtrap.css -  NagTrap class with funtions to create the frontend
+# nsti.css -  NSTI class with funtions to create the frontend
 #
 # Copyright (c) 2006 - 2007 Michael Luebben (nagtrap@nagtrap.org)
-# Last Modified: 25.12.2007
+# Copyright (c) 2011 - 2012 Nicholas Scott (nscott@nagios.com)
 #
 # License:
 #
@@ -60,21 +60,40 @@ body{
 
 #topmenu{
     margin-top:36px;
-    margin-bottom:30px;
+    margin-bottom:10px;
     height:35px;
     width:100%;
     background-color:#708090;
     }
+
+#secondmenu{
+    height:35px;
+    width:100%;
+    background-color:#2F4F4F;
+    vertical-align:middle;
+    }
     
-#topmenu a{
+#topmenu a , #secondmenu a{
+    margin-top:15px;
     color:white;
     font-size:12pt;
     font-weight:bold;
     padding:15px;
     }
     
-#topmenuleft{
+.topmenuleft{
+    display:inline;
+    position:relative;
+    float:left;
     width:50%;
+    height:20px;
+    padding:8px;
+    }
+    
+.topmenuright{
+    display:inline;
+    position:relative;
+    float:right;
     height:20px;
     padding:8px;
     }
@@ -144,7 +163,7 @@ button{
     float:right;
 }
 
-#filtermain{
+.secondarycontent{
     margin:0 auto;
     width:60%;
     }
@@ -159,14 +178,21 @@ button{
 
     
 div.controlpiece{
-    margin:0 auto;
-    width:75%;
+    position:relative;
+    float:left;
+    margin:0;
+    width:80%;
+    min-width:100px;
     margin-top:10px;
     }
     
 div.fcontrols{
     float:left;
-    padding:3px;
+    padding:8px;
+    }
+    
+th.fhcontrols{
+    width:80px;
     }
 
 /* ******************** ----- Tables ---- ******************** */
@@ -213,9 +239,6 @@ td.checkbox{
 div.controls{
     float:left;
     padding-top:10px;
-/*
-    padding-bottom:-5px;
-*/
     }
 
 table.MainTable{
@@ -284,9 +307,6 @@ table.MainTable td{
     text-align:center;
     border: thin silver solid;
     border-width:1px;
-/*
-    padding:5px;
-*/
     margin: 0 0 0 0;
     padding: 0 0 0 0;
     }

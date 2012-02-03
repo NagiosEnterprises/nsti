@@ -1,3 +1,8 @@
+RC1.4 2/2/2012
+
+- Added framework for additional pages like filter.
+- Edited header usage, so that there is a generalized header used.
+
 RC1.3.2 - 2/1/2012
 
 - Made the filter box fixed with overflow

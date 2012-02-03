@@ -1,10 +1,10 @@
 <?php
 ###########################################################################
 #
-# class.common.php -  NagTrap class with functions to create the frontend
+# class.common.php -  NSTI class with functions to create the frontend
 #
 # Copyright (c) 2006 - 2007 Michael Luebben (nagtrap@nagtrap.org)
-# Last Modified: 13.10.2007
+# Copyright (c) 2011 - 2012 Nicholas Scott (nscott@nagios.com)
 #
 # License:
 #
@@ -40,7 +40,7 @@ class frontend {
     *
     * @param config $configINI
     *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
+    * @author Nicholas Scott <nscott@nagios.com>
     */  
     function __construct(&$configINI) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::__construct()');
@@ -71,11 +71,14 @@ class frontend {
         $this->site[] = "       <link href='./include/css/anytimec.css' rel='stylesheet' type='text/css' />";                
         $this->site[] = "   </head>";
         $this->site[] = "   <body>";
-        $this->site[] = "       <div id='logo'>NSTI v".CONST_VERSION."</div>";
+        $this->site[] = "       <div id='logo'>NSTI ".CONST_VERSION."</div>";
         $this->site[] = "       <div id='all'>";
         $this->site[] = "           <div id='topmenu'>";
-        $this->site[] = "               <div id='topmenuleft'>";
+        $this->site[] = "               <div class='topmenuleft'>";
         $this->drawTopLeftMenu();
+        $this->site[] = "               </div>";
+        $this->site[] = "               <div class='topmenuright'>";
+        //~ $this->drawTopRightMenu();
         $this->site[] = "               </div>";
         $this->site[] = "           </div>";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::openSite()');
@@ -91,6 +94,18 @@ class frontend {
         $this->site[] = "<a href='./filters.php'>Filters</a>";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::drawTopLeftMenu()');
     }
+    
+    /**
+    *
+    * @author Nicholas Scott <nscott@nagios.com>
+    *
+    **/
+    function drawTopRightMenu() {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::drawTopRightMenu()');
+        $this->site[] = "<a href='./setup.php'>Setup</a>";
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::drawTopRightMenu()');
+    }
+    
     
     /**
     * Closed a Web-Site in the Array site[]

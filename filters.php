@@ -28,23 +28,9 @@
 // Disable error-message
 error_reporting(E_ALL ^ E_NOTICE);
 
-require "./include/defines/global.php";
+include("header.php");
 
-require "./include/functions/functions.debug.php";
-require "./include/functions/request.inc.php";
-require "./include/functions/redbean/rb.php";
-
-require "./include/classes/class.frontend.php";
-require "./include/classes/class.main.php";
 require "./include/classes/class.filters.php";
-require "./include/classes/class.common.php";
-require "./include/classes/class.mysqlDB.php";
-
-
-// Start our session
-session_start();
-
-grab_request_vars();
 
 if (grab_request_var('state')){
     $_SESSION['state'] = grab_request_var('state');

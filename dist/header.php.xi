@@ -34,7 +34,6 @@ require "./include/functions/redbean/rb.php";
 
 require "./include/classes/class.frontend.php";
 require "./include/classes/class.main.php";
-require "./include/classes/class.index.php";
 require "./include/classes/class.common.php";
 require "./include/classes/class.mysqlDB.php";
 

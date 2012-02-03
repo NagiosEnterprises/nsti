@@ -1,11 +1,10 @@
 <?php
 ###########################################################################
 #
-# class.filters.php -  NagTrap class with functions to create the index
+# class.filters.php -  NSTI class with functions to create the index
 #
 # Copyright (c) 2006 - 2007 Michael Luebben (nagtrap@nagtrap.org)
-#               2011 - 2012 Nicholas Scott (nscott@nagios.com)
-# Last Modified: 1.20.2012
+# Copyright (c) 2011 - 2012 Nicholas Scott (nscott@nagios.com)
 #
 # License:
 #
@@ -52,28 +51,31 @@ class filters extends frontend {
     */      
     function constructorHeader() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method filters::constructorHeader()');
-        $this->site[] = "<div id='filtermain'>";
+        $this->site[] = "<div class='secondarycontent'>";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method filters::constructorHeader()');
     }
     
     /* ------------------- MODE: VIEW SECTION ------------------------*/
     
     /**
-    * constructorMain - Draws main div, which includes the table
+    * constructorViewMain - Draws main div, which includes the table
     *
     * @author Nicholas Scott <nscott@nagios.com>
     * 
     */      
     function constructorViewMain() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method filters::constructorMain()');
-        $filters = database::getFilters();
-
-        $this->site[] = "<div id='addnewfilter'>";
-        $this->drawAddFilter();
-        $this->site[] = "</div> <!--Closes addnewfilter -->";
-        $this->site[] = "<div id='filtertable'>";
+        $filters = database::getType('filters');
+        $this->site[] = "<div id='addnewsecondary'>";
+        $this->site[] = "   <form name='addnew' method='post' action='filters.php' >";
+        $this->site[] = "       <input type='hidden' name='mode' value='edit' />";
+        $this->site[] = "       <input type='image' id='add' src='./images/webset/action_add.png' />";
+        $this->site[] = "       <label class='control' for='add'>Add New Filter</label>";
+        $this->site[] = "   </form>";
+        $this->site[] = "</div> <!--Closes addnewsecondary -->";
+        $this->site[] = "<div id='secondarytable'>";
         $this->drawFilterTable($filters);
-        $this->site[] = "</div> <!--Closes filtertable -->";
+        $this->site[] = "</div> <!--Closes secondarytable -->";
 
         if (DEBUG&&DEBUGLEVEL&1) debug('End method filters::constructorMain()');
     }
@@ -91,22 +93,6 @@ class filters extends frontend {
     }
     
     /**
-    * drawAddFilter - Draws the 'Add Filter' link on the filters page.
-    * 
-    * @author Nicholas Scott <nscott@nagios.com>
-    *
-    **/
-    function drawAddFilter() {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method filters::drawAddFilter()');
-        $this->site[] = "<form name='addnew' method='post' action='filters.php' >";
-        $this->site[] = "   <input type='hidden' name='mode' value='edit' />";
-        $this->site[] = "   <input type='image' id='add' src='./images/webset/action_add.png' />";
-        $this->site[] = "   <label class='control' for='add'>Add New Filter</label>";
-        $this->site[] = "</form>";
-        if (DEBUG&&DEBUGLEVEL&1) debug('End method filters::drawAddFilter');
-    }
-    
-    /**
     *
     * @author Nicholas Scott <nscott@nagios.com>
     *
@@ -116,7 +102,7 @@ class filters extends frontend {
         $this->site[] = "<table class='MainTable'>";
         $this->site[] = "   <thead>";
         $this->site[] = "       <tr>";
-        $this->site[] = "           <th class='controls'>Controls</th>";
+        $this->site[] = "           <th class='fhcontrols'>Controls</th>";
         $this->site[] = "           <th class='name'>Name</th>";
         $this->site[] = "           <th class='description'>Description</th>";
         $this->site[] = "       </tr>";
@@ -209,13 +195,13 @@ class filters extends frontend {
          *        ( contains, does not contains etc ) defaults to text.
          */
         $filterinfo = array(    'eventname'     => array( 'nice' => 'Event Name' )
-                            ,   'eventid'       => array( 'nice' => 'Event ID' )
-                            ,   'trapoid'       => array( 'nice' => 'Trap OID' )
-                            ,   'enterprise'    => array( 'nice' => 'Enterprise OID' )
-                            ,   'hostname'      => array( 'nice' => 'Hostname' )
-                            ,   'category'      => array( 'nice' => 'Category' )
-                            ,   'severity'      => array( 'nice' => 'Severity' )
-                            ,   'formatline'    => array( 'nice' => 'Message' ) );
+                            ,    'eventid'       => array( 'nice' => 'Event ID' )
+                            ,    'trapoid'       => array( 'nice' => 'Trap OID' )
+                            ,    'enterprise'    => array( 'nice' => 'Enterprise OID' )
+                            ,    'hostname'      => array( 'nice' => 'Hostname' )
+                            ,    'category'      => array( 'nice' => 'Category' )
+                            ,    'severity'      => array( 'nice' => 'Severity' )
+                            ,    'formatline'    => array( 'nice' => 'Message' ) );
         $this->site[] = "<h2>$mode Filter</h2>";
         $this->site[] = "<div id='filterinput'>";
         $this->site[] = "<form name='filterinput action='filters.php' method='post'>";

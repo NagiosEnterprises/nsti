@@ -1,11 +1,10 @@
 <?php
 ###########################################################################
 #
-# class.index.php -  NagTrap class with functions to create the index
+# class.index.php -  NSTI class with functions to create the index
 #
 # Copyright (c) 2006 - 2007 Michael Luebben (nagtrap@nagtrap.org)
 #               2011 - 2012 Nicholas Scott (nscott@nagios.com)
-# Last Modified: 1.20.2012
 #
 # License:
 #
@@ -160,7 +159,7 @@ class index extends frontend {
     function createFilterSelectBox($applied_filters) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method index::createFilterSelectBox');
         // Set variables to nicer, easier to type names
-        $all_filters     = database::getFilters();
+        $all_filters     = database::getType('filters');
         // Begin drawing our HTML
         $enable_form  = ($all_filters) ? '' : 'disabled'; 
         $this->site[] = "<tr class='odd'>";

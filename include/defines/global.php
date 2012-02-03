@@ -1,9 +1,10 @@
 <?php
 /**
- * Here are defined some constants for use in NagTrap
+ * Here are defined some constants for use in NSTI
  *
  * @author Michael Luebben <nagtrap@nagtrap.org>
  * @author Lars Michelsen <lars@vertical-visions.de>
+ * @author Nicholas Scott <nscott@nagios.com>
  */
 
 define('DEBUG',TRUE);
@@ -16,7 +17,7 @@ define('DEBUG',TRUE);
 define('DEBUGLEVEL', 1);
 define('DEBUGFILE', '/tmp/nsti-debug.log');
 
-define('CONST_VERSION', 'RC1.3.2');
+define('CONST_VERSION', 'RC1.4');
 define('CONST_MAINCFG', './etc/config.ini');
 define('RED', '#FF795F');
 define('YELLOW','#FEFF5F');

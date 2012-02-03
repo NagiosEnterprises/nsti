@@ -46,19 +46,15 @@ body{
     }
 
 #header{
-	position:absolute;
-	top:80px;
+	position:relative;
+	top:0px;
     height:390px;
-/*
-    margin-left:auto;
-    margin-right:auto;
-*/
     width:100%;
+    min-width:800px;
 }
 #trapbody{
 	position:relative;
-	
-    padding-top:60px;
+	top:10px;
     width:100%;
 }
 
@@ -121,18 +117,27 @@ button{
 
 #infobox{
 	position:relative;
+	float:left;
+	width:380px;
 	left:10px;
 	top:0px;
 	height:380px;
-    width:380px;
+	margin-right:5px;
+	min-width:380px;
+	max-width:380px;
 }
 
 #trapselect{
 	position:relative;
+	display:inline;
+	float:right;
 	right:10px;
-	top:0px;
+/*
+	top:-380px;
+*/
 	width:400px;
 	height:380px;
+	min-width:400px;
 }
 
 #navbox{

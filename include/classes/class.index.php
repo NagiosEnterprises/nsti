@@ -72,10 +72,9 @@ class index extends frontend {
         global $languageXML;
         $trapInfo = common::readTrapInfo();
         $this->site[] = "<div id='infobox'>";
-        $this->site[] = "    <table class='OptionsTable'>";
+        $this->site[] = "    <table class='OptionsTable' id='InfoTable'>";
         // Create the filter section of the table
         $this->createFilter();
-        $this->site[] = "        </tbody>";
         $this->site[] = "    </table>";
         $this->site[] = "</div>";
         $this->site[] = "<!-- Closes Info Box -->";       
@@ -99,6 +98,7 @@ class index extends frontend {
         $this->site[] = "        <td colspan='2'>{$languageXML['LANG']['HEADER']['FILTER']['DISPLAYFILTERS']}:</td>";    
         $this->site[] = "    </tr>";
         $this->site[] = "</thead>";
+        $this->site[] = "<tbody>";
         $this->site[] = "<tr class='even'>";
         $this->site[] = "    <td class='left'>{$languageXML['LANG']['HEADER']['FILTER']['HOST']}:</td>";
         $this->site[] = "    <td class='right'>".common::checkRequest(grab_request_var('hostname'))."</td>";
@@ -111,26 +111,10 @@ class index extends frontend {
         $this->site[] = "    <td class='left'>{$languageXML['LANG']['HEADER']['FILTER']['CATEGORY']}:</td>";
         $this->site[] = "    <td class='right'>".common::checkRequest(rawurldecode(grab_request_var('category')))."</td>";
         $this->site[] = "</tr>";
-        $this->site[] = "<tbody id='filterbox'>";
-        if ($applied_filters) {
-            $rownum = 0;
-            foreach($applied_filters as $id => $name) {
-                $rowclass = ($rownum) ? 'even' : 'odd';
-                $rownum   = !$rownum;
-                $this->site[] = "<tr class='{$rowclass}'>";
-                $this->site[] = "   <td class='left filter'>{$name}</td>";
-                $this->site[] = "   <td class='right filter'>";
-                $this->site[] = "       <a href='./index.php?remfilter={$id}' >Remove</a>";
-                $this->site[] = "   </td>";
-                $this->site[] = "</tr>";
-            }
-        }
-        $this->site[] = "</tbody>";
+        $this->site[] = "<div id='filterbox'>";
         $this->createFilterSelectBox($applied_filters);
-        $this->createRadioBoolean();
-        $this->site[] = "<tr class='odd'>";
-        $this->site[] = "    <td class='left'><a href='./index.php?remfilter=all'><b><i>{$languageXML['LANG']['HEADER']['FILTER']['RESET']}</i></b></a></td>";
-        $this->site[] = "</tr>";
+        //~ $this->createRadioBoolean();
+        $this->site[] = "</tbody>";
         $this->site[] = "<!-- Closes filterbox -->";       
         if (DEBUG&&DEBUGLEVEL&1) debug('End method index::createFilter()');
     }
@@ -177,34 +161,45 @@ class index extends frontend {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method index::createFilterSelectBox');
         // Set variables to nicer, easier to type names
         $all_filters     = database::getFilters();
-        // Remove any filters already active from $all_filters array
-        if($applied_filters) {
-            foreach($applied_filters as $id => $name) {
-                if(array_key_exists($id,$all_filters))
-                    unset($all_filters[$id]);
-            }
-        }
         // Begin drawing our HTML
         $enable_form  = ($all_filters) ? '' : 'disabled'; 
         $this->site[] = "<tr class='odd'>";
-        $this->site[] = "   <td class='left'>";
+        $this->site[] = "   <td class='left' colspan='2' >";
         $this->site[] = "       <form method='post' action='./index.php'>";
-        $this->site[] = "       <select name='addfilter' {$enable_form}>";
+        $this->site[] = "       <select multiple size='6' name='updatefilter[]' id='updatefilter' {$enable_form}>";
         // If there are any filters left in $all_filters, draw them
         if($all_filters)
-            foreach($all_filters as $id => $array)
-                $this->site[] = "<option value='{$id}'>{$array['filtername']}</option>";
+            foreach($all_filters as $id => $array) {
+				if(array_key_exists($id,$applied_filters))
+					$selected = "selected";
+				else
+					$selected = "";
+                $this->site[] = "<option value='{$id}' {$selected}>{$array['filtername']}</option>";
+			}
         // Otherwise just say there are no filters.
         else
-            $this->site[] = "<option>No Filters</option>";
+            $this->site[] = "<option>No Filters Created</option>";
         // Finish off the form and finish
         $this->site[] = "       </select>";
+        $this->site[] = "		<input type='hidden' name='updatefilter[]' value='empty' />";
         $this->site[] = "   </td>";
+        $this->site[] = "</tr>";
+        $this->site[] = "<tr class='odd'>";
+        $this->site[] = "	<td class='left'>";
+        $this->site[] = "   	<input type='Submit' value='Update' />";
+        $this->site[] = "   	</form>";
+        $this->site[] = "	</td>";
         $this->site[] = "   <td class='right'>";
-        $this->site[] = "       <input type='Submit' value='Add' />";
-        $this->site[] = "   </td>";
+        $this->site[] = "       <form name='booleancombine' method='post' action=''>";
+        $select = ($_SESSION['boolean_combiner'] == 'AND') ? 'checked' : '';
+        $this->site[] = "       <input type='radio' name='boolean' value='AND' onClick='this.form.submit();' {$select} />AND";
+        $select = ($_SESSION['boolean_combiner'] == 'OR') ? 'checked' : '';
+        $this->site[] = "       <input type='radio' name='boolean' value='OR' onClick='this.form.submit();' {$select} />OR&nbsp;";
         $this->site[] = "       </form>";
         $this->site[] = "   </td>";
+        $this->site[] = "	<tr class='even'>";
+        $this->site[] = "		<td colspan='2' class='left'><a href='./index.php?updatefilter[]=empty'>Remove All</a>";
+        $this->site[] = "	</tr>";
         $this->site[] = "</tr>";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method index::createFilterSelectBox');
     }
@@ -252,7 +247,7 @@ class index extends frontend {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method index::createOptBox()');
         global $languageXML;
         $this->site[] = "<div id='trapselect'>";
-        $this->site[] = "     <table class='OptionsTable'>";
+        $this->site[] = "     <table class='OptionsTable id='OptTable'>";
         $this->createDateInfoBox($trapInfo);
         $this->site[] = "        <thead>";
         $this->site[] = "            <tr>";

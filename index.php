@@ -57,8 +57,6 @@ $FRONTEND = new index($configINI,$table);
 $DATABASE = new database($configINI);
 $DATABASE->connect();
 
-print grab_request_var('updatefilter');
-
     if (main::checkUser() == "0") {
         $FRONTEND->printError("AUTHENTIFICATION", null);
     } 

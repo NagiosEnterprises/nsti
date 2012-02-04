@@ -259,19 +259,20 @@ class common {
     function showTrapMenuIcons($menuIcon,$trapID,$severity,$hostname) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::showTrapMenuIcons('.$menuIcon.','.$trapID.','.$severity.','.$hostname.')');
         global $configINI,$languageXML;
-        if (grab_request_var('trapSelect') == "ARCHIVED" && $menuIcon != "delete") {
+        $trapSelect = grab_request_var('trapSelect');
+        if ($trapSelect == "ARCHIVED" && $menuIcon != "delete") {
             $empty_string = '';
             return $empty_string;
         }
         if ($menuIcon == "mark") {
-            if (grab_request_var('trapSelect') == "" or grab_request_var('trapSelect') == "all") {
+            if ($trapSelect == "" or $trapSelect == "all") {
                 $imgsrc = $configINI['global']['images'].$configINI['global']['iconStyle'].'/mark.png';
                 $title  = $languageXML['LANG']['MAIN']['TRAPTABLEENTRY']['OPTIONREAD'];
                 $action = 'mark';
             }
         } 
         elseif ($menuIcon == "archive") {
-            if (grab_request_var('trapSelect') == "" or grab_request_var('trapSelect') == "all") {
+            if ($trapSelect == "" or $trapSelect == "all") {
                 $imgsrc = $configINI['global']['images'].$configINI['global']['iconStyle'].'/archive.png';
                 $title  = $languageXML['LANG']['MAIN']['TRAPTABLEENTRY']['OPTIONARCHIVE'];                
                 $action = 'archive';
@@ -282,16 +283,8 @@ class common {
                 $title  = $languageXML['LANG']['MAIN']['TRAPTABLEENTRY']['OPTIONDELETE'];            
                 $action = 'delete';
         }
-        $retstr  = "<a href =";
-        $retstr .= "'./index.php?action={$action}";
-        $retstr .= "&trapSelect=".grab_request_var('trapSelect');
-        $retstr .= "&trapID={$trapID}";
-        $retstr .= "&severity={$severity}";
-        $retstr .= "&hostname={$hostname}";
-        $retstr .= "'>";
-        $retstr .= "<img src='{$imgsrc}' ";
-        $retstr .= "title='{$title}'";
-        $retstr .= "></a>\n";
+        $retstr  = "<a href ='./index.php?action={$action}&trapSelect={$trapSelect}&trapID={$trapID}&severity={$severity}&hostname={$hostname}'>";
+        $retstr .= "<img src='{$imgsrc}' title='{$title}'></a>\n";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method common::showTrapMenuIcons()');
         return $retstr;
     }
@@ -346,7 +339,8 @@ class common {
     */
     function readTraps() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::readTraps()');
-        global $configINI, $hostname, $FRONTEND;        
+        global $configINI, $hostname, $FRONTEND;   
+        // These are the search variables we want to keep track of     
         $passthese = array( 'trapSelect' 
                         ,   'severity' 
                         ,   'category' 
@@ -358,33 +352,30 @@ class common {
                         ,   'searchMessage'
                         ,   'state' );
         
+        $site = grab_request_var('site',0);
         $step = $_SESSION['perpage'];
-        if (!grab_request_var('site')){
-            $site = 0;
-            $from = 0;
-            $to = $step;
-            $limit = "0,$step";
-        } 
-        else {
-            $site = grab_request_var('site');
-            $from = ($site*$step);
-            $to = (($site*$step)+$step);
-            $limit = ($site*$step).",".$step;
-        }
       
         $DATABASE = new database($configINI);
         $DATABASE->connect();
 
         // Read traps from database
-        $traps = $DATABASE->readTraps($limit);
-        $total = $DATABASE->countTraps();
-
-        $count = sizeof($traps);
+        $total = true;
+        $traps = $DATABASE->readTraps($total);
+        
+        if (!$site){
+            $from   = 0;
+            $to     = ($step < $total) ? $step : $total;
+        } 
+        else {
+            $stepto = $step * ($site + 1);
+            $from   = $site * $step;
+            $to     = ($stepto < $total) ? $stepto : $total;
+        }
         
         $type = (!grab_request_var('type')) ? 'all' : grab_request_var('type'); 
         
         $this->site[] = "<div id='navigation'>";
-        $this->site[] = "	<span id='leftarrow'>";
+        $this->site[] = "   <span id='leftarrow'>";
         $this->site[] = "   <form id='navigation' method='post' action=''>";
         // Use the previous defined $passthese array to send the strings
         // on in a hidden form.
@@ -396,18 +387,18 @@ class common {
             $this->site[] = "   <button name='site' value='".($site - 1)."' type='submit'><img src='./images/dropline/previous.png' /></button>"; 
         else
             $this->site[] = "   <button disabled><img src='./images/dropline/previousgray.png' /></button>"; 
-        $this->site[] = "	</span>";
+        $this->site[] = "   </span>";
         $this->site[] = "   <span id='pageindex'>";
-        $this->site[] = ( $to < $total ) ? "{$from} - {$to}" : "{$from} - {$total}"; 
-        $this->site[] = "	</span>";
-        $this->site[] = "	<span id='rightarrow'>";
+        $this->site[] = "{$from} - {$to}"; 
+        $this->site[] = "   </span>";
+        $this->site[] = "   <span id='rightarrow'>";
         if ($to < $total)
             $this->site[] = "   <button name='site' value='".($site + 1)."' type='submit'><img src='./images/dropline/next.png' /></button>"; 
         else
             $this->site[] = "   <button disabled><img src='./images/dropline/nextgray.png' /></button>"; 
         $this->site[] = "   </span>";
         $this->site[] = "   </form>";
-        $this->site[] = "</div>";	   
+        $this->site[] = "</div>";      
         if (DEBUG&&DEBUGLEVEL&1) debug('End method common::readTraps(): Array(...)');
         return($traps);
     }
@@ -423,13 +414,13 @@ class common {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::createCategoryEntry()');
         global $table,$languageXML;
         if ($table['name'] != "snmptt_unknown") {
-            $this->site[] = '						<td>';
-            $this->site[] = '                     	<tr>';
-            $this->site[] = '                        		<TD VALIGN="top" ALIGN="left" CLASS="filterName">'.$languageXML['LANG']['HEADER']['FILTER']['CATEGORY'].':</TD>';
-            $this->site[] = '                        		<TD VALIGN="top" ALIGN="left" CLASS="filterName">';
-            $this->site[] = '                            		'.common::checkRequest(rawurldecode(grab_request_var('category')));
-            $this->site[] = '                     	</tr>';
-            $this->site[] = '                     </td>';		  
+            $this->site[] = '<td>';
+            $this->site[] = '   <tr>';
+            $this->site[] = '       <td valign="top" align="left" class="filterName">'.$languageXML['LANG']['HEADER']['FILTER']['CATEGORY'].':</td>';
+            $this->site[] = '       <td valign="top" align="left" class="filterName">';
+            $this->site[] = '       '.common::checkRequest(rawurldecode(grab_request_var('category')));
+            $this->site[] = '   </tr>';
+            $this->site[] = '</td>';         
         }
         if (DEBUG&&DEBUGLEVEL&1) debug('End method common::createCategoryEntry()');
     }

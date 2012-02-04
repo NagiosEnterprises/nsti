@@ -4,6 +4,7 @@
       <infoBox>
          <currentTrapLog>Current Trap Log</currentTrapLog>
          <totaltraps>Total Traps</totaltraps>
+         <totalfilter>Traps In Filter</totalfilter>
          <loggedInAs>Logged in as</loggedInAs>
       </infoBox>
       <filter>

@@ -169,25 +169,25 @@ class index extends frontend {
         // If there are any filters left in $all_filters, draw them
         if($all_filters)
             foreach($all_filters as $id => $array) {
-				if(array_key_exists($id,$applied_filters))
-					$selected = "selected";
-				else
-					$selected = "";
+                if(array_key_exists($id,$applied_filters))
+                    $selected = "selected";
+                else
+                    $selected = "";
                 $this->site[] = "<option value='{$id}' {$selected}>{$array['filtername']}</option>";
-			}
+            }
         // Otherwise just say there are no filters.
         else
             $this->site[] = "<option>No Filters Created</option>";
         // Finish off the form and finish
         $this->site[] = "       </select>";
-        $this->site[] = "		<input type='hidden' name='updatefilter[]' value='empty' />";
+        $this->site[] = "       <input type='hidden' name='updatefilter[]' value='empty' />";
         $this->site[] = "   </td>";
         $this->site[] = "</tr>";
         $this->site[] = "<tr class='odd'>";
-        $this->site[] = "	<td class='left'>";
-        $this->site[] = "   	<input type='Submit' value='Update' />";
-        $this->site[] = "   	</form>";
-        $this->site[] = "	</td>";
+        $this->site[] = "   <td class='left'>";
+        $this->site[] = "       <input type='Submit' value='Update' />";
+        $this->site[] = "       </form>";
+        $this->site[] = "   </td>";
         $this->site[] = "   <td class='right'>";
         $this->site[] = "       <form name='booleancombine' method='post' action=''>";
         $select = ($_SESSION['boolean_combiner'] == 'AND') ? 'checked' : '';
@@ -196,9 +196,9 @@ class index extends frontend {
         $this->site[] = "       <input type='radio' name='boolean' value='OR' onClick='this.form.submit();' {$select} />OR&nbsp;";
         $this->site[] = "       </form>";
         $this->site[] = "   </td>";
-        $this->site[] = "	<tr class='even'>";
-        $this->site[] = "		<td colspan='2' class='left'><a href='./index.php?updatefilter[]=empty'>Remove All</a>";
-        $this->site[] = "	</tr>";
+        $this->site[] = "   <tr class='even'>";
+        $this->site[] = "       <td colspan='2' class='left'><a href='./index.php?updatefilter[]=empty'>Remove All</a>";
+        $this->site[] = "   </tr>";
         $this->site[] = "</tr>";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method index::createFilterSelectBox');
     }
@@ -245,6 +245,9 @@ class index extends frontend {
     function createOptBox($trapInfo) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method index::createOptBox()');
         global $languageXML;
+        $view   = true;
+        $total = database::countTraps();
+        database::readTraps($view);
         $this->site[] = "<div id='trapselect'>";
         $this->site[] = "     <table class='OptionsTable id='OptTable'>";
         $this->createDateInfoBox($trapInfo);
@@ -255,8 +258,8 @@ class index extends frontend {
         $this->site[] = "        </thead>";    
         $this->site[] = "        <tbody>";     
         $this->site[] = "            <tr class='odd'>";    
-        $this->site[] = "                <td class='left'>{$languageXML['LANG']['HEADER']['INFOBOX']['TOTALTRAPS']}</td>";
-        $this->site[] = "                <td class='right'>".database::countTraps()."</td>";     
+        $this->site[] = "                <td class='left'>{$languageXML['LANG']['HEADER']['INFOBOX']['TOTALFILTER']} / {$languageXML['LANG']['HEADER']['INFOBOX']['TOTALTRAPS']}</td>";
+        $this->site[] = "                <td class='right'>{$view} / {$total}</td>";     
         $this->site[] = "            </tr>";
         $this->site[] = "       </tbody>";
         $this->site[] = "         <thead>";

@@ -153,8 +153,8 @@ class database {
     * @author Michael Luebben <nagtrap@nagtrap.org>
     * @author Nicholas Scott <nscott@nagios.com>
     */      
-    function readTraps($limit) {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::readTraps('.$limit.')');
+    function readTraps(&$count = NULL) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::readTraps('.$count.')');
         global $hostname, $table, $FRONTEND;
         // Read data from POST and GET
         $severity       = grab_request_var('severity');
@@ -165,8 +165,17 @@ class database {
         $searchCategory = rawurldecode(grab_request_var('searchCategory'));
         $searchSeverity = grab_request_var('searchSeverity');
         $searchMessage = grab_request_var('searchMessage'); 
+        $site           = grab_request_var('site');
         
         $filterlist     = $_SESSION['applied_filters'];
+        $step           = $_SESSION['perpage'];
+        
+        if(!$site)
+            $limit = "0,{$step}";
+        else {
+            $lower = $site * $step;
+            $limit = "{$lower},{$step}";
+        }
         // Determine how the ALL the filter will be combined
         $boolean        = (isset($_SESSION['boolean_combiner'])) ? $_SESSION['boolean_combiner'] : 'AND';
         // ftQuery is the query string made from filters
@@ -259,10 +268,14 @@ class database {
  
         // Read traps from database
         $query = "SELECT * FROM ".$table['name']." ".$logicQuery." ORDER BY id ".$sort." LIMIT ".$limit;
+        if($count != NULL)
+            $count_query = "SELECT COUNT(*) FROM ".$table['name']." ".$logicQuery;
         if (DEBUG&&DEBUGLEVEL&2) debug('Method database::readTraps()-> query: '.$query);
         
         try {
             $traps = R::getAll($query);
+            if($count != NULL)
+                $count = R::getCell($count_query);
         }
         // On error, create a array entry with the mysql error
         catch(Exception $e) {

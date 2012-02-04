@@ -7,7 +7,7 @@
  * @category SNMP_Management
  * @package  Nagios_SNMP_Trap_Interface
  * @author   Nicholas Scott <nscott@nagios.com>
- * @author 	 Michael Luebben <nagtrap@nagtrap.com>
+ * @author   Michael Luebben <nagtrap@nagtrap.com>
  * @license  GNU - http://www.gnu.org/licenses/gpl-2.0.html
  * @link     http://exchange.nagios.org/nagiostrapinterface
  * 
@@ -92,22 +92,25 @@ $DATABASE->connect();
         
         // Add a filter given by $_POST
         if (grab_request_var('updatefilter') != NULL) {
-			$_SESSION['applied_filters'] = array();
+            $_SESSION['applied_filters'] = array();
             $filter_id = grab_request_var('updatefilter');
             //~ print_r($filterid);
             foreach($filter_id as $id){
-				if($id != 'empty') {
-					$requested_filter = $DATABASE->getItem('filters',$id);
-					$_SESSION['applied_filters'][$id] = $requested_filter['filtername'];
-				}
-			}
+                if($id != 'empty') {
+                    $requested_filter = $DATABASE->getItem('filters',$id);
+                    $_SESSION['applied_filters'][$id] = $requested_filter['filtername'];
+                }
+            }
         }
-        
         
         if (grab_request_var('boolean')) {
             $boolean = grab_request_var('boolean');
             if ($boolean == 'AND' || $boolean == 'OR')
                 $_SESSION['boolean_combiner'] = $boolean;
+        }
+        
+        if (grab_request_var('perpage')) {
+            $_SESSION['perpage'] = grab_request_var('perpage');
         }
 
         $FRONTEND->constructorHeader();

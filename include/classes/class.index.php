@@ -40,8 +40,10 @@ class index extends frontend {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method index::__construct()');
         // Load frontend's constructor
         parent::__construct($configINI);
+        // Make sure necessary SESSION vars are declared
+        if(!array_key_exists('perpage',$_SESSION))
+            $_SESSION['perpage'] = $configINI['global']['step'];
         // Draw index.php's logic
-
         if (DEBUG&&DEBUGLEVEL&1) debug('End method index::__construct()');
     }
     /**

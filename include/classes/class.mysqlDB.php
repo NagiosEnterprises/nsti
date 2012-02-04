@@ -268,6 +268,7 @@ class database {
  
         // Read traps from database
         $query = "SELECT * FROM ".$table['name']." ".$logicQuery." ORDER BY id ".$sort." LIMIT ".$limit;
+        //~ print $query;
         if($count != NULL)
             $count_query = "SELECT COUNT(*) FROM ".$table['name']." ".$logicQuery;
         if (DEBUG&&DEBUGLEVEL&2) debug('Method database::readTraps()-> query: '.$query);

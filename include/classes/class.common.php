@@ -499,9 +499,7 @@ class common {
      **/
     function determinePageMenu() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method main::determinePageMenu()');
-        global $configINI;
         $retstr = "";
-        $_SESSION['perpage'] = (grab_request_var('perpage')) ? grab_request_var('perpage') : $configINI['global']['step'];
         $step = $_SESSION['perpage'];
         $step_list = array( '10' , '20' , '30' , '40' , '50' , '100' );
         foreach( $step_list as $step_option ) {

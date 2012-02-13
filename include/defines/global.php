@@ -8,6 +8,7 @@
  */
 
 define('DEBUG',TRUE);
+define('FROZEN',false);
 /**
  * For wanted debug output summarize these possible options:
  * 1: function beginning and ending
@@ -17,10 +18,11 @@ define('DEBUG',TRUE);
 define('DEBUGLEVEL', 1);
 define('DEBUGFILE', '/tmp/nsti-debug.log');
 
-define('CONST_VERSION', 'RC1.4');
-define('CONST_MAINCFG', './etc/config.ini');
+define('CONST_VERSION', 'RC2.0');
+define('CONST_MAINCFG', './etc/config.ini.php');
 define('RED', '#FF795F');
 define('YELLOW','#FEFF5F');
 define('GREEN','#B2FF5F');
 define('ORANGE','#FFC45F');
+
 ?>

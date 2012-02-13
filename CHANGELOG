@@ -1,3 +1,11 @@
+RC2.0 2/11/2012
+
+- Added the ability to monitor and query multiple databases in remote locations,
+  major changes in mysqlDB.php was required, tested but watch for bugs
+- Changed the setup of the config.ini to config.ini.php so that is was more secure
+  by adding a die(); command to it
+- INSTALL was not updated properly, thanks for the heads up A!
+
 RC1.4 2/2/2012
 
 - Added framework for additional pages like filter.

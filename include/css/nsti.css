@@ -114,7 +114,7 @@ table.control {width: 75px;}
     width:100%;
 }
 
-#updatefilter{
+.updateselect{
 	width:100%;
 	}
 
@@ -216,7 +216,6 @@ table.OptionsTable{
     }
 
 table.OptionsTable thead{
-    text-align:center;
     font-weight:bold;
     background-color:#b8c0c8;
     }
@@ -277,6 +276,10 @@ td.time , th.time{
     
 td.trapoid , th.trapoid{
     width:14%;
+    }
+
+td.bank, th.bank{
+    width:8%;
     }
     
 td.host , th.host{

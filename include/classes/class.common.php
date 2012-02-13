@@ -20,7 +20,34 @@
  */
 
 class common {
-  
+
+    /**
+    *
+    * @author Nicholas Scott <nscott@nagios.com>
+    *
+    **/
+    function __construct($DATABASE) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::__construct()');
+        $this->DATABASE = $DATABASE;
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method ');
+    }
+    
+    /**
+    *
+    * @author Nicholas Scott <nscott@nagios.com>
+    *
+    **/
+    function removeFromArray($array , $value) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::removeFromArray()');
+        $retarray = array();
+        foreach($array as $test) {
+            if($test != $value) $retarray[] = $test;
+        }
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method common::removeFromArray()');
+        return $retarray;
+    }
+        
+
     /**
     * Check the Request (OK, WARNING, ......)
     *
@@ -30,11 +57,7 @@ class common {
     */
     function checkRequest($request) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::readRequest('.$request.')');
-        if (!isset($request) or $request == "") {
-            $retRequest = 'All';
-        } else {
-            $retRequest = $request;
-        }
+        $retRequest = (!isset($request) or $request == "") ? 'All' : $request;
         if (DEBUG&&DEBUGLEVEL&1) debug('End method common::readRequest(): '.$retRequest);
         return($retRequest);  
     }
@@ -50,19 +73,19 @@ class common {
     function doTrapControls($trap) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::doTrapControls');
         $retstr  = "<div class='controls'>\n";
-        $retstr .= "<input type='checkbox' class ='selectors' name='trapIDs[]' value='{$trap['id']}' ".grab_request_var('sel').">\n";
+        $retstr .= "<input type='checkbox' class ='selectors' name='trapIDs[]' value='{$trap['id']}|{$trap['bank']}' ".grab_request_var('sel').">\n";
         $retstr .= "</div>\n";
         $retstr .= "<div class='controls mark'>\n";
         // Mark a trap
-        $retstr .= "    ".common::showTrapMenuIcons("mark",$trap['id'],grab_request_var('severity'),grab_request_var('hostname'));
+        $retstr .= "    ".$this->COMMON->showTrapMenuIcons("mark",$trap['id'],grab_request_var('severity'),grab_request_var('hostname'),$trap['bank']);
         $retstr .= "</div>\n";
         $retstr .= "<div class='controls delete' >\n";
         // Delete a trap
-        $retstr .= "    ".common::showTrapMenuIcons("delete",$trap['id'],grab_request_var('severity'),grab_request_var('hostname'));
+        $retstr .= "    ".$this->COMMON->showTrapMenuIcons("delete",$trap['id'],grab_request_var('severity'),grab_request_var('hostname'),$trap['bank']);
         $retstr .= "</div>\n";
         $retstr .= "<div class='controls archive' >\n";
         // Archive a trap
-        $retstr .= "    ".common::showTrapMenuIcons("archive",$trap['id'],grab_request_var('severity'),grab_request_var('hostname'));
+        $retstr .= "    ".$this->COMMON->showTrapMenuIcons("archive",$trap['id'],grab_request_var('severity'),grab_request_var('hostname'),$trap['bank']);
         $retstr .= "</div>\n";
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::doTrapControls');
         return $retstr;
@@ -80,6 +103,7 @@ class common {
         $retstr .= "        <th class='time'>{$languageXML['LANG']['MAIN']['TRAPTABLEHEADER']['TRAPTIME']}</th>\n";
         $retstr .= "        <th class='trapoid'>{$languageXML['LANG']['MAIN']['TRAPTABLEHEADER']['TRAPOID']}</th>\n";
         $retstr .= "        <th class='host'>{$languageXML['LANG']['MAIN']['TRAPTABLEHEADER']['HOST']}</th>\n";
+        $retstr .= "        <th class='bank'>Bank</th>\n";
         // If we are not in the UNKNOWN table then show all, otherwise skip
         if (grab_request_var('trapSelect') != 'UNKNOWN') {
         $retstr .= "        <th class='category'>{$languageXML['LANG']['MAIN']['TRAPTABLEHEADER']['CATEGORY']}</th>\n";
@@ -94,6 +118,7 @@ class common {
         $retstr .= "            <th><input type='submit' value='Reset' onclick='clearForm(this.form);' class='searches' /></th>\n";
         $retstr .= "            <th><input type='text' name='searchTrapoid' value='".grab_request_var('searchTrapoid')."' class='searches' /></th>\n";
         $retstr .= "            <th><input type='text' name='searchHostname' value='".grab_request_var('searchHostname')."' class='searches' /></th>\n";
+        $retstr .= "            <th><input type='text' name='searchBank' value='".grab_request_var('searchBank')."' class='searches' /></th>\n";
         if (grab_request_var('trapSelect') != 'UNKNOWN') {
             $retstr .= "            <th><input type='text' name='searchCategory' value='".grab_request_var('searchCategory')."' class='searches' /></th>\n";
             $retstr .= "            <th><input type='text' name='searchSeverity' value='".grab_request_var('searchSeverity')."' class='searches' /></th>\n";
@@ -115,6 +140,7 @@ class common {
         if ($traps) {
             $rowbool = true;
             foreach ($traps as $trap) {
+                //~ print $trap['trapread'];
                 $rowread  = ($trap['trapread'])    ? 'read': 'unread';
                 $rowclass = ($rowbool = !$rowbool) ? 'odd' : 'even';
                 $hlink    = "./index.php?trapSelect=".grab_request_var('trapSelect')."&severity=".grab_request_var('severity')."&category=".rawurlencode(grab_request_var('category'))."&hostname={$trap['hostname']}";
@@ -152,6 +178,7 @@ class common {
                 $retstr .= "            <td class='time'>{$trap['traptime']}</td>\n";
                 $retstr .= "            <td class='trapoid'>{$trap['trapoid']}</td>\n";
                 $retstr .= "            <td class='host'><a href='{$hlink}'>{$trap['hostname']}</a></td>\n";
+                $retstr .= "            <td class='bank'>{$trap['bank']}</td>\n";
                 if (grab_request_var('trapSelect') != 'UNKNOWN') {
                     $retstr .= "            <td class='category'>{$trap['category']}</a></td>\n";
                     $retstr .= "            <td class='severity' style='background-color:{$bg}'>{$trap['severity']}</a></td>\n";
@@ -188,6 +215,31 @@ class common {
         if (DEBUG&&DEBUGLEVEL&1) debug('End method common::selected(): '.$state);
         return($state);
     }
+    
+    /**
+    *
+    * explodedelimited
+    * 
+    * Common use function for separating the values that are returned
+    * via $_POST or $_GET. These values are piggy-backed on one another.
+    * For instance, the trapids when deleting or archiving multiple
+    * traps at once also requires a bank name. These values are passed as
+    * $trapid|$bank name where | is the delimiter. This function takes
+    * two values passed by reference and changes sets their values
+    * accordingly.
+    * 
+    * @author Nicholas Scott <nscott@nagios.com>
+    *
+    **/
+    function explodedelimited($value , &$trapid , &$bankname) {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::explodedelimited()');
+        $pieces     = explode('|',$value);
+        $trapid     = $pieces[0];
+        $bankname   = $pieces[1];
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method common::explodedelimited()');
+        return;
+    }
+    
 
     /**
     * Read Trap-Information from database
@@ -197,9 +249,7 @@ class common {
     function readTrapInfo() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::readTrapInfo()');
         global $table;
-        $DATABASE = new database($configINI);
-        $DATABASE->connect();
-        $trapInfo = $DATABASE->infoTrap($table['name']);
+        $trapInfo = $this->DATABASE->infoTrap($table['name']);
         if(!isset($trapInfo['first'])) {
             $trapInfo['first'] = $trapInfo['last'];  
         }
@@ -256,7 +306,7 @@ class common {
     * @author Michael Luebben <nagtrap@nagtrap.org>
     * @author Nicholas Scott <nscott@nagios.com>
     */
-    function showTrapMenuIcons($menuIcon,$trapID,$severity,$hostname) {
+    function showTrapMenuIcons($menuIcon,$trapID,$severity,$hostname,$bank) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::showTrapMenuIcons('.$menuIcon.','.$trapID.','.$severity.','.$hostname.')');
         global $configINI,$languageXML;
         $trapSelect = grab_request_var('trapSelect');
@@ -283,7 +333,7 @@ class common {
                 $title  = $languageXML['LANG']['MAIN']['TRAPTABLEENTRY']['OPTIONDELETE'];            
                 $action = 'delete';
         }
-        $retstr  = "<a href ='./index.php?action={$action}&trapSelect={$trapSelect}&trapID={$trapID}&severity={$severity}&hostname={$hostname}'>";
+        $retstr  = "<a href ='./index.php?action={$action}&trapSelect={$trapSelect}&trapID={$trapID}&severity={$severity}&hostname={$hostname}&bank={$bank}'>";
         $retstr .= "<img src='{$imgsrc}' title='{$title}'></a>\n";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method common::showTrapMenuIcons()');
         return $retstr;
@@ -339,7 +389,7 @@ class common {
     */
     function readTraps() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method common::readTraps()');
-        global $configINI, $hostname, $FRONTEND;   
+        global $configINI, $hostname;   
         // These are the search variables we want to keep track of     
         $passthese = array( 'trapSelect' 
                         ,   'severity' 
@@ -354,13 +404,10 @@ class common {
         
         $site = grab_request_var('site',0);
         $step = $_SESSION['perpage'];
-      
-        $DATABASE = new database($configINI);
-        $DATABASE->connect();
 
         // Read traps from database
         $total = true;
-        $traps = $DATABASE->readTraps($total);
+        $traps = $this->DATABASE->readTraps($total);
         
         if (!$site){
             $from   = 0;
@@ -440,9 +487,7 @@ class common {
             $retstr .= "<td class='right'>\n";
             $retstr .= "    <select name='category'>\n";
             $retstr .= "        <option value='' ".common::selected("",grab_request_var('category'),"selected")." >{$languageXML['LANG']['HEADER']['OPTBOX']['OPTION']['VALUEALL']}</option>\n";
-            $DATABASE = new database($configINI);
-            $DATABASE->connect();
-            $allCategory = $DATABASE->readCategory($table['name']);
+            $allCategory = $this->DATABASE->readCategory($table['name']);
             if (isset($allCategory)) {
                 foreach ($allCategory as $category) {
                     $retstr .= "        <option value=".rawurlencode($category)." ".common::selected($category,rawurldecode(grab_request_var('category')),'selected="selected"').">{$category}</option>\n"; 

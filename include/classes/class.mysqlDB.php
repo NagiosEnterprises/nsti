@@ -1,7 +1,7 @@
 <?php
 ###########################################################################
 #
-# class.common.php -  NagTrap class with functions to connect to the
+# class.mysqlDB.php -  NSTI class with functions to connect to the
 #                      MySQL-Database
 #
 # Copyright (c) 2006 - 2007 Michael Luebben (nagtrap@nagtrap.org)
@@ -28,18 +28,18 @@
 * This Class handles database-connection and - queries
 */
 class database {
-
+    
+    public $dbconnections;
+    
     /**
-    * Constructor
     *
-    * @param config $configINI
+    * @author Nicholas Scott <nscott@nagios.com>
     *
-    * @author Michael Luebben <nagtrap@nagtrap.org>
-    */  
-    function database(&$configINI) {
-       if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::contructor()');
-       $this->configINI = &$configINI;
-       if (DEBUG&&DEBUGLEVEL&1) debug('End method database::contructor()');
+    **/
+    function __construct() {
+        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::__construct()');
+        $this->dbconnections = $this->connect();
+        if (DEBUG&&DEBUGLEVEL&1) debug('End method database::__construct()');
     }
     
     /**
@@ -54,9 +54,9 @@ class database {
     */  
     function connect() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::connect()');
-        global $configINI, $FRONTEND;
+        global $configINI;
         
-        // Rename host, user, database and password for clarity
+        // Connect to NSTI primary database first:
         $hostname = $configINI['database']['host'];
         $username = $configINI['database']['user'];
         $password = $configINI['database']['password'];
@@ -69,9 +69,9 @@ class database {
         
         // Attempt to create database
         try {
-            R::setup($conn_str , $username , $password);
-            R::count($db_table);
-            //~ R::freeze(true);
+            R::addDatabase('primary' , $conn_str , $username , $password , true );
+            $databases[] = 'primary';
+            //~ R::freeze(FREEZE);
         }
         // If the database opening fails, catch exception and close site:
         catch(Exception $e) {
@@ -82,8 +82,19 @@ class database {
             if (DEBUG&&DEBUGLEVEL&1) debug('End method database::connect(): FALSE -'.$e->getMessage());
             exit;
         }
+        // Connect to additional databases
+        foreach($configINI['remotedb'] as $key => $conninfo) {
+            $db_type    = $conninfo['type'];
+            $hostname   = $conninfo['host'];
+            $username   = $conninfo['user'];
+            $password   = $conninfo['password'];
+            $db_table   = $conninfo['name'];
+            $conn_str = "$db_type:host=$hostname;dbname=$db_table";
+            R::addDatabase( $key ,$conn_str , $username , $password , true );
+            $databases[]            = $key;
+        }
         if (DEBUG&&DEBUGLEVEL&1) debug('End method database::connect(): TRUE');
-        return($dbSelect);
+        return($databases);
     }
 
     /*
@@ -98,24 +109,31 @@ class database {
     * @author Michael Luebben <nagtrap@nagtrap.org>
     * @author Nicholas Scott <nscott@nagios.com>
     */
-    function search($type,$search) {
-        if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::search()');
-        global $table;
-        
-        // Search in the database
-        try {
-            $searchResult = R::find($table['name'],"$type LIKE '%$search%'");
-        }
-        // On error, create a array entry with the mysql error
-        catch(Exception $e) {
-            if (DEBUG&&DEBUGLEVEL&1) debug('End method database::search(): FALSE - '.$e->getMessage());
-            exit;
-        }
-        // For legacy reasons, turn them all back into arrays
-        $searchResult = R::exportAll($searchResult);
-        if (DEBUG&&DEBUGLEVEL&1) debug('End method database::search(): Array(...)');
-        return($searchResult);
-    }
+    //~ function search($type,$search) {
+        //~ if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::search()');
+        //~ global $table;
+        //~ print "Databases: {$this->variable}";
+        //~ print_r($databases);
+        //~ // Search in the database
+        //~ try {
+            //~ foreach($this->databases as $database) {
+                //~ $beans = R::find($table['name'],"$type LIKE '%$search%'");
+                //~ foreach($beans as $bean)
+                    //~ $searchResult[] = $bean->setMeta('origin',$database);
+            //~ }
+        //~ }
+        //~ // On error, create a array entry with the mysql error
+        //~ catch(Exception $e) {
+            //~ if (DEBUG&&DEBUGLEVEL&1) debug('End method database::search(): FALSE - '.$e->getMessage());
+            //~ exit;
+        //~ }
+        //~ // For legacy reasons, turn them all back into arrays
+        //~ 
+        //~ $searchResult = R::exportAll($searchResult);
+        //~ print_r($searchResult);
+        //~ if (DEBUG&&DEBUGLEVEL&1) debug('End method database::search(): Array(...)');
+        //~ return($searchResult);
+    //~ }
     
     /**
     * Count traps in a given table
@@ -131,9 +149,12 @@ class database {
     function countTraps() {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::countTraps()');
         global $table;
-        $count = R::count($table['name']);
+        $count = 0;
+        foreach($_SESSION['applied_servers'] as $database) {
+            R::selectDatabase($database);
+            $count += R::count($table['name']);
+        }
         if (DEBUG&&DEBUGLEVEL&2) debug('End method database::countTraps()');
-
         return $count;
     }
  
@@ -155,7 +176,7 @@ class database {
     */      
     function readTraps(&$count = NULL) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::readTraps('.$count.')');
-        global $hostname, $table, $FRONTEND;
+        global $hostname, $table;
         // Read data from POST and GET
         $severity       = grab_request_var('severity');
         $hostname       = grab_request_var('hostname');
@@ -164,8 +185,8 @@ class database {
         $searchHostname = grab_request_var('searchHostname');
         $searchCategory = rawurldecode(grab_request_var('searchCategory'));
         $searchSeverity = grab_request_var('searchSeverity');
-        $searchMessage = grab_request_var('searchMessage'); 
-        $site           = grab_request_var('site');
+        $searchMessage  = grab_request_var('searchMessage'); 
+        $bank           = grab_request_var('searchBank');
         
         $filterlist     = $_SESSION['applied_filters'];
         $step           = $_SESSION['perpage'];
@@ -188,13 +209,13 @@ class database {
             $filters = R::batch('filters',$filterids);
             // Make an array of column names to iterate through
             $colname = array(   'eventname'
-                            ,    'eventid'
-                            ,    'trapoid'
-                            ,    'enterprise'
-                            ,    'hostname'
-                            ,    'category'
-                            ,    'severity'
-                            ,    'formatline' );
+                            ,   'eventid'
+                            ,   'trapoid'
+                            ,   'enterprise'
+                            ,   'hostname'
+                            ,   'category'
+                            ,   'severity'
+                            ,   'formatline' );
             foreach($filters as $filter) {
                 /* For each filter applied, check to see which field are
                  * not blank. For those that are not blank, formulate 
@@ -247,7 +268,8 @@ class database {
         if($severity)
             $dbQuery[] = "severity = '{$severity}'"; 
         if($searchMessage)
-            $dbQuery[] = "formatline LIKE '%{$searchMessage}%'"; 
+            $dbQuery[] = "formatline LIKE '%{$searchMessage}%'";
+            
         
         $logicQuery = '';
         /* Combine all items created in the above if statements together
@@ -262,21 +284,32 @@ class database {
         }
         if ($logicQuery != "")
             $logicQuery = "WHERE ".$logicQuery;
-        //~ print "Total: $logicQuery\n";
         // Set which trap must read first from database
         $sort = (grab_request_var('oldestfirst') == "on") ? "ASC" : "DESC";
  
         // Read traps from database
         $query = "SELECT * FROM ".$table['name']." ".$logicQuery." ORDER BY id ".$sort." LIMIT ".$limit;
-        //~ print $query;
-        if($count != NULL)
+        if(!($count === NULL))
             $count_query = "SELECT COUNT(*) FROM ".$table['name']." ".$logicQuery;
         if (DEBUG&&DEBUGLEVEL&2) debug('Method database::readTraps()-> query: '.$query);
         
+        // Which databases to search
+        $dbconns = $_SESSION['applied_servers'];
+        
         try {
-            $traps = R::getAll($query);
-            if($count != NULL)
-                $count = R::getCell($count_query);
+            foreach($dbconns as $database) {
+                // Have to do bank search here, usually done up ~ 20 lines
+                if(preg_match("/$bank/",$database)) {
+                    R::selectDatabase($database);
+                    $trapQuery = R::getAll($query);
+                    foreach($trapQuery as $trap) {
+                        $trap['bank']   = $database;
+                        $traps[]        = $trap;
+                    }
+                    if(!($count === NULL))
+                        $count += R::getCell($count_query);
+                }
+            }
         }
         // On error, create a array entry with the mysql error
         catch(Exception $e) {
@@ -304,20 +337,24 @@ class database {
     * @author Michael Luebben <nagtrap@nagtrap.org>
     * @author Nicholas Scott <nscott@nagios.com>
     */  
-    function handleTrap($handle,$trapID,$tablename) {
+    function handleTrap($handle,$trapID,$tablename,$bank) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::handleTrap('.$handle.','.$trapID.','.$tablename.')');
         /* Derive our bean from the database using the $trapID */
+        R::selectDatabase($bank);
         $trap = R::load($tablename,$trapID);
         /* If our trap has a non-zero ID, then we can continue
          * However if it has a zero ID then we must give an error.
          * This logic is handled using an if/else statement based off
          * $trap->id
          */
-        if ($trap->id || 1) {
+        if ($trap->id) {
             switch($handle) {
                 case 'mark':
                     // Toggle value for trapRead
-                    $trap->trapRead = !$trap->trapRead;
+                    if($trap->trapread)
+                        $trap->trapread = 0;
+                    else
+                        $trap->trapread = 1;
                     R::store($trap);
                     break;
                 case 'delete':
@@ -336,6 +373,8 @@ class database {
                     unset($archive_array['trapRead']);
                     $arch_trap->import($archive_array);
                     R::store($arch_trap);
+                    R::trash($trap);
+                    print 'success';
                     break;
                 default:
                     break;
@@ -365,11 +404,10 @@ class database {
     function infoTrap($tableName) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::infoTrap('.$tableName.')');
         /* Determine time of the first and last trap, return as tuple */
+        R::selectDatabase('primary');
         try {
             $trap['last']= R::getCell("select traptime from $tableName ORDER BY id DESC LIMIT 1");
             $trap['first']= R::getCell("select traptime from $tableName ORDER BY id ASC LIMIT 1");
-            //~ print_r($trap);
-            //~ die;
         }
         catch(Exception $e) {
             frontend::printError("DBREADTRAP",mysql_error());
@@ -392,6 +430,7 @@ class database {
     */
     function readCategory($tableName) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::readCategory('.$tableName.')');
+        R::selectDatabase('primary');
         try{
             /* getCol only returns column as array, not as multidimensional
              * array. 
@@ -417,6 +456,7 @@ class database {
      */
     function getType($type) {
         if (DEBUG&&DEBUGLEVEL&1) debug("Start method database::getType($type)");
+        R::selectDatabase('primary');
         try {
             $types = R::find($type);
         }
@@ -444,6 +484,7 @@ class database {
     **/
     function getItem($table,$id) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::getItem('.$table.','.$id.')');
+        R::selectDatabase('primary');
         try {
             $item = R::load($table,$id);
         }
@@ -474,6 +515,7 @@ class database {
     **/
     function deleteItem($table,$id) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::deleteItem()');
+        R::selectDatabase('primary');
         try {
             $item = R::load($table,$id);
             R::trash($item);
@@ -503,6 +545,7 @@ class database {
     **/
     function saveForm($formarray,$filterid = 0) {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method database::saveForm()');
+        R::selectDatabase('primary');
         // If an id was passed, we need to update the bean with that id
         if($filterid) {
             $updatebean = $this->getItem('filters',$filterid);

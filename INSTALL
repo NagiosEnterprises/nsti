@@ -45,7 +45,7 @@ Manual Install -- If you have a previously configured snmptt.ini or are using no
 3 - Edit your snmptt.ini to enable dbi logging.
   - For instructions please consult:
   - http://snmptt.sourceforge.net/docs/snmptt.shtml#LoggingDatabase-MySQL
-4 - If you're using Nagios Core move this dist/index.php.core to index.php
+4 - If you're using Nagios Core move this dist/header.php.core to header.php
 5 - Edit the etc/config.ini
   - useAuthentification -> If using Core you can use core authentification by setting this to 1.
   - allowedUser         -> User allowed to access this

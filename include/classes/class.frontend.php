@@ -1,7 +1,7 @@
 <?php
 ###########################################################################
 #
-# class.common.php -  NSTI class with functions to create the frontend
+# class.frontend.php -  NSTI class with functions to create the frontend
 #
 # Copyright (c) 2006 - 2007 Michael Luebben (nagtrap@nagtrap.org)
 # Copyright (c) 2011 - 2012 Nicholas Scott (nscott@nagios.com)
@@ -33,7 +33,7 @@
 * 
 */
 
-class frontend {
+abstract class frontend {
     var $site;
     /**
     * Constructor
@@ -46,6 +46,10 @@ class frontend {
         if (DEBUG&&DEBUGLEVEL&1) debug('Start method frontend::__construct()');
         $this->configINI = &$configINI;
         $this->openSite();
+        if (main::checkUser() == "0") $this->printError("AUTHENTIFICATION", null);
+        // Load frontend's constructor
+        $this->DATABASE = new database($configINI);
+        $this->COMMON   = new common($this->DATABASE);
         if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::__construct()');
     }
 
@@ -153,6 +157,14 @@ class frontend {
         $this->site[] = "</hr>";
         if (DEBUG&&DEBUGLEVEL&1) debug('End method frontend::printError()');
     }
+    
+    /**
+    *
+    * @author Nicholas Scott <nscott@nagios.com>
+    *
+    **/
+    abstract protected function route_request();
+    
 
 }
 ?>

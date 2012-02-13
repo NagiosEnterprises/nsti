@@ -1,10 +1,12 @@
-/*
+;<?php
+;die();
 ;###########################################################################
 ;#
-;# config.ini.php -  NagTrap configuration file
+;# config.ini.php -  NSTI configuration file
 ;#
 ;# Copyright (c) 2006 - 2007 Michael Luebben (nagtrap@nagtrap.org)
-;# Last Modified: 13.10.2007
+;# Copyright (c) 2011 - 2012 Nicholas Scott (nscott@nagios.com)
+;# Last Modified: 2/11/2012
 ;#
 ;# License:
 ;#
@@ -21,13 +23,13 @@
 ;# along with this program; if not, write to the Free Software
 ;# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ;###########################################################################
-*/
+;/*
 [global]
 ;# Select here a language (EN = English / DE = German)
 language = EN
 
 ;# When you will use a authentification, then enable this option  (0=off / 1=on)
-useAuthentification = 1
+useAuthentification = 0
 
 ;# If you use the authentification, then entry here the User that 
 ;# may changes on the Web-Frontend comma seperated.
@@ -64,11 +66,27 @@ images = ../images/
 
 ;# Enter here your information that were used to connect to your database
 [database]
-host = localhost
-user = snmptt
-password = snmpttpass
-name = snmptt
-tableSnmptt = snmptt
-type        = mysql
-;# Ignore this option, when you don`t use a table for unknown-Traps in your database
-tableSnmpttUnk = snmptt_unknown
+host                        = localhost
+user                        = snmptt
+password                    = snmpttpass
+name                        = snmptt
+tableSnmptt                 = snmptt
+type                        = mysql
+tableSnmpttUnk              = snmptt_unknown
+tableSnmpttArchive          = snmptt_archive
+[remotedb]
+;# Here is where you will add your additional databases, much like above
+;# only you need to name your instances, so if I wanted to add another
+;# database and wanted to see it show up as 'Tulsa' in the NSTI interface
+;# I would do the following:
+;# Note: you can add as many as you'd like.
+;#Tulsa[host]                 = 192.168.0.17
+;#Tulsa[user]                 = snmptt
+;#Tulsa[password]             = snmpttpass
+;#Tulsa[name]                 = snmptt
+;#Tulsa[tableSnmptt]          = snmptt
+;#Tulsa[type]                 = mysql
+;#Tulsa[tableSnmpttUnk]       = snmptt_unknown
+;#Tulsa[tableSnmpttArchive]   = snmptt_archive
+*/
+;?>

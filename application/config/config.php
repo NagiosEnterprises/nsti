@@ -343,6 +343,15 @@ $config['time_reference'] = 'local';
 */
 $config['rewrite_short_tags'] = FALSE;
 
+$config['site_url'] = '//'.$_SERVER['HTTP_HOST'];
+
+// base media url
+$config['media_url'] = $config['site_url'] .'/nsti/media';
+
+// where uploaded content is stored
+//$config['media_dir'] = $_SERVER['DOCUMENT_ROOT'].'/media';
+$config['media_dir'] = dirname($_SERVER['SCRIPT_FILENAME']).'/media';
+
 
 /*
 |--------------------------------------------------------------------------

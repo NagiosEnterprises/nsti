@@ -17,19 +17,35 @@ class Traps extends CI_Controller {
      * map to /index.php/welcome/<method_name>
      * @see http://codeigniter.com/user_guide/general/urls.html
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
+        
+        $this->load->model('Snmptt');
     }
     
-    public function index()
-    {
+    public function index() {
         return $this->traplist();
     }
     
-    public function traplist()
-    {
-        $this->load->view('traps/traplist');
+    public function read() {
+        $q = grab_request_var('q');
+        
+        $traps = $this->Snmptt->read($q);
+        $json = array();
+        
+        foreach($traps->result() as $trap) {
+            $json[] = (array)$trap;
+        }
+        
+        print json_encode($json);
+    }
+    
+    public function traplist() {
+        $this->data['title'] = 'NSTI Traplist';
+        
+        $this->load->view('templates/header', $this->data);
+        $this->load->view('traps/traplist', $this->data);
+        $this->load->view('templates/footer', $this->data);
     }
 }
 

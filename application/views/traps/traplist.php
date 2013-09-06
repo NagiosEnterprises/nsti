@@ -1,5 +1,9 @@
-<?php echo $header; ?>
+<script>
+$(document).ready(function() {
+   
+   $('#traplist-li').addClass('active');
+   
+});
 
+</script>
 
-
-<?php echo $footer; ?>

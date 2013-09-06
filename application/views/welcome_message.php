@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>Welcome to CodeIgniter</title>
-
+    
 	<style type="text/css">
 
 	::selection{ background-color: #E13300; color: white; }
@@ -68,7 +68,7 @@
 
 <div id="container">
 	<h1>Welcome to CodeIgniter!</h1>
-
+    
 	<div id="body">
 		<p>The page you are looking at is being generated dynamically by CodeIgniter.</p>
 

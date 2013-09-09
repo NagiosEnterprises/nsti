@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="alert alert-danger">
+    <h3>Error!</h3>
+    An error occurred processing your request:
+    <p>{{ error }}</p>
+    If the problem persists, please logout, and log back into the web interface.
+</div>
+{% endblock content %}

@@ -42,8 +42,14 @@ def read(tablename):
     
     traptype = getattr(db, tablename)
     
-    where_clause = db.sql_where_combiner(request.args)
-    db.DB.find(traptype, where_clause)
+    where_clause = db.sql_where_query(traptype, request.args)
+    
+    if where_clause:
+        results = db.DB.find(traptype, where_clause)
+    else:
+        results = db.DB.find(traptype)
+    
+    return render_template('debug.html', data=results)
     
     
 

@@ -1,1 +1,91 @@
 {% extends 'base.html' %}
+
+{% block header %}
+<script>
+function get_arguments() {
+    return undefined;
+}
+
+function load_body(table_name) {
+    args = get_arguments();
+     
+}
+
+function load_table(table_name) {
+    load_header(table_name);
+    load_body(table_name);
+}
+
+function load_header(table_name) {
+    var heading = $('<tr>');
+    switch(table_name) {
+        case 'SnmpttUnknown':
+            $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Actions', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Action', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Uptime', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Trap Time', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
+            break;
+        case 'Snmptt':
+        case 'SnmpttArchive':
+        default:
+            $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Actions', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Action', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Severity', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Category', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Trap Time', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
+            break;
+    }
+    $('#trap-table-head').html(heading);
+}
+
+$(document).ready(function() {
+    
+    $('input[name=table]').change(function() {
+        var new_value = $(this).val();
+        load_table(new_value);
+    });
+    
+    $('#table-normal').trigger('change');
+    
+});
+</script>
+{% endblock header %}
+
+{% block content %}
+<div class='row'>
+    <div class='col-md-6'>
+        <div class='btn-group left-inset' data-toggle='buttons'>
+            <label class='btn btn-primary active'>
+                <input id='table-normal' type='radio' name='table' value='Snmptt' selected='selected'>Normal
+            </label>
+            <label class='btn btn-primary'>
+                <input type='radio' name='table' value='SnmpttArchive'>Archive
+            </label>
+            <label class='btn btn-primary'>
+                <input type='radio' name='table' value='SnmpttUnknown'>Unknown
+            </label>
+        </div>
+    </div>
+    <div class='col-md-6'>
+        Filtering goes here.
+    </div>
+</div>
+
+<div class='row container content'>
+    <table class='table table-condensed table-striped table-hover table-bordered'>
+        <thead id='trap-table-head'></thead>
+        <tfoot id='trap-table-foot'></tfoot>
+        <tbody id='trap-table-body'></tbody>
+    </table>
+</div>
+{% endblock content %}

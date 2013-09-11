@@ -7,14 +7,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">NSTI</a>
+        <a class="navbar-brand" href="#">Nagios SNMP Trap Interface</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav">
-            <li {% if page == 'traplist' %}class="active"{% endif %}><a href="/nsti/traplist">Traplist</a></li>
-            <li {% if page == 'filter' %}class="active"{% endif %}><a href="/nsti/filters">Filters</a></li>
+            <li {% if page == 'traplist' %}class="active"{% endif %}><a href="{{ request.url_root }}traplist">Traplist</a></li>
+            <li {% if page == 'filter' %}class="active"{% endif %}><a href="{{ request.url_root }}filters">Filters</a></li>
         </ul>
     </div>
 </nav>

@@ -12,6 +12,10 @@
     margin-top: 20px;
 }
 
+#trap-table {
+    font-size:12px;
+}
+
 #global-throbber {
     position:absolute;
     top:50%;

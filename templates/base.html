@@ -11,6 +11,10 @@
         <script src='/static/js/jquery-1.10.2.min.js'></script>
         <script src='/static/js/bootstrap.min.js'></script>
         <script src='/static/js/nsti.js'></script>
+        <script>
+        var BASE_URL = '{{ url_root }}';
+        var TRUNCATE = {{ session.TRUNCATE }};
+        </script>
         {% block header %}
         {% endblock %}
     </head>

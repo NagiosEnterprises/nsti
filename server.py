@@ -1,4 +1,4 @@
-from flask import render_template, Flask, redirect, url_for, session, request, abort
+from flask import render_template, Flask, redirect, url_for, session, request, abort, Response
 try:
     import json
 except ImportError:
@@ -25,6 +25,7 @@ def traplist():
     '''Renders the page where all of the traps of the given type (specified
     by the SESSION).
     '''
+    session['TRUNCATE'] = app.config.get('TRUNCATE')
     table = request.args.get('traptype') or session.get('traptype') or 'Snmptt'
     c_tablename = table.capitalize()
     
@@ -49,9 +50,12 @@ def read(tablename):
     else:
         results = db.DB.find(traptype)
     
-    return render_template('debug.html', data=results)
+    result_dict = db.encode_storm_result_set(results)
+    
+    json_str = json.dumps(result_dict, default=db.encode_storm_result_set)
+    return Response(response=json_str, status=200, mimetype='application/json')
     
     
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', 8000, debug=True)
+    app.run('0.0.0.0', 8080, debug=True)

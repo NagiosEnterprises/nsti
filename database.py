@@ -2,6 +2,11 @@ from server import app
 import storm.locals as SL
 
 
+from storm.tracer import debug
+
+debug(True) # The flag enables or disables statement logging
+
+
 LIMIT = app.config.get('PERPAGE', 50)
 
 #~ Setup our DB connect string for Storm
@@ -92,7 +97,8 @@ def encode_storm_result_set(storm_obj):
     print result
     return result
 
-def sql_where_query(traptype, arguments):
+
+def sql_where_query(traptype, arguments, acombine=True):
     '''Gets the actual query function that will be passed to find
     given the arguments we are searching for.
     
@@ -106,14 +112,26 @@ def sql_where_query(traptype, arguments):
             new_key = key.replace('__contains', '')
             attribute = getattr(traptype, new_key)
             cond = attribute.like(u'%%%s%%' % unicode(arguments[key]))
+        #~ If its they want an in
+        elif key.endswith('__in'):
+            new_key = key.replace('__in', '')
+            attribute = getattr(traptype, new_key)
+            print arguments[key]
+            cond = attribute.is_in(arguments[key])
         #~ Otherwise we want to do an exact match
         else:
             attribute = getattr(traptype, key)
-            cond = attribute == unicode(arguments[key])
+            if(key in ['id']):
+                cond = attribute == int(arguments[key])
+            else:
+                cond = attribute == unicode(arguments[key])
         #~ If a query has already been made, AND this on, otherwise just
         #~ make query and set our latest condition to be the query.
         if not query:
             query = cond
         else:
-            query = query & cond
+            if acombine:
+                query = query & cond
+            else:
+                query = query | cond
     return query

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<script>
+var TRANSLATE = {
+    'agentip': 'Agent IP',
+    'eventid': 'Event ID',
+    'category': 'Category',
+    'uptime': 'Uptime',
+    'severity': 'Severity',
+    'traptime': 'Trap Time',
+    'timewritten': 'Time Written To Database',
+    'formatline': 'Message',
+    'hostname': 'Hostname',
+    'community': 'Community',
+    'eventname': 'Event Name',
+    'trapoid': 'Trap OID',
+    'trapread': 'Trap Read',
+    'enterprise': 'Enterprise',
+    'id': 'ID' };
+    
+function render_trap() {
+    
+    var api_url = BASE_URL + 'api/read/{{ table }}';
+    var query = {id: {{ trapid }}};
+    
+    $.getJSON(api_url, query, function(data) {
+        var trap = data[0];
+        $('<h4>', {text: "Trap Information for Trap ID " + trap.id}).appendTo('#panel-title');
+        
+        $.each(trap, function(key, value) {
+            var tr = $('<tr>');
+            
+            $('<td>', {text: TRANSLATE[key]}).appendTo(tr);
+            $('<td>', {text: value}).appendTo(tr);
+            
+            tr.appendTo('#trap-view-tbody');
+        });
+        
+        hide_throbber();
+    });
+}
+
+$(document).ready(function() {
+    render_trap();
+});
+</script>
+{% endblock header %}
+
+{% block content %}
+<div class='row container content'>
+    <div class="panel panel-default">
+        <div id="panel-title" class="panel-heading text-right"></div>
+        <table class="table table-condensed table-hover table-striped">
+            <thead>
+                <tr>
+                    <th width="30%">Key</th>
+                    <th width="70%">Value</th>
+                </tr>
+            </thead>
+            <tbody id="trap-view-tbody"></tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

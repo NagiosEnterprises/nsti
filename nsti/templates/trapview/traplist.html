@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'system/base.html' %}
 
 {% block header %}
 <script>
@@ -184,7 +184,7 @@ function load_body(page) {
 function load_table() {
     
     load_header();
-    var api_url = BASE_URL + 'api/read/' + TABLE;
+    var api_url = BASE_URL + 'api/trapview/read/' + TABLE;
     
     if(TABLE == 'Snmptt') {
         $('.btn-archive').show();
@@ -213,7 +213,7 @@ function toggle_selected() {
 
 function delete_traps() {
     var id = [];
-    var api_url = BASE_URL + 'api/delete/' + TABLE;
+    var api_url = BASE_URL + 'api/trapview/delete/' + TABLE;
     
     $('.trap-select-toggle:checked').each(function(i, d) {
         id.push($(d).attr('data-index'));
@@ -235,7 +235,7 @@ function delete_traps() {
 
 function archive_traps() {
     var id = [];
-    var api_url = BASE_URL + 'api/archive';
+    var api_url = BASE_URL + 'api/trapview/archive';
     
     $('.trap-select-toggle:checked').each(function(i, d) {
         id.push($(d).attr('data-index'));

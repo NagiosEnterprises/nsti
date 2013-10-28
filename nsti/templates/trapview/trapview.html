@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'system/base.html' %}
 
 {% block header %}
 <script>
@@ -21,7 +21,7 @@ var TRANSLATE = {
     
 function render_trap() {
     
-    var api_url = BASE_URL + 'api/read/{{ table }}';
+    var api_url = BASE_URL + 'api/trapview/read/{{ table }}';
     var query = {id: {{ trapid }}};
     
     $.getJSON(api_url, query, function(data) {

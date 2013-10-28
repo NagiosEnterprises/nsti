@@ -1,26 +1,12 @@
-from flask import render_template, Flask, redirect, url_for, session, request, abort, Response
+from nsti import app
+import database as db
+
+from flask import render_template, session, request, abort, Response
+
 try:
     import json
 except ImportError:
     import simplejson as json
-import os
-
-#~ Initial setup of the Flask application
-app = Flask(__name__)
-app.config.from_pyfile(os.path.join(app.root_path, 'etc', 'nsti.cfg'))
-app.secret_key = os.urandom(24)
-
-app.jinja_env.globals['static'] = lambda filename: url_for('static', filename=filename)
-
-#~ First the error handlers...
-@app.errorhandler(400)
-def bad_request(error):
-    return render_template('bad_request.html', error=error), 400
-
-#~ Now all the routes...
-@app.route('/')
-def landing():
-    return redirect(url_for('traplist'))
 
 @app.route('/traplist')
 def traplist():
@@ -36,7 +22,7 @@ def traplist():
     else:
         abort(400, 'Bad Request. Table type submitted was bad. Got: %s, expected Snmptt, SnmpttArchive or SnmpttUnknown.' % table)
     
-    return render_template('traplist.html')
+    return render_template('trapview/traplist.html')
 
 @app.route('/trapview/<trapid>')
 def trapview(trapid):
@@ -48,14 +34,10 @@ def trapview(trapid):
     if table in ['Snmptt', 'SnmpttArchive', 'SnmpttUnknown']:
         session['tablename'] = table
     
-    return render_template('trapview.html', trapid=trapid, table=table)
-    
+    return render_template('trapview/trapview.html', trapid=trapid, table=table)
 
-@app.route('/api/read/<tablename>')
+@app.route('/api/trapview/read/<tablename>')
 def read(tablename):
-    
-    import database as db
-    
     traptype = getattr(db, tablename)
     
     where_clause = db.sql_where_query(traptype, request.args)
@@ -70,11 +52,8 @@ def read(tablename):
     json_str = json.dumps(result_dict, default=db.encode_storm_result_set)
     return Response(response=json_str, status=200, mimetype='application/json')
     
-@app.route('/api/delete/<tablename>')
+@app.route('/api/trapview/delete/<tablename>')
 def delete(tablename):
-    
-    import database as db
-    
     traptype = getattr(db, tablename)
     
     query = None
@@ -93,11 +72,8 @@ def delete(tablename):
     json_str = json.dumps(json_str)
     return Response(response=json_str, status=200, mimetype='application/json')
 
-@app.route('/api/archive')
+@app.route('/api/trapview/archive')
 def archive():
-    
-    import database as db
-    
     traptype = db.Snmptt
     
     id_list = [int(x) for x in request.args.getlist('id')]
@@ -131,6 +107,3 @@ def archive():
     
     json_str = json.dumps(json_str)
     return Response(response=json_str, status=200, mimetype='application/json')
-
-if __name__ == '__main__':
-    app.run('0.0.0.0', 8080, debug=True)

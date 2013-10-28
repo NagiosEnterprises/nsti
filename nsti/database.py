@@ -1,4 +1,4 @@
-from server import app
+from nsti import app
 import storm.locals as SL
 
 

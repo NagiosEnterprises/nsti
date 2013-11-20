@@ -49,6 +49,7 @@ def apply_sql():
 
 def apply_apache():
     basename = os.path.abspath(os.path.dirname(__file__))
+    os.system('yum install mod_wsgi')
     apache = open(os.path.join(basename, 'nsti', 'dist', 'apache.conf'), 'r')
     target = open('/etc/httpd/conf.d/flnsti.conf', 'w')
     
@@ -60,6 +61,12 @@ def apply_apache():
         else:
             target.write(l)
     os.system('service httpd restart')
+
+def check_python_prereqs():
+    ret = os.system('pip install -r nsti/dist/requirements.txt')
+    if ret != 0:
+        print 'Oh no! Could not install Python modules.'
+        sys.exit(1)
 
 if __name__ == '__main__':
     preamble()

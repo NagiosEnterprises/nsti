@@ -2,7 +2,7 @@ from flask import Flask, url_for, render_template, redirect
 import os
 
 app = Flask(__name__)
-app.config.from_pyfile(os.path.join(app.root_path, 'etc', 'nsti.cfg'))
+app.config.from_pyfile(os.path.join(app.root_path, 'etc', 'nsti.py'))
 app.secret_key = os.urandom(24)
 
 app.jinja_env.globals['static'] = lambda filename: url_for('static', filename=filename)

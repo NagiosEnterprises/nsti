@@ -118,6 +118,7 @@ CREATE TABLE `filter_atom` (
   `column_name` varchar(100) DEFAULT NULL,
   `comparison` varchar(100) DEFAULT NULL,
   `val` varchar(100) DEFAULT NULL,
+  `filter_id` mediumint(9),
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -131,21 +132,8 @@ DROP TABLE IF EXISTS `filter`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `filter` (
   `id` mediumint(9) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL UNIQUE,
+  `combiner` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-
---
--- Table structure for table `filter_linker`
---
-
-DROP TABLE IF EXISTS `filter_linker`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `filter_linker` (
-  `aid` mediumint(9) NOT NULL,
-  `fid` mediumint(9) NOT NULL,
-  PRIMARY KEY (`aid`, `fid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
--- Dump completed on 2013-10-28  1:36:32

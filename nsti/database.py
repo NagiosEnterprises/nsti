@@ -3,6 +3,7 @@ import storm.locals as SL
 
 
 from storm.tracer import debug
+import storm.store
 
 debug(True) # The flag enables or disables statement logging
 
@@ -71,8 +72,23 @@ class SnmpttUnknown(object):
     trapread = SL.Int()
     timewritten = SL.DateTime()
 
+class FilterAtom(object):
+    __storm_table__ = 'filter_atom'
+    id = SL.Int(primary=True)
+    column_name = SL.Unicode()
+    comparison = SL.Unicode()
+    val = SL.Unicode()
+    filter_id = SL.Int()
+
+class Filter(object):
+    __storm_table__ = 'filter'
+    id = SL.Int(primary=True)
+    name = SL.Unicode()
+    filter_atom = SL.ReferenceSet(id, FilterAtom.filter_id)
+    def __init__(self, name):
+        self.name = name
+
 def encode_storm_result_set(storm_obj):
-    import storm.store
     if not isinstance(storm_obj, storm.store.ResultSet):
         raise TypeError(repr(storm_obj) + " is not JSON serializable")
 
@@ -116,7 +132,6 @@ def sql_where_query(traptype, arguments, acombine=True):
         elif key.endswith('__in'):
             new_key = key.replace('__in', '')
             attribute = getattr(traptype, new_key)
-            print arguments[key]
             cond = attribute.is_in(arguments[key])
         #~ Otherwise we want to do an exact match
         else:

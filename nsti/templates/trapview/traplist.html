@@ -1,0 +1,393 @@
+{% extends 'system/base.html' %}
+
+{% block header %}
+<script>
+/**
+ * Past Nick,
+ * WTF was this for?
+ * Sincerely,
+ * Future Nick
+ */
+function get_arguments() {
+    return {};
+}
+
+/* Table drawing functions */
+
+function make_pagination() {
+    
+    pdiv = $('div#pagination');
+    sdiv = $('div#pagination-summary');
+    sdiv.empty();
+    pdiv.empty();
+    
+    // Set our pagination window
+    if(PAGE - Math.floor(WINDOW/2) < 0) {
+        minpage = 0;
+        maxpage = WINDOW;
+    }
+    else if(PAGE + Math.floor(WINDOW/2) > pages - 1) {
+        minpage = pages - WINDOW;
+        maxpage = pages;
+    }
+    else {
+        minpage = PAGE - Math.floor(WINDOW/2);
+        maxpage = PAGE + Math.floor(WINDOW/2);
+    }
+    
+    pages = Math.ceil(TRAPS.length / PERPAGE);
+    var ul = $('<ul>', {class: 'pagination'});
+    
+    // Draw the << list item
+    var li = $('<li>', {html: '<span>&laquo;</span>'});
+    if(PAGE == 0) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(0);});
+    }
+    li.appendTo(ul);
+    
+    // Draw the Prev list item
+    var li = $('<li>', {html: '<span>Prev</span>'});
+    if(PAGE == 0) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(PAGE-1);});
+    }
+    li.appendTo(ul);
+    
+    // Draw each individual link
+    var paginated = 0;
+    for(var i=0, l=TRAPS.length; i<pages; i++) {
+        // If this is the first page, we want to deactivate the first arrow
+        if(i >= minpage && i < maxpage) {
+            paginated++;
+            var li = $('<li>', {html: '<span>' + (i+1) + '</span>', pageindex: i});
+            if(i == PAGE) {
+                li.addClass('active')
+            }
+            li.click(function() {var index=$(this).attr('pageindex'); load_body(index);});
+            li.appendTo(ul);
+        }
+    }
+    
+    // Draw the Next list item
+    var li = $('<li>', {html: '<span>Next</span>'});
+    if(PAGE == pages-1) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(PAGE+1);});
+    }
+    li.appendTo(ul);
+    
+    // Draw the >> list item
+    var li = $('<li>', {html: '<span>&raquo;</span>'});
+    if(PAGE == pages-1) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(pages - 1);});
+    }
+
+    li.appendTo(ul);
+    
+    $('<div>', {class: 'label label-default pull-right', text: 'Page ' + (PAGE + 1) + ' of ' + pages}).appendTo(sdiv);
+    $('<div>', {class: 'label label-default', text: TRAPS.length + ' Traps Total | Displaying ' + (PAGE*PERPAGE) + ' - ' + Math.min(TRAPS.length, (PAGE*PERPAGE) + PERPAGE)}).appendTo(sdiv);
+    
+    ul.appendTo(pdiv);
+}
+
+function normal_row(row) {
+    var heading = $('<tr>');
+    var klass;
+    
+    switch(row.severity) {
+        case 'warning':
+        case 'Warning':
+            klass = 'warning';
+            break;
+        case 'critical':
+        case 'Critical':
+            klass = 'danger';
+            break;
+        case 'ok':
+        case 'Ok':
+            klass = 'success';
+            break;
+    }
+    
+    $('<td>', {text: row.id}).appendTo(heading);
+    $('<td>', {html: '<input type="checkbox" class="trap-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
+    $('<td>', {text: row.timewritten, class: 'text-center'}).appendTo(heading);
+    $('<td>', {text: row.trapoid, class: 'text-center'}).appendTo(heading);
+    $('<td>', {text: row.hostname, class: 'text-center'}).appendTo(heading);
+    $('<td>', {text: row.severity.toUpperCase(), class: klass + " text-center"}).appendTo(heading);
+    $('<td>', {text: row.category, class: 'text-center'}).appendTo(heading);
+    $('<td>', {text: row.formatline.substring(0, TRUNCATE)}).appendTo(heading);
+    
+    return heading;
+}
+
+function unknown_row(row) {
+    var heading = $('<tr>');
+    
+    $('<td>', {text: row.id}).appendTo(heading);
+    $('<td>', {html: '<input type="checkbox" class="trap-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
+    $('<td>', {text: row.timewritten}).appendTo(heading);
+    $('<td>', {text: row.trapoid}).appendTo(heading);
+    $('<td>', {text: row.hostname}).appendTo(heading);
+    $('<td>', {text: row.uptime}).appendTo(heading);
+    $('<td>', {text: row.formatline.substring(0, TRUNCATE)}).appendTo(heading);
+    
+    return heading;
+}
+
+function load_body(page) {
+    if(page == undefined) {
+        PAGE = 0;
+    } else {
+        PAGE = page;
+    }
+    
+    make_pagination();
+    
+    show_throbber('#trap-table');
+    var args = get_arguments();
+    
+    var tbody = $('#trap-table-body');
+    
+    tbody.empty();
+    
+    switch(TABLE) {
+        case 'Snmptt':
+        case 'SnmpttArchive':
+            var func = normal_row;
+            break;
+        case 'SnmpttUnknown':
+            var func = unknown_row;
+            break;
+    }
+    
+    sliced = TRAPS.slice(PAGE*PERPAGE, (PAGE*PERPAGE) + PERPAGE);
+    
+    // If there aren't any traps just say so.
+    if(sliced.length == 0) {
+        var app = $('<tr>', {html: '<td colspan="999">No traps found in database.</td>'});
+        app.appendTo(tbody);
+    }
+    // Otherwise draw the trap table 
+    else {
+        $.each(sliced, function(i, d) {
+            var app;
+            app = func(d);
+            app.appendTo(tbody);
+        });
+    }
+    
+    hide_throbber('#trap-table');
+}
+
+function load_table() {
+    
+    load_header();
+    var api_url = BASE_URL + 'api/trapview/read/' + TABLE;
+    
+    if(TABLE == 'Snmptt') {
+        $('.btn-archive').show();
+        $('.btn-delete').show();
+    } else {
+        $('.btn-archive').hide();
+        $('.btn-delete').show();
+    }
+    
+    //~ Get the trap JSON
+    $.getJSON(api_url, function(data) {
+        TRAPS = data;
+        load_body();
+    });
+}
+
+function toggle_selected() {
+    $('.trap-select-toggle').each(function(d, i) {
+        if($(i).is(':checked')) {
+            $(i).prop('checked', false);
+        } else {
+            $(i).prop('checked', true);
+        }
+    });
+}
+
+function delete_traps() {
+    var id = [];
+    var api_url = BASE_URL + 'api/trapview/delete/' + TABLE;
+    
+    $('.trap-select-toggle:checked').each(function(i, d) {
+        id.push($(d).attr('data-index'));
+    });
+    
+    $.ajax({
+        url: api_url,
+        data: {id: id},
+        traditional: true,
+        success: function(data) {
+            if(data.error) {
+                show_error(data.error);
+            } else {
+                load_table();
+            }
+        }
+    });
+}
+
+function archive_traps() {
+    var id = [];
+    var api_url = BASE_URL + 'api/trapview/archive';
+    
+    $('.trap-select-toggle:checked').each(function(i, d) {
+        id.push($(d).attr('data-index'));
+    });
+    
+    $.ajax({
+        url: api_url,
+        data: {id: id},
+        traditional: true,
+        success: function(data) {
+            if(data.error) {
+                show_error(data.error);
+            } else {
+                load_table();
+            }
+        }
+    });
+}
+
+function load_header() {
+    var heading = $('<tr>');
+    switch(TABLE) {
+        case 'SnmpttUnknown':
+            $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Uptime', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
+            break;
+        case 'Snmptt':
+        case 'SnmpttArchive':
+        default:
+            $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Severity', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Category', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
+            break;
+    }
+    $('#trap-table-head').html(heading);
+}
+
+$(document).ready(function() {
+    
+    $('input[name=table]').change(function() {
+        show_throbber('#trap-content');
+        TABLE = $(this).val();
+        load_table();
+        hide_throbber('#trap-content');
+    });
+    
+    $('.goto-view').click(function() {
+        
+    });
+    
+    $('#table-normal').trigger('change');
+    
+    $('#toggle').click(function() {
+        toggle_selected();
+    });
+    
+    $('.delete-selected').click(function() {
+        delete_traps();
+    });
+    
+    $('.archive-selected').click(function() {
+        archive_traps();
+    });
+    
+});
+</script>
+{% endblock header %}
+
+{% block content %}
+<div class='row'>
+    <div class='col-md-6'>
+        <div class='btn-group left-inset' data-toggle='buttons'>
+            <label class='btn btn-primary active'>
+                <input id='table-normal' type='radio' name='table' value='Snmptt' selected='selected'>Normal
+            </label>
+            <label class='btn btn-primary'>
+                <input type='radio' name='table' value='SnmpttArchive'>Archive
+            </label>
+            <label class='btn btn-primary'>
+                <input type='radio' name='table' value='SnmpttUnknown'>Unknown
+            </label>
+        </div>
+    </div>
+    <div class='col-md-6'>
+        Filtering goes here.
+    </div>
+</div>
+
+<div id='trap-content' class='row container content'>
+    <div class="panel panel-default">
+        <div class='panel-heading' id='pagination-summary'></div>
+        <div id='pagination' class='panel-body text-center'></div>
+        <div class='pull-left'>
+            <div class='btn-group btn-group-sm trap-controllers'>
+                <button type='button' class='btn btn-default btn-delete'>
+                    <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
+                </button>
+                <button type='button' class='btn btn-default btn-archive'>
+                    <a alt='Archive Selected' data-toggle='tooltip' title='Archive Selected' class='archive-selected glyphicon glyphicon-tag'></a> 
+                </button>
+            </div>
+        </div>
+        <table id='trap-table' class='table table-condensed table-striped table-hover table-bordered'>
+            <thead id='trap-table-head'></thead>
+            <tfoot id='trap-table-foot'>
+                <tr>
+                    <td colspan='999'>
+                        <div class='pull-left'>
+                            <div class='btn-group btn-group-sm trap-controllers'>
+                                <button type='button' class='btn btn-default btn-delete'>
+                                    <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
+                                </button>
+                                <button type='button' class='btn btn-default btn-archive'>
+                                    <a alt='Archive Selected' data-toggle='tooltip' title='Archive Selected' class='archive-selected glyphicon glyphicon-tag'></a> 
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody id='trap-table-body'></tbody>
+        </table>
+    </div>
+</div>
+
+<div class='modal fade' id='error-message' tabindex='-1' role='dialog' aria-labelledby='error-message-label' aria-hidden='true'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                <h4 class='modal-title'>Error Handling Request</h4>
+            </div>
+            <div id='modal-body-error' class='modal-body'></div>
+            <div class='modal-footer'>
+                <button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

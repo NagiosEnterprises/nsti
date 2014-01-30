@@ -1,0 +1,39 @@
+/* Global CSS */
+
+.left-inset {
+    margin-left: 20px;
+}
+
+.right-inset {
+    margin-right: 20px;
+}
+
+.content {
+    margin-top: 20px;
+}
+
+#trap-table {
+    font-size:12px;
+}
+
+#global-throbber {
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:55px;
+    height:55px;
+    margin-top:-22px; /* half the height */
+    margin-left:-22px; /* half the width */
+}
+
+.goto-view {
+    margin: 2px 5px 2px 5px;
+}
+
+.trap-controllers {
+    margin:10px;
+}
+
+.toggle-checkbox {
+    width:30px;
+}

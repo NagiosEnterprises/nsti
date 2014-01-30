@@ -1,0 +1,123 @@
+{% extends 'system/base.html' %}
+
+{% block header %}
+<script>
+function load_filters() {
+    show_throbber('#filter-table-body');
+    
+    var API_URL = BASE_URL + 'api/filter/read';
+
+    $.getJSON(API_URL, function(d) {
+        var tbody = $('#filter-table-body');
+        tbody.empty();
+        
+        $.each(d.filters, function(i, filter) {
+            var tr = get_tr_for_filter(filter);
+            tr.appendTo(tbody);
+        });
+
+        hide_throbber('#filter-table-body');
+    })
+}
+
+function get_tr_for_filter(filter) {
+    var tr = $('<tr>', {'data-index': filter.name});
+    var checkbox = $('<input>', {type: 'checkbox',
+                                 class: 'filter-select-toggle',
+                                 'data-index': filter.name});
+    $('<td>', {html: checkbox}).appendTo(tr);
+    $('<td>', {text: filter.name}).appendTo(tr);
+    $('<td>', {text: filter.action}).appendTo(tr);
+
+    return tr;
+}
+
+$(document).ready(function() {
+
+    load_filters();
+
+    $('#toggle').click(function() {
+        var checkboxes = $('.filter-select-toggle');
+        checkboxes.attr('checked', !checkboxes.attr('checked'));
+    });
+
+    $('.delete-selected').click(function() {
+        var API_URL = BASE_URL + 'api/filter/delete';
+        
+        $('.filter-select-toggle:checked').each(function() {
+            var data = {name : $(this).attr('data-index')};
+            $.getJSON(API_URL, data, function(data) {
+                if(data.error) {
+                    alert(data.error);
+                } else {
+                    $(this).parent().parent().remove();
+                }
+            })
+        })
+    });
+    
+})
+</script>
+{% endblock header %}
+
+{% block content %}
+<div class='row container content'>
+    <div class="col-md-6">
+        <button type="button" class="btn btn-primary btn-lg">Add New Filter</button>
+    </div>
+    <div class="col-md-6"></div>
+</div>
+
+<div id='filter-content' class='row container content'>
+    <div class='panel panel-default'>
+        <div class='panel-heading' id='pagination-summary'></div>
+        <div id='pagination' class='panel-body text-center'></div>
+        <div class='pull-left'>
+            <div class='btn-group btn-group-sm trap-controllers'>
+                <button type='button' class='btn btn-default btn-delete'>
+                    <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
+                </button>
+            </div>
+        </div>
+        <table id='filter-table' class='table table-condensed table-striped table-hover table-bordered'>
+            <thead id='filter-table-head'>
+                <tr>
+                    <th class='text-center toggle-checkbox'><input type="checkbox" id="toggle"></th>
+                    <th class='text-center'>Name</th>
+                    <th class='text-center'>Description</th>
+                </tr>
+            </thead>
+            <tfoot id='filter-table-foot'>
+                <tr>
+                    <td colspan='999'>
+                        <div class='pull-left'>
+                            <div class='btn-group btn-group-sm trap-controllers'>
+                                <button type='button' class='btn btn-default btn-delete'>
+                                    <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody id='filter-table-body'>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class='modal fade' id='error-message' tabindex='-1' role='dialog' aria-labelledby='error-message-label' aria-hidden='true'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                <h4 class='modal-title'>Error Handling Request</h4>
+            </div>
+            <div id='modal-body-error' class='modal-body'></div>
+            <div class='modal-footer'>
+                <button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

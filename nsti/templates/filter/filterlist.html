@@ -9,12 +9,16 @@ function load_filters() {
 
     $.getJSON(API_URL, function(d) {
         var tbody = $('#filter-table-body');
-        tbody.empty();
+        tbody.empty();   
         
         $.each(d.filters, function(i, filter) {
             var tr = get_tr_for_filter(filter);
             tr.appendTo(tbody);
         });
+
+        if (d.filters.length == 0) {
+            tbody.append('<tr><td colspan="999"><center>No filters are currently active.</center></td></tr>');
+        }
 
         hide_throbber('#filter-table-body');
     })

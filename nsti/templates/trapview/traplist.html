@@ -288,6 +288,17 @@ function load_header() {
     $('#trap-table-head').html(heading);
 }
 
+//load filters into dropdown menu to apply to traplist
+// function load_filters() {
+//     html = "";
+//     atoms = {atoms:atoms, 'name':name};
+
+//     for(var key in atoms) {
+//         html += "<option value=" + key + ">" +atoms[key] + "</option>";
+//     }
+//     document.getElementById("add_filter").innerHTML = html;
+// }
+
 $(document).ready(function() {
     
     $('input[name=table]').change(function() {
@@ -335,7 +346,13 @@ $(document).ready(function() {
         </div>
     </div>
     <div class='col-md-6'>
-        Filtering goes here.
+        <!-- <form>
+            <label>
+            Select a Filter:
+            <select name="add_filter" id="add_filter" class="form-control">
+            </label>
+            <button type="button" class="btn btn-default" id="apply_filter" value="Apply">
+        </form> -->
     </div>
 </div>
 

@@ -2,6 +2,7 @@
 
 {% block header %}
 <script>
+
 function load_filters() {
     show_throbber('#filter-table-body');
     
@@ -9,7 +10,7 @@ function load_filters() {
 
     $.getJSON(API_URL, function(d) {
         var tbody = $('#filter-table-body');
-        tbody.empty();   
+        tbody.empty();
         
         $.each(d.filters, function(i, filter) {
             var tr = get_tr_for_filter(filter);
@@ -21,7 +22,33 @@ function load_filters() {
         }
 
         hide_throbber('#filter-table-body');
-    })
+    });
+}
+
+function add_filter() {
+    var API_URL = BASE_URL + 'api/filter/create';
+    var name = $('#filter_name').val();
+    var atoms = {};
+
+    $('form.atoms').each(function(d) {
+        if($(this).find('.enable').is('checked'));
+
+        var k = {};
+        var j = $(this).serializeArray();
+
+        $.each(j, function(i, n) {
+            k[n, name] = n.value;
+        });
+    });
+
+    $.getJSON(API_URL, {atoms:atoms, 'name':name}, function(d) {
+        if(d.error) {
+            alert("Error: Failed to add new filter.");
+            alert(d.error);
+        } else {
+            alert(d.success)
+        }
+    });
 }
 
 function get_tr_for_filter(filter) {
@@ -39,6 +66,10 @@ function get_tr_for_filter(filter) {
 $(document).ready(function() {
 
     load_filters();
+
+    $('#add_new_filter').click(function() {
+        add_filter();
+    });
 
     $('#toggle').click(function() {
         var checkboxes = $('.filter-select-toggle');
@@ -59,7 +90,6 @@ $(document).ready(function() {
             })
         })
     });
-    
 })
 </script>
 {% endblock header %}
@@ -67,7 +97,7 @@ $(document).ready(function() {
 {% block content %}
 <div class='row container content'>
     <div class="col-md-6">
-        <button type="button" class="btn btn-primary btn-lg">Add New Filter</button>
+        <button type="button" class="btn btn-primary btn-lg add-filter" data-toggle="modal" data-target="#add_filter_modal">Add New Filter</button>
     </div>
     <div class="col-md-6"></div>
 </div>
@@ -121,6 +151,256 @@ $(document).ready(function() {
             <div class='modal-footer'>
                 <button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add_filter_modal" hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Create A New Filter</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+            <table>
+                <td valign="top">
+                    <label>New Filter Name:</label>
+                    <input type="text" class="form-control" id="filter_name" placeholder="New Filter"><br><br>
+                </td>
+            </table>
+        </form>
+
+        <h4 class="modal-title">Filters</h4><br>
+            <form class="atoms form-inline" role="form">
+                <div class="row">
+                    <div class="checkbox col-xs-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="enable">
+                            Date:
+                        </label>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input name="column_name" value="date" type="hidden">
+                    </div>
+                    <div class="form-group col-xs-3">
+                        <select name="comparison" class="form-control">
+                            <option>none</option>
+                            <option>></option>
+                            <option><</option>
+                            <option>=</option>
+                            <option>>=</option>
+                            <option><=</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-5">
+                        <input name="val" class="form-control" placeholder="MM/DD/YY">
+                    </div>
+                </div>
+            </form>
+
+            <form class="atoms form-inline" role="form">
+                <div class="row">
+                    <div class="checkbox col-xs-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="enable">
+                            Trap OID:
+                        </label>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input name="column_name" value="trapoid" type="hidden">
+                    </div>
+                    <div class="form-group col-xs-3">
+                        <select name="comparison" class="form-control">
+                            <option>none</option>
+                            <option>></option>
+                            <option><</option>
+                            <option>=</option>
+                            <option>>=</option>
+                            <option><=</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-5">
+                        <input name="val" class="form-control" placeholder="1.1.1.1.1.1.1.1.1">
+                    </div>
+                </div>
+            </form>
+
+            <form class="atoms form-inline" role="form">
+                <div class="row">
+                    <div class="checkbox col-xs-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="enable">
+                            Enterprise OID:
+                        </label>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input name="column_name" value="enterpriseoid" type="hidden">
+                    </div>
+                    <div class="form-group col-xs-3">
+                        <select name="comparison" class="form-control">
+                            <option>none</option>
+                            <option>></option>
+                            <option><</option>
+                            <option>=</option>
+                            <option>>=</option>
+                            <option><=</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-5">
+                        <input name="val" class="form-control" placeholder="1.1.1.1.1.1.1.1.1">
+                    </div>
+                </div>
+            </form>
+            
+            <form class="atoms form-inline" role="form">
+                <div class="row">
+                    <div class="checkbox col-xs-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="enable">
+                            Hostname:
+                        </label>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input name="column_name" value="hostname" type="hidden">
+                    </div>
+                    <div class="form-group col-xs-3">
+                        <select name="comparison" class="form-control">
+                            <option>none</option>
+                            <option>></option>
+                            <option><</option>
+                            <option>=</option>
+                            <option>>=</option>
+                            <option><=</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-5">
+                        <input name="val" class="form-control" placeholder="192.168.1.1">
+                    </div>
+                </div>
+            </form>
+
+            <form class="atoms form-inline" role="form">
+                <div class="row">
+                    <div class="checkbox col-xs-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="enable">
+                            Category:
+                        </label>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input name="column_name" value="category" type="hidden">
+                    </div>
+                    <div class="form-group col-xs-3">
+                        <select name="comparison" class="form-control">
+                            <option>none</option>
+                            <option>></option>
+                            <option><</option>
+                            <option>=</option>
+                            <option>>=</option>
+                            <option><=</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-5">
+                        <input name="val" class="form-control" placeholder="Status Event">
+                    </div>
+                </div>
+            </form>           
+                      
+            <form class="atoms form-inline" role="form">
+                <div class="row">
+                    <div class="checkbox col-xs-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="enable">
+                            Severity:
+                        </label>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input name="column_name" value="severity" type="hidden">
+                    </div>
+                    <div class="form-group col-xs-3">
+                        <select name="comparison" class="form-control">
+                            <option>none</option>
+                            <option>></option>
+                            <option><</option>
+                            <option>=</option>
+                            <option>>=</option>
+                            <option><=</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-5">
+                        <input name="val" class="form-control" placeholder="OK, Warning..">
+                    </div>
+                </div>
+            </form>   
+            
+            <form class="atoms form-inline" role="form">
+                <div class="row">
+                    <div class="checkbox col-xs-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="enable">
+                            Up Time:
+                        </label>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input name="column_name" value="uptime" type="hidden">
+                    </div>
+                    <div class="form-group col-xs-3">
+                        <select name="comparison" class="form-control">
+                            <option>none</option>
+                            <option>></option>
+                            <option><</option>
+                            <option>=</option>
+                            <option>>=</option>
+                            <option><=</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-5">
+                        <input name="val" class="form-control" placeholder="minutes">
+                    </div>
+                </div>
+            </form>
+
+            <form class="atoms form-inline" role="form">
+                <div class="row">
+                    <div class="checkbox col-xs-3">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="enable">
+                            Trap Time:
+                        </label>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <input name="column_name" value="traptime" type="hidden">
+                    </div>
+                    <div class="form-group col-xs-3">
+                        <select name="comparison" class="form-control">
+                            <option>none</option>
+                            <option>></option>
+                            <option><</option>
+                            <option>=</option>
+                            <option>>=</option>
+                            <option><=</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-5">
+                        <input name="val" class="form-control" placeholder="minutes">
+                    </div>
+                </div>
+            </form>
+        </div>
+          <div class="modal-footer">
+            <button type="reset" class="btn btn-default" data-reset="modal">Reset</button>
+            <button type="submit" class="btn btn-primary" id="add_new_filter">Add New Filter</button>
+          </div>
         </div>
     </div>
 </div>

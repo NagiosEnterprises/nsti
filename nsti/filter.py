@@ -17,7 +17,7 @@ def filter():
 def create_filter():
     json_result = {}
     
-    name = request.args.get('name')
+    name = request.args.get('name', u'default')
     existing_count = db.DB.find(db.Filter, db.Filter.name == name).count()
     #~ Check to see if the name already exists.
     if existing_count != 0:

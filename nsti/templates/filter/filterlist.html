@@ -39,7 +39,7 @@ function get_tr_for_filter(filter) {
 
 function add_filter() {
     var API_URL = BASE_URL + 'api/filter/create';
-    var name = $('#filter_name').val();
+    var name = $('#filter-name').val();
     var atoms = {};
 
     $('form.atoms').each(function(d) {
@@ -55,10 +55,11 @@ function add_filter() {
 
     $.getJSON(API_URL, {atoms:atoms, 'name':name}, function(d) {
         if(d.error) {
-            alert("Error: Failed to add new filter.");
-            alert(d.error);
+            alert("Error: Failed to add new filter: " + d.error);
         } else {
-            alert(d.success)
+            alert(d.success);
+            load_filters();
+            $('#add-filter-modal').modal('hide');
         }
     });
 }
@@ -67,7 +68,7 @@ function add_new_atom() {
     var html = '<form class="atoms form-inline" role="form"> \
                     <div class="row" style="margin:0 0 10px 10px;"> \
                         <div class="checkbox col-xs-2" style="width:auto;"> \
-                            <select name="column_name" class="form-control" id="new_atom"> \
+                            <select name="column_name" class="form-control" id="new-atom"> \
                                 <option>Date</option> \
                                 <option>Trap OID</option> \
                                 <option>Enterprise OID</option> \
@@ -98,8 +99,7 @@ function add_new_atom() {
                         </div> \
                     </div> \
                 </form>';
-
-    $('#insert_div').append(html);
+    $('#insert-div').append(html);
     bind_buttons();
 }
 
@@ -115,15 +115,20 @@ $(document).ready(function() {
 
     load_filters();
 
-    add_new_atom();
+    $('#add-filter-click, #modal-reset').click(function() {
+        $('#insert-div').empty();
+        $('#filter-name').val("");
+        add_new_atom();
+        $('#add-filter-modal').modal('show');
+    });
 
-    $('#add_new_filter').click(function() {
+    $('#add-new-filter').click(function() {
         add_filter();
     });
 
-    $('#new_atom_button').click(function() {
+    $('#new-atom-button').click(function() {
         add_new_atom();
-    })
+    });
 
     $('#toggle').click(function() {
         var checkboxes = $('.filter-select-toggle');
@@ -140,6 +145,7 @@ $(document).ready(function() {
                     alert(data.error);
                 } else {
                     $(this).parent().parent().remove();
+                    load_filters();
                 }
             })
         })
@@ -151,7 +157,7 @@ $(document).ready(function() {
 {% block content %}
 <div class='row container content'>
     <div class="col-md-6">
-        <button type="button" class="btn btn-primary btn-lg add-filter" data-toggle="modal" data-target="#add_filter_modal">Add New Filter</button>
+        <button type="button" class="btn btn-primary btn-lg add-filter" id="add-filter-click">Add New Filter</button>
     </div>
     <div class="col-md-6"></div>
 </div>
@@ -209,7 +215,7 @@ $(document).ready(function() {
     </div>
 </div>
 
-<div class="modal fade" id="add_filter_modal" hidden="true">
+<div class="modal fade" id="add-filter-modal" hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -221,22 +227,21 @@ $(document).ready(function() {
             <table>
                 <td valign="top">
                     <label>New Filter Name:</label>
-                    <input type="text" class="form-control" id="filter_name" placeholder="New Filter"><br><br>
+                    <input type="text" class="form-control" id="filter-name" placeholder="New Filter"><br><br>
                 </td>
             </table>
         </form>
-
-        <div id="atom_home">
+        <div id="atom-home">
             <h4 class="modal-title">Filters</h4><br>
-            <div id="insert_div">
+            <div id="insert-div">
             </div>
             <br>
-            <input type="button" id="new_atom_button" class="btn btn-default" value="Add New Filter">
+            <input type="button" id="new-atom-button" class="btn btn-default" value="Add New Filter">
         </div>
 
           <div class="modal-footer">
-            <button type="reset" class="btn btn-default" data-reset="modal">Reset</button>
-            <button type="submit" class="btn btn-primary" id="add_new_filter">Add New Filter</button>
+            <button type="reset" class="btn btn-default" id="modal-reset">Reset</button>
+            <button type="submit" class="btn btn-primary" id="add-new-filter">Add New Filter</button>
           </div>
         </div>
     </div>

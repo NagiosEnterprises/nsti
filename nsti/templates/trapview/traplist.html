@@ -288,16 +288,20 @@ function load_header() {
     $('#trap-table-head').html(heading);
 }
 
-//load filters into dropdown menu to apply to traplist
-// function load_filters() {
-//     html = "";
-//     atoms = {atoms:atoms, 'name':name};
 
-//     for(var key in atoms) {
-//         html += "<option value=" + key + ">" +atoms[key] + "</option>";
-//     }
-//     document.getElementById("add_filter").innerHTML = html;
-// }
+//load filters into dropdown menu to apply to traplist
+$('#filter-table').on('load', '#add-filter', function load_filters() {
+    API_URL = BASE_URL + 'api/filter/ajax'
+
+    $.getJSON(API_URL, {id: $(this).val()}, function(d) {
+        var filters = "";
+
+        for(var i = 0; i < d.length; i++) {
+            filters += "<option value='" + d[i].title + "'>" + d[i].title + "</option>";
+        }
+        $("#filter-table").html(filters);
+    });
+});
 
 $(document).ready(function() {
     
@@ -345,7 +349,7 @@ $(document).ready(function() {
             </label>
         </div>
     </div>
-    <div class='col-md-6'>
+    <div class='col-md-6' id='filter-table'>
         <!-- <form>
             <label>
             Select a Filter:

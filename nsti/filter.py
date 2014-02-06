@@ -17,10 +17,12 @@ def filter():
 def create_filter():
     json_result = {}
     
-    name = request.args.get('name', u'default')
+    name = request.args.get('name', '')
     existing_count = db.DB.find(db.Filter, db.Filter.name == name).count()
     #~ Check to see if the name already exists.
-    if existing_count != 0:
+    if name == '':
+        json_result['error'] = 'Must give a name.'
+    elif existing_count != 0:
         json_result['error'] = 'Name already exists and the name must be unique.'
     else:
         #~ Add the filter.

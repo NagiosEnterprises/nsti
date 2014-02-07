@@ -83,3 +83,9 @@ def read_filter():
     json_str = json.dumps(json_result)
     return Response(response=json_str, status=200, mimetype='application/json')
 
+@app.route('/api/filter/add-active-filter)
+def add_active_filter():
+    name = request.arg.get('name', '')
+
+    if not name:
+        

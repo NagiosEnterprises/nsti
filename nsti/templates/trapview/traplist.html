@@ -320,7 +320,7 @@ function add_trap_filter_active(name) {
 function make_tag(name) {
     var s = $('<span>', {class: 'label label-success', text: name});
     var x = $('<span>', {class: 'glyphicon glyphicon-remove'})
-    var API_URL = BASE_URL + 'api/filter/addfilter';
+    var API_URL = BASE_URL + 'api/filter/add-active-filter';
 
     x.click(function() {
         $.getJSON(API_URL, {name: name}, function(d) {

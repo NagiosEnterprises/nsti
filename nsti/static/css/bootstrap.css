@@ -6803,3 +6803,12 @@ td.visible-print {
     display: none !important;
   }
 }
+
+/*Modal shifting fix*/
+.scrollbar-measure {
+  width: 1px;
+  height: 1px;
+  overflow: scroll;
+  position: absolute;
+  top: -9999px;
+}

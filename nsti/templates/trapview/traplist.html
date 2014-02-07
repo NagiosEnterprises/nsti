@@ -288,6 +288,21 @@ function load_header() {
     $('#trap-table-head').html(heading);
 }
 
+
+//load filters into dropdown menu to apply to traplist
+$('#filter-table').on('load', '#add-filter', function load_filters() {
+    API_URL = BASE_URL + 'api/filter/ajax'
+
+    $.getJSON(API_URL, {id: $(this).val()}, function(d) {
+        var filters = "";
+
+        for(var i = 0; i < d.length; i++) {
+            filters += "<option value='" + d[i].title + "'>" + d[i].title + "</option>";
+        }
+        $("#filter-table").html(filters);
+    });
+});
+
 $(document).ready(function() {
     
     $('input[name=table]').change(function() {
@@ -334,8 +349,14 @@ $(document).ready(function() {
             </label>
         </div>
     </div>
-    <div class='col-md-6'>
-        Filtering goes here.
+    <div class='col-md-6' id='filter-table'>
+        <!-- <form>
+            <label>
+            Select a Filter:
+            <select name="add_filter" id="add_filter" class="form-control">
+            </label>
+            <button type="button" class="btn btn-default" id="apply_filter" value="Apply">
+        </form> -->
     </div>
 </div>
 

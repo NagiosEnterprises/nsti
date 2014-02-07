@@ -288,7 +288,6 @@ function load_header() {
     $('#trap-table-head').html(heading);
 }
 
-
 //load filters into dropdown menu to apply to traplist
 $('#filter-table').on('load', '#add-filter', function load_filters() {
     API_URL = BASE_URL + 'api/filter/ajax'
@@ -300,8 +299,37 @@ $('#filter-table').on('load', '#add-filter', function load_filters() {
             filters += "<option value='" + d[i].title + "'>" + d[i].title + "</option>";
         }
         $("#filter-table").html(filters);
+        draw_filter_table();
     });
 });
+
+function draw_filter_table() {
+    fdiv = $('#filter-table');
+}
+
+$('#apply-filter').click(function () {
+    var name = $('#add-filter').val();
+    add_trap_filter_active();
+});
+
+function add_trap_filter_active(name) {
+    var tag = make_tag(name);
+    tag.appendTo('#filter-table')
+}
+
+function make_tag(name) {
+    var s = $('<span>', {class: 'label label-success', text: name});
+    var x = $('<span>', {class: 'glyphicon glyphicon-remove'})
+    var API_URL = BASE_URL + 'api/filter/addfilter';
+
+    x.click(function() {
+        $.getJSON(API_URL, {name: name}, function(d) {
+            s.remove();
+        });
+        x.appendTo(s);
+        return s;
+    });
+}
 
 $(document).ready(function() {
     
@@ -336,7 +364,7 @@ $(document).ready(function() {
 
 {% block content %}
 <div class='row'>
-    <div class='col-md-6'>
+    <div class='col-md-3'>
         <div class='btn-group left-inset' data-toggle='buttons'>
             <label class='btn btn-primary active'>
                 <input id='table-normal' type='radio' name='table' value='Snmptt' selected='selected'>Normal
@@ -349,14 +377,13 @@ $(document).ready(function() {
             </label>
         </div>
     </div>
-    <div class='col-md-6' id='filter-table'>
-        <!-- <form>
-            <label>
-            Select a Filter:
-            <select name="add_filter" id="add_filter" class="form-control">
-            </label>
-            <button type="button" class="btn btn-default" id="apply_filter" value="Apply">
-        </form> -->
+    <div class="row">
+        <div class='col-md-8 pull-right' id='filter-table'>
+            <label>Select Filter:</label>
+            <select id="add-filter" class="form-control" style="width:200px;"></select>
+            <input type="button" id="apply-filter" class="btn btn-primary" value="Apply">
+            <span></span>
+        </div>
     </div>
 </div>
 

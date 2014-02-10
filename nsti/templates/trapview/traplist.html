@@ -298,23 +298,23 @@ $('#apply-filter').click(function () {
 });
 
 function add_trap_filter_active(name) {
-    var tag = make_tag('name');
+    var tag = make_tag(name);
     tag.appendTo('#filter-table');
 }
 
 //make tags for currently active filters
 function make_tag(name) {
+    var API_URL = BASE_URL + 'api/filter/add-active-filter';
     var s = $('<span>', {class: 'label label-success', text: name});
     var x = $('<span>', {class: 'glyphicon glyphicon-remove'});
-    var API_URL = BASE_URL + '/api/filter/add-active-filter';
 
     x.click(function() {
         $.getJSON(API_URL, {name: name}, function(d) {
             s.remove();
         });
-        x.appendTo(s);
-        return s;
     });
+    x.appendTo(s);
+    return s;
 }
 
 //populate filter select options

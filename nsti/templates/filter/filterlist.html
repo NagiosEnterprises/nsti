@@ -43,13 +43,15 @@ function add_filter() {
     var atoms = {};
 
     $('form.atoms').each(function(d) {
-        if($(this).find('.enable').is('checked'));
-
         var k = {};
         var j = $(this).serializeArray();
 
         $.each(j, function(i, n) {
+            // var obj = {};
             k[n, name] = n.value;
+            
+            // for(var x; x < 12; x++)
+            //     obj[x] = {form:atoms}
         });
     });
 

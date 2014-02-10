@@ -83,9 +83,26 @@ def read_filter():
     json_str = json.dumps(json_result)
     return Response(response=json_str, status=200, mimetype='application/json')
 
-@app.route('/api/filter/add-active-filter)
+@app.route('/api/filter/add-active-filter')
 def add_active_filter():
+    json_result = {}
     name = request.arg.get('name', '')
-
+    existing_count = db.DB.find(db.Filter, db.Filter.name == name).count()
+    
     if not name:
-        
+        json_result = {'error': 'No name was given.'}
+    elif existing_count == 0:
+        json_result = {'error': 'No filter by that name exists.'}
+    elif existing_count > 1:
+        json_result = {'error': 'Filter by that name returns more than one result.'}
+    else:
+        try:
+            active_filters = session.get('active_filters', [])
+            if not name in active_filters:
+                active_filters.append(name)
+            session['active_filters'] = active_filters
+            json_result {'success': 'Successfully added filter to list.'}
+        except Exception, e:
+            json_result = {'error': 'Error adding filter to list: %s' % str(e)}
+            
+    return Response(repsonse=json_str, status=200, mimetype='application/json')

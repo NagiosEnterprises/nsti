@@ -101,7 +101,7 @@ def add_active_filter():
             if not name in active_filters:
                 active_filters.append(name)
             session['active_filters'] = active_filters
-            json_result {'success': 'Successfully added filter to list.'}
+            json_result = {'success': 'Successfully added filter to list.'}
         except Exception, e:
             json_result = {'error': 'Error adding filter to list: %s' % str(e)}
             

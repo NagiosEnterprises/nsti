@@ -288,21 +288,6 @@ function load_header() {
     $('#trap-table-head').html(heading);
 }
 
-//load filters into dropdown menu to apply to traplist
-$('#filter-table').on('load', '#add-filter', function load_filters() {
-    API_URL = BASE_URL + 'api/filter/ajax'
-
-    $.getJSON(API_URL, {id: $(this).val()}, function(d) {
-        var filters = "";
-
-        for(var i = 0; i < d.length; i++) {
-            filters += "<option value='" + d[i].title + "'>" + d[i].title + "</option>";
-        }
-        $("#filter-table").html(filters);
-        draw_filter_table();
-    });
-});
-
 function draw_filter_table() {
     fdiv = $('#filter-table');
 }
@@ -313,14 +298,15 @@ $('#apply-filter').click(function () {
 });
 
 function add_trap_filter_active(name) {
-    var tag = make_tag(name);
-    tag.appendTo('#filter-table')
+    var tag = make_tag('name');
+    tag.appendTo('#filter-table');
 }
 
+//make tags for currently active filters
 function make_tag(name) {
     var s = $('<span>', {class: 'label label-success', text: name});
-    var x = $('<span>', {class: 'glyphicon glyphicon-remove'})
-    var API_URL = BASE_URL + 'api/filter/addfilter';
+    var x = $('<span>', {class: 'glyphicon glyphicon-remove'});
+    var API_URL = BASE_URL + '/api/filter/add-active-filter';
 
     x.click(function() {
         $.getJSON(API_URL, {name: name}, function(d) {
@@ -330,6 +316,21 @@ function make_tag(name) {
         return s;
     });
 }
+
+//populate filter select options
+$(document).ready( function() {
+    API_URL = BASE_URL + 'api/filter/read';
+
+    $.getJSON(API_URL, function(d) {
+        $.each(d.filters, function(index, item){
+            $("#add-filter").append(
+                $("<option></option>")
+                    .text(item.name)
+                );
+            });
+        });
+    draw_filter_table();
+});
 
 $(document).ready(function() {
     
@@ -379,10 +380,11 @@ $(document).ready(function() {
     </div>
     <div class="row">
         <div class='col-md-8 pull-right' id='filter-table'>
-            <label>Select Filter:</label>
-            <select id="add-filter" class="form-control" style="width:200px;"></select>
-            <input type="button" id="apply-filter" class="btn btn-primary" value="Apply">
-            <span></span>
+            <form class="form-inline">
+                <label>Select Filter:</label>
+                <select id="add-filter" class="form-control" style="width:auto;"></select>
+                <input type="button" id="apply-filter" class="btn btn-primary" style="margin-left:15px;"value="Apply">
+            </form>
         </div>
     </div>
 </div>

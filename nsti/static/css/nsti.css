@@ -37,3 +37,7 @@
 .toggle-checkbox {
     width:30px;
 }
+
+#filter-table .label {
+    margin-right:5px;
+}

@@ -292,33 +292,33 @@ function draw_filter_table() {
     fdiv = $('#filter-table');
 }
 
-$('#apply-filter').click(function () {
-    var name = $('#add-filter').val();
-    add_trap_filter_active();
-});
-
 function add_trap_filter_active(name) {
-    var tag = make_tag(name);
-    tag.appendTo('#filter-table');
+    var API_URL = BASE_URL + 'api/filter/add-active-filter';
+
+    $.getJSON(API_URL, {name:name}, function() {
+        var tag = make_tag(name);
+        tag.appendTo('#filter-table');
+    });
 }
 
 //make tags for currently active filters
 function make_tag(name) {
-    var API_URL = BASE_URL + 'api/filter/add-active-filter';
-    var s = $('<span>', {class: 'label label-success', text: name});
+    var API_URL = BASE_URL + 'api/filter/delete-active-filter';
+    var s = $('<span>', {class: 'label label-success pull-right', text: name});
     var x = $('<span>', {class: 'glyphicon glyphicon-remove'});
 
     x.click(function() {
-        $.getJSON(API_URL, {name: name}, function(d) {
-            s.remove();
+        var d = $(this).parent(".label");
+        $.getJSON(API_URL, {name: name}, function() {
+            d.remove();
         });
     });
     x.appendTo(s);
     return s;
 }
 
-//populate filter select options
-$(document).ready( function() {
+$(document).ready(function() {
+
     API_URL = BASE_URL + 'api/filter/read';
 
     $.getJSON(API_URL, function(d) {
@@ -330,9 +330,11 @@ $(document).ready( function() {
             });
         });
     draw_filter_table();
-});
 
-$(document).ready(function() {
+    $('#apply-filter').click(function() {
+        var name = $('#add-filter').val();
+        add_trap_filter_active(name);
+    });
     
     $('input[name=table]').change(function() {
         show_throbber('#trap-content');
@@ -378,14 +380,14 @@ $(document).ready(function() {
             </label>
         </div>
     </div>
-    <div class="row">
-        <div class='col-md-8 pull-right' id='filter-table'>
-            <form class="form-inline">
+    <div class="row col-md-9 pull-right fixed">
+        <form class="form-inline">
+            <div id='filter-table'>
                 <label>Select Filter:</label>
                 <select id="add-filter" class="form-control" style="width:auto;"></select>
                 <input type="button" id="apply-filter" class="btn btn-primary" style="margin-left:15px;"value="Apply">
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 

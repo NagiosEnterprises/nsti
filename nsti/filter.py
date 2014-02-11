@@ -29,7 +29,7 @@ def create_filter():
         new_filter = db.Filter(name)
         result = db.DB.add(new_filter)
         try:
-            for atom in request.args.getlist('atom'):
+            for atom in request.args.getlist('atoms[]'):
                 atom_info = json.loads(atom)
                 new_atom = db.FilterAtom()
                 new_atom.column_name = atom_info['column_name']
@@ -101,7 +101,7 @@ def add_active_filter():
             if not name in active_filters:
                 active_filters.append(name)
             session['active_filters'] = active_filters
-            json_result {'success': 'Successfully added filter to list.'}
+            json_result = {'success': 'Successfully added filter to list.'}
         except Exception, e:
             json_result = {'error': 'Error adding filter to list: %s' % str(e)}
             

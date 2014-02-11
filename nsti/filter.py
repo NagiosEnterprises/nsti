@@ -29,7 +29,7 @@ def create_filter():
         new_filter = db.Filter(name)
         result = db.DB.add(new_filter)
         try:
-            for atom in request.args.getlist('atom'):
+            for atom in request.args.getlist('atoms[]'):
                 atom_info = json.loads(atom)
                 new_atom = db.FilterAtom()
                 new_atom.column_name = atom_info['column_name']

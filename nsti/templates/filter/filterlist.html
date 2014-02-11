@@ -40,19 +40,17 @@ function get_tr_for_filter(filter) {
 function add_filter() {
     var API_URL = BASE_URL + 'api/filter/create';
     var name = $('#filter-name').val();
-    var atoms = {};
+    var atoms = [];
 
     $('form.atoms').each(function(d) {
         var k = {};
         var j = $(this).serializeArray();
 
         $.each(j, function(i, n) {
-            // var obj = {};
-            k[n, name] = n.value;
-            
-            // for(var x; x < 12; x++)
-            //     obj[x] = {form:atoms}
+            k[n.name] = n.value;            
         });
+        k = JSON.stringify(k);
+        atoms.push(k);
     });
 
     $.getJSON(API_URL, {atoms:atoms, 'name':name}, function(d) {

@@ -40,6 +40,7 @@
 
 #filter-table .label {
     margin-right:5px;
+    font-size: 14px;
 }
 
 /* fix for modal shifting the div to the left */

@@ -332,8 +332,21 @@ $(document).ready(function() {
     draw_filter_table();
 
     $('#apply-filter').click(function() {
-        var name = $('#add-filter').val();
-        add_trap_filter_active(name);
+        var name = $('#add-filter option:selected').val();
+        var add = true;
+
+        $('#filter-table .label').each(function(v) {
+            if(name == $(this).text()) {
+                add = false;
+            }
+        });
+
+        if(add == true) {
+            add_trap_filter_active(name);
+            draw_filter_table();
+        } else {
+            draw_filter_table();
+        }
     });
     
     $('input[name=table]').change(function() {
@@ -380,7 +393,7 @@ $(document).ready(function() {
             </label>
         </div>
     </div>
-    <div class="row col-md-9 pull-right fixed">
+    <div class="row col-md-9">
         <form class="form-inline">
             <div id='filter-table'>
                 <label>Select Filter:</label>

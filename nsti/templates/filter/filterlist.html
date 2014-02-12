@@ -32,8 +32,12 @@ function get_tr_for_filter(filter) {
                                  'data-index': filter.name});
     $('<td>', {html: checkbox}).appendTo(tr);
     $('<td>', {text: filter.name}).appendTo(tr);
-    $('<td>', {text: filter.action}).appendTo(tr);
 
+    var td_div = $('<td>').appendTo(tr);
+
+    $.each(filter.action.split(','), function(k, v) { 
+        $('<div>', {text: v}).appendTo(td_div);
+    });
     return tr;
 }
 
@@ -47,7 +51,7 @@ function add_filter() {
         var j = $(this).serializeArray();
 
         $.each(j, function(i, n) {
-            k[n.name] = n.value;            
+            k[n.name] = n.value;
         });
         k = JSON.stringify(k);
         atoms.push(k);
@@ -80,13 +84,13 @@ function add_new_atom() {
                             </select> \
                         </div> \
                         <div class="form-group col-xs-3" style="width:auto;"> \
-                            <select name="comparison" class="form-control"> \
-                                <option>none</option> \
-                                <option>></option> \
-                                <option><</option> \
-                                <option>=</option> \
-                                <option>>=</option> \
-                                <option><=</option> \
+                            <select name="comparison" class="form-control" id="comparison"> \
+                                <option value="=">=</option> \
+                                <option value=">">></option> \
+                                <option value="<"><</option> \
+                                <option value=">=">>=</option> \
+                                <option value="<="><=</option> \
+                                <option value="none">none</option> \
                             </select> \
                         </div> \
                         <div class="form-group col-xs-5"> \
@@ -194,7 +198,7 @@ $(document).ready(function() {
                     </td>
                 </tr>
             </tfoot>
-            <tbody id='filter-table-body'>
+            <tbody class='text-center' id='filter-table-body'>
             </tbody>
         </table>
     </div>

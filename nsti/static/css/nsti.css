@@ -41,3 +41,17 @@
 #filter-table .label {
     margin-right:5px;
 }
+
+/* fix for modal shifting the div to the left */
+body {
+    overflow-y: scroll;
+}
+
+body.modal-open {
+    overflow-y: scroll;
+    margin: 0 auto;
+}
+
+.modal {
+    overflow: auto;
+}

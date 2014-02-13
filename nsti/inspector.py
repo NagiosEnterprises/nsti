@@ -14,6 +14,7 @@ def inspector():
 	table = request.args.get('traptype') or session.get('traptype') or 'Snmptt'
 	c_tablename = table.capitalize()
     
+    ''' c_table showstoppng until defined in next def '''
     if c_tablename in ['Snmptt', 'SnmpttArchive', 'SnmpttUnknown']:
         session['tablename'] = c_tablename
     else:

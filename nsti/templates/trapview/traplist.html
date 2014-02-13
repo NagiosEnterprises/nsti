@@ -151,6 +151,8 @@ function load_body(page) {
     make_pagination();
     
     show_throbber('#trap-table');
+
+    //dear future nick: here's that function again, Luke
     var args = get_arguments();
     
     var tbody = $('#trap-table-body');
@@ -174,16 +176,16 @@ function load_body(page) {
         var app = $('<tr>', {html: '<td colspan="999">No traps found in database.</td>'});
         app.appendTo(tbody);
     }
-    // Otherwise draw the trap table 
+    // Otherwise draw the trap table
     else {
         $.each(sliced, function(i, d) {
             var app;
             app = func(d);
+
             app.appendTo(tbody);
         });
-    }
-    
     hide_throbber('#trap-table');
+    }
 }
 
 function load_table() {
@@ -293,26 +295,13 @@ function draw_filter_table() {
 }
 
 function add_trap_filter_active(name) {
-    var API_URL = BASE_URL + 'api/filter/add-active-filter';
+    var API_URL = BASE_URL + 'api/filter/read';
 
     $.getJSON(API_URL, {name:name}, function() {
         var tag = make_tag(name);
         tag.appendTo('#filter-table');
     });
 }
-
-// function for applying active filters to traplist div
-// function apply_trap_filter(name) {
-//     var API_URL = BASE_URL + 'api/filter/add-active-filter';
-
-//     $.getJSON(API_URL, {name:name}, function() {
-//         $.each(d.name, function(k, v){
-//             var apply = $(this).text();
-
-//             apply.filter(callback[])
-//         });
-//     });
-// }
 
 //make tags for currently active filters
 function make_tag(name) {
@@ -324,6 +313,7 @@ function make_tag(name) {
         var d = $(this).parent(".label");
         $.getJSON(API_URL, {name: name}, function() {
             d.remove();
+            load_body();
         });
     });
     x.appendTo(s);
@@ -332,6 +322,7 @@ function make_tag(name) {
 
 $(document).ready(function() {
 
+    //populate select options to apply filters to traplist
     API_URL = BASE_URL + 'api/filter/read';
 
     $.getJSON(API_URL, function(d) {
@@ -344,6 +335,7 @@ $(document).ready(function() {
         });
     draw_filter_table();
 
+    //apply filters to traplist page and make tags with 'Apply' button
     $('#apply-filter').click(function() {
         var name = $('#add-filter option:selected').val();
         var add = true;
@@ -356,8 +348,8 @@ $(document).ready(function() {
 
         if(add == true) {
             add_trap_filter_active(name);
-            apply_trap_filter(name);
             draw_filter_table();
+            load_body();
         } else {
             draw_filter_table();
         }

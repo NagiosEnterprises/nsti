@@ -2,16 +2,6 @@
 
 {% block header %}
 <script>
-/**
- * Past Nick,
- * WTF was this for?
- * Sincerely,
- * Future Nick
- */
-function get_arguments() {
-    return {};
-}
-
 /* Table drawing functions */
 
 function make_pagination() {
@@ -151,9 +141,6 @@ function load_body(page) {
     make_pagination();
     
     show_throbber('#trap-table');
-
-    //dear future nick: here's that function again, Luke
-    var args = get_arguments();
     
     var tbody = $('#trap-table-body');
     
@@ -295,7 +282,7 @@ function draw_filter_table() {
 }
 
 function add_trap_filter_active(name) {
-    var API_URL = BASE_URL + 'api/filter/read';
+    var API_URL = BASE_URL + 'api/filter/add-active-filter';
 
     $.getJSON(API_URL, {name:name}, function() {
         var tag = make_tag(name);
@@ -306,7 +293,7 @@ function add_trap_filter_active(name) {
 //make tags for currently active filters
 function make_tag(name) {
     var API_URL = BASE_URL + 'api/filter/delete-active-filter';
-    var s = $('<span>', {class: 'label label-success pull-right', text: name} );
+    var s = $('<span>', {class: 'label label-success pull-right', text: name + ' '});
     var x = $('<span>', {class: 'glyphicon glyphicon-remove'});
 
     x.click(function() {

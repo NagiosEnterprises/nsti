@@ -328,7 +328,7 @@ $(document).ready(function() {
         var add = true;
 
         $('#filter-table .label').each(function(v) {
-            if(name == $(this).text()) {
+            if(name == $(this).text().trim()) {
                 add = false;
             }
         });

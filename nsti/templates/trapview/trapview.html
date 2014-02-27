@@ -44,7 +44,7 @@ function render_trap() {
             $('<td>', {text: TRANSLATE[key]}).appendTo(tr);
 
             if(INSPECTABLE[key] == true) {
-                var a = $('<a>', {text: value + ' ', href: "inspector/"});
+                var a = $('<a>', {text: value + ' ', href: "inspector.html"});
                 var s = $('<span>', {class: "glyphicon glyphicon-search"});
                 s.appendTo(a);
                 a.appendTo(content_td);

@@ -49,7 +49,7 @@ $(document).ready(function() {
 
 {% block content %}
 <div class='row container content'>
-    <div class="panel panel-default">
+    <div class='panel panel-default'>
         <div id="panel-title" class="panel-heading text-right"></div>
         <table class="table table-condensed table-hover table-striped">
             <thead>
@@ -60,6 +60,17 @@ $(document).ready(function() {
             </thead>
             <tbody id="inspector-view-tbody"></tbody>
         </table>
-    </div>
+        <div class='row container content'>
+            <div class='panel panel-default'>
+                <div class='col-md-6'>
+                    <div id="highchart">
+                    </div>
+                </div>
+                <div class='col-md-6'>
+                    <div id='piechart'>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 {% endblock content %}

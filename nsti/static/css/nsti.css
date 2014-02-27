@@ -56,3 +56,7 @@ body.modal-open {
 .modal {
     overflow: auto;
 }
+
+.label-margin {
+    margin-left: 5px;
+}

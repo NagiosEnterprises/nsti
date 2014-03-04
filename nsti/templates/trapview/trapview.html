@@ -31,6 +31,7 @@ var INSPECTABLE = {
 function render_trap() {
     
     var api_url = BASE_URL + 'api/trapview/read/{{ table }}';
+    var inspect_URL = BASE_URL - 'trapview' + 'inspector'
     var query = {id: {{ trapid }}};
     
     $.getJSON(api_url, query, function(data) {
@@ -44,7 +45,7 @@ function render_trap() {
             $('<td>', {text: TRANSLATE[key]}).appendTo(tr);
 
             if(INSPECTABLE[key] == true) {
-                var a = $('<a>', {text: value + ' ', href: "inspector.html"});
+                var a = $('<a>', {text: value + ' ', href: inspect_URL });
                 var s = $('<span>', {class: "glyphicon glyphicon-search"});
                 s.appendTo(a);
                 a.appendTo(content_td);

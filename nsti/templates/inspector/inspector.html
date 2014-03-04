@@ -19,30 +19,263 @@ var TRANSLATE = {
     'enterprise': 'Enterprise',
     'id': 'ID' };
 
-function render_inspector_view() {
-
-	var API_URL = BASE_URL + 'api/inspector/{{ table }}';
-    var query = {id: {{ trapid }}};
-
-    $.getJSON(API_URL, query, function(data) {
-    	var trap = data[0];
-    	$('<h4>', {text: "Inspector view for all " + " " + trap.id}).appendTo('#panel-title');
+function make_pagination() {
     
-	    $.each(trap, function(key, value) {
-	        var tr = $('<tr>');
-	        
-	        $('<td>', {text: TRANSLATE[key]}).appendTo(tr);
-	        $('<td>', {text: value}).appendTo(tr);
-	        
-	        tr.appendTo('#inspector-view-tbody');
-	    });
+    pdiv = $('div#pagination');
+    sdiv = $('div#pagination-summary');
+    sdiv.empty();
+    pdiv.empty();
+    
+    // Set our pagination window
+    if(PAGE - Math.floor(WINDOW/2) < 0) {
+        minpage = 0;
+        maxpage = WINDOW;
+    }
+    else if(PAGE + Math.floor(WINDOW/2) > pages - 1) {
+        minpage = pages - WINDOW;
+        maxpage = pages;
+    }
+    else {
+        minpage = PAGE - Math.floor(WINDOW/2);
+        maxpage = PAGE + Math.floor(WINDOW/2);
+    }
+    
+    pages = Math.ceil(TRAPS.length / PERPAGE);
+    var ul = $('<ul>', {class: 'pagination'});
+    
+    // Draw the << list item
+    var li = $('<li>', {html: '<span>&laquo;</span>'});
+    if(PAGE == 0) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(0);});
+    }
+    li.appendTo(ul);
+    
+    // Draw the Prev list item
+    var li = $('<li>', {html: '<span>Prev</span>'});
+    if(PAGE == 0) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(PAGE-1);});
+    }
+    li.appendTo(ul);
+    
+    // Draw each individual link
+    var paginated = 0;
+    for(var i=0, l=TRAPS.length; i<pages; i++) {
+        // If this is the first page, we want to deactivate the first arrow
+        if(i >= minpage && i < maxpage) {
+            paginated++;
+            var li = $('<li>', {html: '<span>' + (i+1) + '</span>', pageindex: i});
+            if(i == PAGE) {
+                li.addClass('active')
+            }
+            li.click(function() {var index=$(this).attr('pageindex'); load_body(index);});
+            li.appendTo(ul);
+        }
+    }
+    
+    // Draw the Next list item
+    var li = $('<li>', {html: '<span>Next</span>'});
+    if(PAGE == pages-1) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(PAGE+1);});
+    }
+    li.appendTo(ul);
+    
+    // Draw the >> list item
+    var li = $('<li>', {html: '<span>&raquo;</span>'});
+    if(PAGE == pages-1) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(pages - 1);});
+    }
 
-    	hide_throbber();
+    li.appendTo(ul);
+    
+    $('<div>', {class: 'label label-default pull-right', text: 'Page ' + (PAGE + 1) + ' of ' + pages}).appendTo(sdiv);
+    $('<div>', {class: 'label label-default', text: TRAPS.length + ' Traps Total | Displaying ' + (PAGE*PERPAGE) + ' - ' + Math.min(TRAPS.length, (PAGE*PERPAGE) + PERPAGE)}).appendTo(sdiv);
+    
+    ul.appendTo(pdiv);
+}
+
+function normal_row(row) {
+    var heading = $('<tr>');
+    var klass;
+    
+    switch(row.severity) {
+        case 'warning':
+        case 'Warning':
+            klass = 'warning';
+            break;
+        case 'critical':
+        case 'Critical':
+            klass = 'danger';
+            break;
+        case 'ok':
+        case 'Ok':
+            klass = 'success';
+            break;
+    }
+    
+    $('<td>', {text: row.id}).appendTo(heading);
+    $('<td>', {html: '<input type="checkbox" class="trap-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
+    $('<td>', {text: row.timewritten, class: 'text-center'}).appendTo(heading);
+    $('<td>', {text: row.trapoid, class: 'text-center'}).appendTo(heading);
+    $('<td>', {text: row.hostname, class: 'text-center'}).appendTo(heading);
+    $('<td>', {text: row.severity.toUpperCase(), class: klass + " text-center"}).appendTo(heading);
+    $('<td>', {text: row.category, class: 'text-center'}).appendTo(heading);
+    $('<td>', {text: row.formatline.substring(0, TRUNCATE)}).appendTo(heading);
+
+    return heading;
+}
+
+function unknown_row(row) {
+    var heading = $('<tr>');
+    
+    $('<td>', {text: row.id}).appendTo(heading);
+    $('<td>', {html: '<input type="checkbox" class="trap-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
+    $('<td>', {text: row.timewritten}).appendTo(heading);
+    $('<td>', {text: row.trapoid}).appendTo(heading);
+    $('<td>', {text: row.hostname}).appendTo(heading);
+    $('<td>', {text: row.uptime}).appendTo(heading);
+    $('<td>', {text: row.formatline.substring(0, TRUNCATE)}).appendTo(heading);
+    
+    return heading;
+}
+
+function load_body(page) {
+    if(page == undefined) {
+        PAGE = 0;
+    } else {
+        PAGE = page;
+    }
+    
+    make_pagination();
+    
+    show_throbber('#trap-table');
+    
+    var tbody = $('#trap-table-body');
+    
+    tbody.empty();
+    
+    switch(TABLE) {
+        case 'Snmptt':
+        case 'SnmpttArchive':
+            var func = normal_row;
+            break;
+        case 'SnmpttUnknown':
+            var func = unknown_row;
+            break;
+    }
+    
+    sliced = TRAPS.slice(PAGE*PERPAGE, (PAGE*PERPAGE) + PERPAGE);
+    
+    // If there aren't any traps just say so.
+    if(sliced.length == 0) {
+        var app = $('<tr>', {html: '<td colspan="999">No traps found in database.</td>'});
+        app.appendTo(tbody);
+    }
+    // Otherwise draw the trap table
+    else {
+        $.each(sliced, function(i, d) {
+            var app;
+            app = func(d);
+
+            app.appendTo(tbody);
+        });
+    hide_throbber('#trap-table');
+    }
+}
+
+function load_table() {
+    
+    load_header();
+    var api_url = BASE_URL + 'api/trapview/read/' + TABLE;
+    
+    if(TABLE == 'Snmptt') {
+        $('.btn-archive').show();
+        $('.btn-delete').show();
+    } else {
+        $('.btn-archive').hide();
+        $('.btn-delete').show();
+    }
+    
+    //~ Get the trap JSON
+    $.getJSON(api_url, function(data) {
+        TRAPS = data;
+        load_body();
     });
 }
 
+function load_header() {
+    var heading = $('<tr>');
+    switch(TABLE) {
+        case 'SnmpttUnknown':
+            $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Uptime', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
+            break;
+        case 'Snmptt':
+        case 'SnmpttArchive':
+        default:
+            $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Severity', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Category', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
+            break;
+    }
+    $('#trap-table-head').html(heading);
+}
+
+$(function () { 
+    $('#chart-container').highcharts({
+        chart: {
+            type: 'line'
+            renderTo: 'chart-container'
+        },
+        title: {
+            text: 'Inspector Trap Graph'
+        },
+        xAxis: {
+            categories: ['Apples', 'Bananas', 'Oranges']
+        },
+        yAxis: {
+            title: {
+                text: 'Fruit eaten'
+            }
+        },
+        series: [{
+            name: 
+            data: 
+        }
+    });
+});
+
 $(document).ready(function() {
-	render_inspector_view();
+	
+    $('input[name=table]').change(function() {
+        show_throbber('#inspector-content');
+        TABLE = $(this).val();
+        load_table();
+        hide_throbber('#inspector-content');
+    });
+
+    $('.goto-view').click(function() {
+        
+    });
+
+
 });
 </script>
 {% endblock header %}
@@ -63,11 +296,12 @@ $(document).ready(function() {
         <div class='row container content'>
             <div class='panel panel-default'>
                 <div class='col-md-6'>
-                    <div id="highchart">
+                    <div id="chart-container-line" style="width:100%; height:400px;">
+
                     </div>
                 </div>
                 <div class='col-md-6'>
-                    <div id='piechart'>
+                    <div id="chart-container-pie" style="width:100%; height:400px;">
                     </div>
                 </div>
             </div>

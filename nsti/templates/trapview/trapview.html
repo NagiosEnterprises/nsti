@@ -31,7 +31,7 @@ var INSPECTABLE = {
 function render_trap() {
     
     var api_url = BASE_URL + 'api/trapview/read/{{ table }}';
-    var inspect_URL = BASE_URL - 'trapview' + 'inspector'
+    var inspect_URL = BASE_URL - 'trapview' + 'inspector';
     var query = {id: {{ trapid }}};
     
     $.getJSON(api_url, query, function(data) {

@@ -19,6 +19,14 @@ var TRANSLATE = {
     'enterprise': 'Enterprise',
     'id': 'ID' };
 
+var chart_id = {{ chartID|safe }} {
+        var series = {{ series|safe }}
+        var title = {{ title|safe }}
+        var xAxis = {{ xAxis|safe }}
+        var yAxis = {{ yAxis|safe }}
+        var chart = {{ chart|safe }}
+    };
+
 function make_pagination() {
     
     pdiv = $('div#pagination');
@@ -239,10 +247,10 @@ function load_header() {
 }
 
 $(function () { 
-    $('#chart-container').highcharts({
+    $('#chart-container-line').highcharts({
         chart: {
-            type: 'line'
-            renderTo: 'chart-container'
+            type: 'spline',
+            renderTo: 'chart-container-line'
         },
         title: {
             text: 'Inspector Trap Graph'
@@ -255,10 +263,7 @@ $(function () {
                 text: 'Fruit eaten'
             }
         },
-        series: [{
-            name: 
-            data: 
-        }
+        series: [{}]
     });
 });
 
@@ -273,6 +278,14 @@ $(document).ready(function() {
 
     $('.goto-view').click(function() {
         
+    });
+
+    $(chart_id).highcharts({
+        chart: chart,
+        title: title,
+        xAxis: xAxis,
+        yAxis: yAxis,
+        series: series
     });
 
 
@@ -296,12 +309,11 @@ $(document).ready(function() {
         <div class='row container content'>
             <div class='panel panel-default'>
                 <div class='col-md-6'>
-                    <div id="chart-container-line" style="width:100%; height:400px;">
-
+                    <div id={{ chartID|safe }} class="linechart" style="width:100%; height:400px;">
                     </div>
                 </div>
                 <div class='col-md-6'>
-                    <div id="chart-container-pie" style="width:100%; height:400px;">
+                    <div id={{ chartID|safe }} class="piechart" style="width:100%; height:400px;">
                     </div>
                 </div>
             </div>

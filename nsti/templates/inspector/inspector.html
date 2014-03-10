@@ -239,26 +239,46 @@ function load_header() {
 }
 
 $(document).ready(function() {
-	var options = {
+	var options1 = {
         chart: {
             renderTo: 'chart-container-line',
             type: 'spline'
         },
+        title: {
+            text: 'Inspector Line Graph'
+        },
         series: [{}]
     };
 
-    var API_URL = BASE_URL + 'inspector/read/<trapid>';
+    var API_URL = BASE_URL + 'api/trapview/read/' + TABLE;
+     // + '?traptype=' + TABLE;
 
     $.getJSON(API_URL, function(data) {
-        options.series[0].data = data;
-        var chart = new Highcharts.Chart(options);
+        options1.series[0].data = data;
+        var chart = new Highcharts.Chart(options1);
+    });
+
+    var options2 = {
+        chart: {
+            renderTo: 'chart-container-pie',
+            type: 'pie'
+        },
+        title: {
+            text: 'Inspector Pie Graph'
+        },
+        series: [{}]
+    };
+
+    $.getJSON(API_URL, function(data) {
+        options2.series[0].data = data;
+        var chart = new Highcharts.Chart(options2);
     });
 
     $('input[name=table]').change(function() {
-        show_throbber('#inspector-content');
+        show_throbber('#content');
         TABLE = $(this).val();
         load_table();
-        hide_throbber('#inspector-content');
+        hide_throbber('#content');
     });
 
     $('.goto-view').click(function() {
@@ -281,16 +301,25 @@ $(document).ready(function() {
                     <th width="70%">Value</th>
                 </tr>
             </thead>
-            <tbody id="inspector-view-tbody"></tbody>
+            <tbody id="inspector-view-tbody">
+            </tbody>
         </table>
         <div class='row container content'>
             <div class='panel panel-default'>
+                <div class="input-group col-md-5 col-md-offset-2">
+                  <span class="input-group-addon">Trap:</span>
+                  <input type="text" class="form-control" placeholder="Insert a metric to be inspected..">
+                </div>
+                <div class="input-group col-md-5 col-md-offset-2" style="margin-top:10px;">
+                  <span class="input-group-addon">Value:</span>
+                  <input type="text" class="form-control" placeholder="Possible value for a trap metric..">
+                </div>
                 <div class='col-md-6'>
                     <div id='chart-container-line' class="linechart" style="width:100%; height:400px;">
                     </div>
                 </div>
                 <div class='col-md-6'>
-                    <div id={{ chartID|safe }} class="piechart" style="width:100%; height:400px;">
+                    <div id='chart-container-pie' class="piechart" style="width:100%; height:400px;">
                     </div>
                 </div>
             </div>

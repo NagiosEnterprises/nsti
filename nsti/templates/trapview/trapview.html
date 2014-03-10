@@ -36,7 +36,7 @@ function render_trap() {
     
     $.getJSON(api_url, query, function(data) {
         var trap = data[0];
-        var inspect_URL = BASE_URL - 'trapview/' + 'inspector/' + trap.id;
+        var inspect_URL = BASE_URL + 'inspector/' + trap.id;
 
         $('<h4>', {text: "Trap Information for Trap ID " + trap.id}).appendTo('#panel-title');
         

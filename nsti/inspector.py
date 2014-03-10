@@ -28,7 +28,7 @@ def inspector_view(trapid):
     if table in ['Snmptt', 'SnmpttArchive', 'SnmpttUnknown']:
         session['tablename'] = table
     
-    return render_template('inspector/inspect.html', trapid=trapid, table=table)
+    return render_template('inspector/inspector.html', trapid=trapid, table=table)
 
 @app.route('/api/inspector/read/<trapid>')
 def inspector_read(trapid):

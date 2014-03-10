@@ -31,11 +31,13 @@ var INSPECTABLE = {
 function render_trap() {
     
     var api_url = BASE_URL + 'api/trapview/read/{{ table }}';
-    var inspect_URL = BASE_URL - 'trapview' + 'inspector';
+    
     var query = {id: {{ trapid }}};
     
     $.getJSON(api_url, query, function(data) {
         var trap = data[0];
+        var inspect_URL = BASE_URL - 'trapview/' + 'inspector/' + trap.id;
+
         $('<h4>', {text: "Trap Information for Trap ID " + trap.id}).appendTo('#panel-title');
         
         $.each(trap, function(key, value) {

@@ -56,3 +56,18 @@ body.modal-open {
 .modal {
     overflow: auto;
 }
+
+.label-margin {
+    margin-left: 5px;
+}
+
+.inspector-icon {
+    margin-left:5px;
+    color: #428bca;
+}
+
+.inspector-icon > .active > a:hover,
+.inspector-icon > .active > a:focus {
+    color: #357ebd;
+    background-color: transparent;
+}

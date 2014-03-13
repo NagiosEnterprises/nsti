@@ -293,11 +293,11 @@ function add_trap_filter_active(name) {
 //make tags for currently active filters
 function make_tag(name) {
     var API_URL = BASE_URL + 'api/filter/delete-active-filter';
-    var s = $('<span>', {class: 'label label-success pull-right', text: name + ' '});
+    var s = $('<span>', {class: 'btn btn-success pull-right label-margin', text: name + ' '});
     var x = $('<span>', {class: 'glyphicon glyphicon-remove'});
 
     x.click(function() {
-        var d = $(this).parent(".label");
+        var d = $(this).parent(".btn");
         $.getJSON(API_URL, {name: name}, function() {
             d.remove();
             load_body();
@@ -327,7 +327,7 @@ $(document).ready(function() {
         var name = $('#add-filter option:selected').val();
         var add = true;
 
-        $('#filter-table .label').each(function(v) {
+        $('#filter-table .btn').each(function(v) {
             if(name == $(this).text().trim()) {
                 add = false;
             }
@@ -388,8 +388,8 @@ $(document).ready(function() {
     </div>
     <div class="row col-md-9">
         <form class="form-inline">
-            <div id='filter-table'>
-                <label>Select Filter:</label>
+            <div id='filter-table' class='input-group'>
+                <span class='input-group-addon'>Select Filter:</span>
                 <select id="add-filter" class="form-control" style="width:auto;"></select>
                 <input type="button" id="apply-filter" class="btn btn-primary" style="margin-left:15px;" value="Apply">
             </div>

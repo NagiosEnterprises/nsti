@@ -1,0 +1,65 @@
+{% extends 'system/base.html' %}
+
+{% block header %}
+<script>
+var TRANSLATE = {
+    'agentip': 'Agent IP',
+    'eventid': 'Event ID',
+    'category': 'Category',
+    'uptime': 'Uptime',
+    'severity': 'Severity',
+    'traptime': 'Trap Time',
+    'timewritten': 'Time Written To Database',
+    'formatline': 'Message',
+    'hostname': 'Hostname',
+    'community': 'Community',
+    'eventname': 'Event Name',
+    'trapoid': 'Trap OID',
+    'trapread': 'Trap Read',
+    'enterprise': 'Enterprise',
+    'id': 'ID' };
+
+function render_inspector_view() {
+
+	var API_URL = BASE_URL + 'api/inspector/{{ table }}';
+    var query = {id: {{ trapid }}};
+
+    $.getJSON(API_URL, query, function(data) {
+    	var trap = data[0];
+    	$('<h4>', {text: "Inspector view for all " + " " + trap.id}).appendTo('#panel-title');
+    
+	    $.each(trap, function(key, value) {
+	        var tr = $('<tr>');
+	        
+	        $('<td>', {text: TRANSLATE[key]}).appendTo(tr);
+	        $('<td>', {text: value}).appendTo(tr);
+	        
+	        tr.appendTo('#inspector-view-tbody');
+	    });
+
+    	hide_throbber();
+    });
+}
+
+$(document).ready(function() {
+	render_inspector_view();
+});
+</script>
+{% endblock header %}
+
+{% block content %}
+<div class='row container content'>
+    <div class="panel panel-default">
+        <div id="panel-title" class="panel-heading text-right"></div>
+        <table class="table table-condensed table-hover table-striped">
+            <thead>
+                <tr>
+                    <th width="30%">Key</th>
+                    <th width="70%">Value</th>
+                </tr>
+            </thead>
+            <tbody id="inspector-view-tbody"></tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

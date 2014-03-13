@@ -17,7 +17,16 @@ var TRANSLATE = {
     'trapoid': 'Trap OID',
     'trapread': 'Trap Read',
     'enterprise': 'Enterprise',
-    'id': 'ID' };
+    'id': 'ID' 
+};
+
+var INSPECTABLE = {
+    'eventname': true,
+    'category': true,
+    'severity': true,
+    'agentip': true,
+    'eventid': true
+};
     
 function render_trap() {
     
@@ -30,10 +39,20 @@ function render_trap() {
         
         $.each(trap, function(key, value) {
             var tr = $('<tr>');
-            
+            var content_td = $('<td>');
+
             $('<td>', {text: TRANSLATE[key]}).appendTo(tr);
-            $('<td>', {text: value}).appendTo(tr);
-            
+
+            if(INSPECTABLE[key] == true) {
+                var a = $('<a>', {text: value + ' ', href: "inspector/"});
+                var s = $('<span>', {class: "glyphicon glyphicon-search"});
+                s.appendTo(a);
+                a.appendTo(content_td);
+            } else {
+                content_td.text(value);
+            }
+
+            content_td.appendTo(tr);
             tr.appendTo('#trap-view-tbody');
         });
         

@@ -2,16 +2,6 @@
 
 {% block header %}
 <script>
-/**
- * Past Nick,
- * WTF was this for?
- * Sincerely,
- * Future Nick
- */
-function get_arguments() {
-    return {};
-}
-
 /* Table drawing functions */
 
 function make_pagination() {
@@ -123,7 +113,7 @@ function normal_row(row) {
     $('<td>', {text: row.severity.toUpperCase(), class: klass + " text-center"}).appendTo(heading);
     $('<td>', {text: row.category, class: 'text-center'}).appendTo(heading);
     $('<td>', {text: row.formatline.substring(0, TRUNCATE)}).appendTo(heading);
-    
+
     return heading;
 }
 
@@ -151,7 +141,6 @@ function load_body(page) {
     make_pagination();
     
     show_throbber('#trap-table');
-    var args = get_arguments();
     
     var tbody = $('#trap-table-body');
     
@@ -174,16 +163,16 @@ function load_body(page) {
         var app = $('<tr>', {html: '<td colspan="999">No traps found in database.</td>'});
         app.appendTo(tbody);
     }
-    // Otherwise draw the trap table 
+    // Otherwise draw the trap table
     else {
         $.each(sliced, function(i, d) {
             var app;
             app = func(d);
+
             app.appendTo(tbody);
         });
-    }
-    
     hide_throbber('#trap-table');
+    }
 }
 
 function load_table() {
@@ -292,33 +281,35 @@ function draw_filter_table() {
     fdiv = $('#filter-table');
 }
 
-$('#apply-filter').click(function () {
-    var name = $('#add-filter').val();
-    add_trap_filter_active();
-});
-
 function add_trap_filter_active(name) {
-    var tag = make_tag(name);
-    tag.appendTo('#filter-table');
+    var API_URL = BASE_URL + 'api/filter/add-active-filter';
+
+    $.getJSON(API_URL, {name:name}, function() {
+        var tag = make_tag(name);
+        tag.appendTo('#filter-table');
+    });
 }
 
 //make tags for currently active filters
 function make_tag(name) {
-    var API_URL = BASE_URL + 'api/filter/add-active-filter';
-    var s = $('<span>', {class: 'label label-success', text: name});
+    var API_URL = BASE_URL + 'api/filter/delete-active-filter';
+    var s = $('<span>', {class: 'label label-success pull-right', text: name + ' '});
     var x = $('<span>', {class: 'glyphicon glyphicon-remove'});
 
     x.click(function() {
-        $.getJSON(API_URL, {name: name}, function(d) {
-            s.remove();
+        var d = $(this).parent(".label");
+        $.getJSON(API_URL, {name: name}, function() {
+            d.remove();
+            load_body();
         });
     });
     x.appendTo(s);
     return s;
 }
 
-//populate filter select options
-$(document).ready( function() {
+$(document).ready(function() {
+
+    //populate select options to apply filters to traplist
     API_URL = BASE_URL + 'api/filter/read';
 
     $.getJSON(API_URL, function(d) {
@@ -330,9 +321,26 @@ $(document).ready( function() {
             });
         });
     draw_filter_table();
-});
 
-$(document).ready(function() {
+    //apply filters to traplist page and make tags with 'Apply' button
+    $('#apply-filter').click(function() {
+        var name = $('#add-filter option:selected').val();
+        var add = true;
+
+        $('#filter-table .label').each(function(v) {
+            if(name == $(this).text().trim()) {
+                add = false;
+            }
+        });
+
+        if(add == true) {
+            add_trap_filter_active(name);
+            draw_filter_table();
+            load_body();
+        } else {
+            draw_filter_table();
+        }
+    });
     
     $('input[name=table]').change(function() {
         show_throbber('#trap-content');
@@ -378,14 +386,14 @@ $(document).ready(function() {
             </label>
         </div>
     </div>
-    <div class="row">
-        <div class='col-md-8 pull-right' id='filter-table'>
-            <form class="form-inline">
+    <div class="row col-md-9">
+        <form class="form-inline">
+            <div id='filter-table'>
                 <label>Select Filter:</label>
                 <select id="add-filter" class="form-control" style="width:auto;"></select>
-                <input type="button" id="apply-filter" class="btn btn-primary" style="margin-left:15px;"value="Apply">
-            </form>
-        </div>
+                <input type="button" id="apply-filter" class="btn btn-primary" style="margin-left:15px;" value="Apply">
+            </div>
+        </form>
     </div>
 </div>
 

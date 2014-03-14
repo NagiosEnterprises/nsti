@@ -66,6 +66,18 @@ body.modal-open {
     color: #428bca;
 }
 
+.width-auto {
+    width: auto;
+}
+
+.brick-red {
+    color: #C00000;    
+}
+
+.form-select-div {
+   margin:0 0 10px 10px; 
+}
+
 .inspector-icon > .active > a:hover,
 .inspector-icon > .active > a:focus {
     color: #357ebd;

@@ -45,3 +45,7 @@ def inspector_read(trapid):
     
     json_str = json.dumps(result_dict, default=db.encode_storm_result_set)
     return Response(response=json_str, status=200, mimetype='application/json')
+
+@app.route('/api/inspector/test')
+def inspector_test():
+    return render_template('inspector/test.html')

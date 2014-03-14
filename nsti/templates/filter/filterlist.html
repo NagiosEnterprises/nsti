@@ -85,14 +85,15 @@ function add_filter() {
         atoms.push(k);
     });
 
+    show_throbber();
     $.getJSON(API_URL, {atoms: atoms, 'name': name}, function(d) {
         if(d.error) {
-            alert("Error: Failed to add new filter: " + d.error);
+            show_error("Error: Failed to add new filter: " + d.error);
         } else {
-            alert(d.success);
             load_filters();
             $('#add-filter-modal').modal('hide');
         }
+        hide_throbber();
     });
 }
 
@@ -243,21 +244,6 @@ $(document).ready(function() {
             <tbody class='text-center' id='filter-table-body'>
             </tbody>
         </table>
-    </div>
-</div>
-
-<div class='modal fade' id='error-message' tabindex='-1' role='dialog' aria-labelledby='error-message-label' aria-hidden='true'>
-    <div class='modal-dialog'>
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
-                <h4 class='modal-title'>Error Handling Request</h4>
-            </div>
-            <div id='modal-body-error' class='modal-body'></div>
-            <div class='modal-footer'>
-                <button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button>
-            </div>
-        </div>
     </div>
 </div>
 

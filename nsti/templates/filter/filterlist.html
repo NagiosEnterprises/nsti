@@ -2,6 +2,35 @@
 
 {% block header %}
 <script>
+/* Declare some comparison operators */
+var LESS_THAN = {nicename: 'is less than', value: '__lt'};
+var GREATER_THAN = {nicename: 'is greater than', value: '__gt'};
+var CONTAINS = {nicename: 'contains', value: '__contains'};
+var EXACTLY = {nicename: 'is exactly', value: ''};
+
+/* Create a datastructure that explains what is viable as a filter and
+ * what properties should most definitely exist.
+ */
+var FILTER_DEFS = {
+    timewritten: construct_new_atom('Date', [LESS_THAN, GREATER_THAN]),
+    trapoid: construct_new_atom('Trap OID', [CONTAINS, EXACTLY]),
+    enterprise: construct_new_atom('Enterpise OID', [CONTAINS, EXACTLY]),
+    hostname: construct_new_atom('Hostname', [CONTAINS, EXACTLY]),
+    category: construct_new_atom('Category', [CONTAINS, EXACTLY]),
+    severity: construct_new_atom('Severity', [CONTAINS, EXACTLY]),
+    agentip: construct_new_atom('Agent IP', [CONTAINS, EXACTLY])
+}
+
+/* Helper function for creating the FILTER_DEF datastructure. */
+function construct_new_atom(nicename, comparisons) {
+    if (comparisons == undefined) {
+        comparisons = [];
+    }
+    
+    return {nicename: nicename,
+            comparisons: comparisons}
+}
+
 function load_filters() {
     show_throbber('#filter-table-body');
     
@@ -16,8 +45,12 @@ function load_filters() {
             tr.appendTo(tbody);
         });
 
+        if(d.filters.length == 0) {
+            tbody.append('<tr><td colspan="999"><center>No filters are currently active.</center></td></tr>');
+        }
+
         hide_throbber('#filter-table-body');
-    })
+    });
 }
 
 function get_tr_for_filter(filter) {
@@ -27,14 +60,121 @@ function get_tr_for_filter(filter) {
                                  'data-index': filter.name});
     $('<td>', {html: checkbox}).appendTo(tr);
     $('<td>', {text: filter.name}).appendTo(tr);
-    $('<td>', {text: filter.action}).appendTo(tr);
 
+    var td_div = $('<td>').appendTo(tr);
+
+    $.each(filter.action.split(','), function(k, v) { 
+        $('<div>', {text: v}).appendTo(td_div);
+    });
     return tr;
+}
+
+function add_filter() {
+    var API_URL = BASE_URL + 'api/filter/create';
+    var name = $('#filter-name').val();
+    var atoms = [];
+
+    $('form.atoms').each(function(d) {
+        var k = {};
+        var j = $(this).serializeArray();
+
+        $.each(j, function(i, n) {
+            k[n.name] = n.value;
+        });
+        k = JSON.stringify(k);
+        atoms.push(k);
+    });
+
+    $.getJSON(API_URL, {atoms: atoms, 'name': name}, function(d) {
+        if(d.error) {
+            alert("Error: Failed to add new filter: " + d.error);
+        } else {
+            alert(d.success);
+            load_filters();
+            $('#add-filter-modal').modal('hide');
+        }
+    });
+}
+
+function get_column_name_select() {
+    var column_name_sel = $('<select>', {name: 'column_name', class: 'form-control', id: 'new-atom'});
+    
+    $.each(FILTER_DEFS, function(key, value) {
+        column_name_sel.append($('<option>', {value: key, text: value.nicename}));  
+    })
+    
+    return column_name_sel;
+}
+
+function get_column_comp_select() {
+    var column_comp_sel = $('<select>', {class: 'form-control', name: 'comparison', id: 'comparison'});
+    return column_comp_sel;
+}
+
+function fill_comp(value, select_box) {
+    select_box.empty();
+    
+    $.each(FILTER_DEFS[value].comparisons, function(i, d) {
+        select_box.append($('<option>', {value: d.value, text: d.nicename}));
+    });
+}
+
+function add_new_atom() {
+    // Make our skeleton
+    var new_form = $('<form>', {class: 'atoms form-inline', role: 'form'});
+    var form_div = $('<div>', {class: 'row form-select-div'});
+    new_form.append(form_div);
+    
+    // Assemble the select box that will hold the column names
+    var column_name_div = $('<div>', {class: 'form-group'});
+    var column_name_sel = get_column_name_select();
+    column_name_div.append(column_name_sel);
+    form_div.append(column_name_div);
+    
+    // Assemble the select box that will hold the comparison operator for the column name
+    var column_comp_div = $('<div>', {class: 'form-group'});
+    var column_comp_sel = get_column_comp_select();
+    column_comp_div.append(column_comp_sel);
+    form_div.append(column_comp_div);
+    
+    // Set the change for the column name to trigger the column comparison redraw
+    column_name_sel.change(function() {fill_comp(column_name_sel.val(), column_comp_sel)});
+    column_name_sel.change();
+    
+    // Make the text input that will take user input to compare to the column
+    var column_value_div = $('<div>', {class: 'form-group'});
+    column_value_div.append($('<input>', {name: 'val', class: 'form-control', placeholder: '...'}));
+    form_div.append(column_value_div);
+    
+    // Make the remove button
+    var remove_atom_div = $('<div>', {class: 'form-group'});
+    var remove_atom_btn = $('<button>', {class: 'btn btn-default remove_atom', type: 'button'});
+    remove_atom_btn.append($('<span>', {class: "glyphicon glyphicon-remove brick-red"}));
+    remove_atom_btn.click(function() {new_form.remove();});
+    remove_atom_div.append(remove_atom_btn);
+    form_div.append(remove_atom_div);
+    
+    $('#insert-div').append(new_form);
 }
 
 $(document).ready(function() {
 
     load_filters();
+
+    $('#add-filter-click, #modal-reset').click(function() {
+        $('#insert-div').empty();
+        $('#filter-name').val("");
+        add_new_atom();
+        $('#add-filter-modal').modal('show');
+    });
+
+    $('#add-new-filter').click(function() {
+        add_filter();
+    });
+
+    $('#new-atom-button').click(function() {
+        add_new_atom();
+    });
 
     $('#toggle').click(function() {
         var checkboxes = $('.filter-select-toggle');
@@ -51,11 +191,11 @@ $(document).ready(function() {
                     alert(data.error);
                 } else {
                     $(this).parent().parent().remove();
+                    load_filters();
                 }
             })
         })
     });
-    
 })
 </script>
 {% endblock header %}
@@ -63,7 +203,7 @@ $(document).ready(function() {
 {% block content %}
 <div class='row container content'>
     <div class="col-md-6">
-        <button type="button" class="btn btn-primary btn-lg">Add New Filter</button>
+        <button type="button" class="btn btn-primary btn-lg add-filter" id="add-filter-click">Add New Filter</button>
     </div>
     <div class="col-md-6"></div>
 </div>
@@ -100,7 +240,7 @@ $(document).ready(function() {
                     </td>
                 </tr>
             </tfoot>
-            <tbody id='filter-table-body'>
+            <tbody class='text-center' id='filter-table-body'>
             </tbody>
         </table>
     </div>
@@ -117,6 +257,38 @@ $(document).ready(function() {
             <div class='modal-footer'>
                 <button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add-filter-modal" hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Create A New Filter</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+            <table>
+                <td valign="top">
+                    <label>New Filter Name:</label>
+                    <input type="text" class="form-control" id="filter-name" placeholder="New Filter"><br><br>
+                </td>
+            </table>
+        </form>
+        <div id="atom-home">
+            <h4 class="modal-title">Filters</h4><br>
+            <div id="insert-div">
+            </div>
+            <br>
+            <input type="button" id="new-atom-button" class="btn btn-default" value="Add New Filter">
+        </div>
+
+          <div class="modal-footer">
+            <button type="reset" class="btn btn-default" id="modal-reset">Reset</button>
+            <button type="submit" class="btn btn-primary" id="add-new-filter">Add New Filter</button>
+          </div>
         </div>
     </div>
 </div>

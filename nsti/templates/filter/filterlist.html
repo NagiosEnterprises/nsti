@@ -154,6 +154,23 @@ $(document).ready(function() {
             })
         })
     });
+
+    $('.edit-selected').click(function() {
+        var API_URL = BASE_URL + 'api/filter/read';
+        
+        $('.filter-select-toggle:checked').each(function() {
+            var data = {name : $(this).attr('data-index')};
+            $.getJSON(API_URL, data, function(data) {
+                if(data.error) {
+                    alert(data.error);
+                } else {
+                    $('#add-filter-modal').modal('show');
+                    $(this).parent().parent().val(data);
+                    load_filters();
+                }
+            })
+        })
+    });
 })
 </script>
 {% endblock header %}
@@ -175,6 +192,9 @@ $(document).ready(function() {
                 <button type='button' class='btn btn-default btn-delete'>
                     <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
                 </button>
+                <label class='btn btn-default btn-edit'>
+                    <a alt='Edit Selected' data-toggle='tooltip' title='Edit Selected' class='edit-selected glyphicon glyphicon-pencil'></a>
+                </label>
             </div>
         </div>
         <table id='filter-table' class='table table-condensed table-striped table-hover table-bordered'>
@@ -193,6 +213,9 @@ $(document).ready(function() {
                                 <button type='button' class='btn btn-default btn-delete'>
                                     <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
                                 </button>
+                                <label class='btn btn-default btn-edit'>
+                                    <a alt='Edit Selected' data-toggle='tooltip' title='Edit Selected' class='edit-selected glyphicon glyphicon-pencil'></a>
+                                </label>
                             </div>
                         </div>
                     </td>

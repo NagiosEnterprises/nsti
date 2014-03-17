@@ -239,7 +239,7 @@ function load_header() {
 }
 
 $(document).ready(function() {
-	var options1 = {
+	var options = {
         chart: {
             renderTo: 'chart-container-line',
             type: 'spline'
@@ -254,25 +254,26 @@ $(document).ready(function() {
      // + '?traptype=' + TABLE;
 
     $.getJSON(API_URL, function(data) {
-        options1.series[0].data = data;
-        var chart = new Highcharts.Chart(options1);
+        
+        options.series[0].data = data;
+        var chart = new Highcharts.Chart(options);
     });
 
-    var options2 = {
-        chart: {
-            renderTo: 'chart-container-pie',
-            type: 'pie'
-        },
-        title: {
-            text: 'Inspector Pie Graph'
-        },
-        series: [{}]
-    };
+    // var options2 = {
+    //     chart: {
+    //         renderTo: 'chart-container-pie',
+    //         type: 'pie'
+    //     },
+    //     title: {
+    //         text: 'Inspector Pie Graph'
+    //     },
+    //     series: [{}]
+    // };
 
-    $.getJSON(API_URL, function(data) {
-        options2.series[0].data = data;
-        var chart = new Highcharts.Chart(options2);
-    });
+    // $.getJSON(API_URL, function(data) {
+    //     options2.series[0].data = data;
+    //     var chart = new Highcharts.Chart(options2);
+    // });
 
     $('input[name=table]').change(function() {
         show_throbber('#content');

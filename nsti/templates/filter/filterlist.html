@@ -2,6 +2,34 @@
 
 {% block header %}
 <script>
+/* Declare some comparison operators */
+var LESS_THAN = {nicename: 'is less than', value: '__lt'};
+var GREATER_THAN = {nicename: 'is greater than', value: '__gt'};
+var CONTAINS = {nicename: 'contains', value: '__contains'};
+var EXACTLY = {nicename: 'is exactly', value: ''};
+
+/* Create a datastructure that explains what is viable as a filter and
+ * what properties should most definitely exist.
+ */
+var FILTER_DEFS = {
+    timewritten: construct_new_atom('Date', [LESS_THAN, GREATER_THAN]),
+    trapoid: construct_new_atom('Trap OID', [CONTAINS, EXACTLY]),
+    enterprise: construct_new_atom('Enterpise OID', [CONTAINS, EXACTLY]),
+    hostname: construct_new_atom('Hostname', [CONTAINS, EXACTLY]),
+    category: construct_new_atom('Category', [CONTAINS, EXACTLY]),
+    severity: construct_new_atom('Severity', [CONTAINS, EXACTLY]),
+    agentip: construct_new_atom('Agent IP', [CONTAINS, EXACTLY])
+}
+
+/* Helper function for creating the FILTER_DEF datastructure. */
+function construct_new_atom(nicename, comparisons) {
+    if (comparisons == undefined) {
+        comparisons = [];
+    }
+    
+    return {nicename: nicename,
+            comparisons: comparisons}
+}
 
 function load_filters() {
     show_throbber('#filter-table-body');
@@ -57,7 +85,7 @@ function add_filter() {
         atoms.push(k);
     });
 
-    $.getJSON(API_URL, {atoms:atoms, 'name':name}, function(d) {
+    $.getJSON(API_URL, {atoms: atoms, 'name': name}, function(d) {
         if(d.error) {
             alert("Error: Failed to add new filter: " + d.error);
         } else {
@@ -68,51 +96,81 @@ function add_filter() {
     });
 }
 
-function add_new_atom() {
-    var html = '<form class="atoms form-inline" role="form"> \
-                    <div class="row" style="margin:0 0 10px 10px;"> \
-                        <div class="checkbox col-xs-2" style="width:auto;"> \
-                            <select name="column_name" class="form-control" id="new-atom"> \
-                                <option>Date</option> \
-                                <option>Trap OID</option> \
-                                <option>Enterprise OID</option> \
-                                <option>Hostname</option> \
-                                <option>Category</option> \
-                                <option>Severity</option> \
-                                <option>Up Time</option> \
-                                <option>Trap Time</option> \
-                            </select> \
-                        </div> \
-                        <div class="form-group col-xs-3" style="width:auto;"> \
-                            <select name="comparison" class="form-control" id="comparison"> \
-                                <option value="=">=</option> \
-                                <option value=">">></option> \
-                                <option value="<"><</option> \
-                                <option value=">=">>=</option> \
-                                <option value="<="><=</option> \
-                                <option value="none">none</option> \
-                            </select> \
-                        </div> \
-                        <div class="form-group col-xs-5"> \
-                            <input name="val" class="form-control" placeholder=".."> \
-                        </div> \
-                        <div class="form-group"> \
-                            <button type="button" class="remove_atom btn btn-default"> \
-                                <span class="glyphicon glyphicon-remove" style="color:#C00000;"></span> \
-                            </button> \
-                        </div> \
-                    </div> \
-                </form>';
-    $('#insert-div').append(html);
-    bind_buttons();
+function get_column_name_select(given_name) {
+    var column_name_sel = $('<select>', {name: 'column_name', class: 'form-control', id: 'new-atom'});
+    set_name = given_name != undefined
+    
+    $.each(FILTER_DEFS, function(key, value) {
+        var opt_data = {value: key, 
+                        text: value.nicename};
+        if(set_name && given_name == value) {
+            opt_data.selected = 'selected';
+        }
+        
+        column_name_sel.append($('<option>', opt_data));  
+    })
+    
+    return column_name_sel;
 }
 
-function bind_buttons() {
-    $('.remove_atom').unbind('click');
+function get_column_comp_select(comparison) {
+    var column_comp_sel = $('<select>', {class: 'form-control', name: 'comparison', id: 'comparison'});
+    return column_comp_sel;
+}
 
-    $('.remove_atom').click(function() {
-        $(this).closest('form.atoms').remove();
+function fill_comp(value, select_box, given_comparison) {
+    select_box.empty();
+    set_comparison = given_comparison != undefined
+    
+    $.each(FILTER_DEFS[value].comparisons, function(i, d) {
+        var opt_data = {value: d.value, 
+                        text: d.nicename};
+        if (set_comparison && d.value == given_comparison) {
+            opt_data.selected = 'selected';
+        }
+        select_box.append($('<option>', var_data));
     });
+}
+
+function add_new_atom(column_name, column_comparison, column_value) {
+    // Make our skeleton
+    var new_form = $('<form>', {class: 'atoms form-inline', role: 'form'});
+    var form_div = $('<div>', {class: 'row form-select-div'});
+    new_form.append(form_div);
+    
+    // Assemble the select box that will hold the column names
+    var column_name_div = $('<div>', {class: 'form-group'});
+    var column_name_sel = get_column_name_select(column_name);
+    column_name_div.append(column_name_sel);
+    form_div.append(column_name_div);
+    
+    // Assemble the select box that will hold the comparison operator for the column name
+    var column_comp_div = $('<div>', {class: 'form-group'});
+    var column_comp_sel = get_column_comp_select();
+    column_comp_div.append(column_comp_sel);
+    form_div.append(column_comp_div);
+    
+    // Set the change for the column name to trigger the column comparison redraw
+    column_name_sel.change(function() {fill_comp(column_name_sel.val(), column_comp_sel, given_comparison)});
+    column_name_sel.change();
+    
+    // Make the text input that will take user input to compare to the column
+    var column_value_div = $('<div>', {class: 'form-group'});
+    column_value_div.append($('<input>', {name: 'val', 
+                                          class: 'form-control', 
+                                          placeholder: '...', 
+                                          value: (column_value==undefined) ? '' : column_value}));
+    form_div.append(column_value_div);
+    
+    // Make the remove button
+    var remove_atom_div = $('<div>', {class: 'form-group'});
+    var remove_atom_btn = $('<button>', {class: 'btn btn-default remove_atom', type: 'button'});
+    remove_atom_btn.append($('<span>', {class: "glyphicon glyphicon-remove brick-red"}));
+    remove_atom_btn.click(function() {new_form.remove();});
+    remove_atom_div.append(remove_atom_btn);
+    form_div.append(remove_atom_div);
+    
+    $('#insert-div').append(new_form);
 }
 
 $(document).ready(function() {
@@ -138,6 +196,19 @@ $(document).ready(function() {
         var checkboxes = $('.filter-select-toggle');
         checkboxes.attr('checked', !checkboxes.attr('checked'));
     });
+    
+    $('#edit-btn').click(function() {
+        var API_URL = BASE_URL + 'api/filter/read';
+        var filter_id = $(this).val();
+        var data = {id: filter_id}
+        
+        $.getJSON(API_URL, data, function(d) {
+            iatom = d[0];
+            $.each(iatom.atom, function(i, atom) {
+                add_new_atom(atom.column_name, atom.comparison, atom.value);
+            })
+        });
+    })
 
     $('.delete-selected').click(function() {
         var API_URL = BASE_URL + 'api/filter/delete';

@@ -96,30 +96,43 @@ function add_filter() {
     });
 }
 
-function get_column_name_select() {
+function get_column_name_select(given_name) {
     var column_name_sel = $('<select>', {name: 'column_name', class: 'form-control', id: 'new-atom'});
+    set_name = given_name != undefined
     
     $.each(FILTER_DEFS, function(key, value) {
-        column_name_sel.append($('<option>', {value: key, text: value.nicename}));  
+        var opt_data = {value: key, 
+                        text: value.nicename};
+        if(set_name && given_name == value) {
+            opt_data.selected = 'selected';
+        }
+        
+        column_name_sel.append($('<option>', opt_data));  
     })
     
     return column_name_sel;
 }
 
-function get_column_comp_select() {
+function get_column_comp_select(comparison) {
     var column_comp_sel = $('<select>', {class: 'form-control', name: 'comparison', id: 'comparison'});
     return column_comp_sel;
 }
 
-function fill_comp(value, select_box) {
+function fill_comp(value, select_box, given_comparison) {
     select_box.empty();
+    set_comparison = given_comparison != undefined
     
     $.each(FILTER_DEFS[value].comparisons, function(i, d) {
-        select_box.append($('<option>', {value: d.value, text: d.nicename}));
+        var opt_data = {value: d.value, 
+                        text: d.nicename};
+        if (set_comparison && d.value == given_comparison) {
+            opt_data.selected = 'selected';
+        }
+        select_box.append($('<option>', var_data));
     });
 }
 
-function add_new_atom() {
+function add_new_atom(column_name, column_comparison, column_value) {
     // Make our skeleton
     var new_form = $('<form>', {class: 'atoms form-inline', role: 'form'});
     var form_div = $('<div>', {class: 'row form-select-div'});
@@ -127,7 +140,7 @@ function add_new_atom() {
     
     // Assemble the select box that will hold the column names
     var column_name_div = $('<div>', {class: 'form-group'});
-    var column_name_sel = get_column_name_select();
+    var column_name_sel = get_column_name_select(column_name);
     column_name_div.append(column_name_sel);
     form_div.append(column_name_div);
     
@@ -138,12 +151,15 @@ function add_new_atom() {
     form_div.append(column_comp_div);
     
     // Set the change for the column name to trigger the column comparison redraw
-    column_name_sel.change(function() {fill_comp(column_name_sel.val(), column_comp_sel)});
+    column_name_sel.change(function() {fill_comp(column_name_sel.val(), column_comp_sel, given_comparison)});
     column_name_sel.change();
     
     // Make the text input that will take user input to compare to the column
     var column_value_div = $('<div>', {class: 'form-group'});
-    column_value_div.append($('<input>', {name: 'val', class: 'form-control', placeholder: '...'}));
+    column_value_div.append($('<input>', {name: 'val', 
+                                          class: 'form-control', 
+                                          placeholder: '...', 
+                                          value: (column_value==undefined) ? '' : column_value}));
     form_div.append(column_value_div);
     
     // Make the remove button
@@ -180,6 +196,19 @@ $(document).ready(function() {
         var checkboxes = $('.filter-select-toggle');
         checkboxes.attr('checked', !checkboxes.attr('checked'));
     });
+    
+    $('#edit-btn').click(function() {
+        var API_URL = BASE_URL + 'api/filter/read';
+        var filter_id = $(this).val();
+        var data = {id: filter_id}
+        
+        $.getJSON(API_URL, data, function(d) {
+            iatom = d[0];
+            $.each(iatom.atom, function(i, atom) {
+                add_new_atom(atom.column_name, atom.comparison, atom.value);
+            })
+        });
+    })
 
     $('.delete-selected').click(function() {
         var API_URL = BASE_URL + 'api/filter/delete';

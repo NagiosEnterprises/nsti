@@ -40,8 +40,8 @@ function load_filters() {
         var tbody = $('#filter-table-body');
         tbody.empty();
         
-        $.each(d.filters, function(i, filter) {
-            var tr = get_tr_for_filter(filter);
+        $.each(d.filters, function(name, filter) {
+            var tr = get_tr_for_filter(name, filter);
             tr.appendTo(tbody);
         });
 
@@ -53,20 +53,20 @@ function load_filters() {
     });
 }
 
-function get_tr_for_filter(filter) {
-    var tr = $('<tr>', {'data-index': filter.name});
+function get_tr_for_filter(name, filter) {
+    var tr = $('<tr>', {'data-index': name});
     var checkbox = $('<input>', {type: 'checkbox',
                                  class: 'filter-select-toggle',
                                  'data-id': filter.id,
-                                 'data-index': filter.name});
+                                 'data-index': name});
     console.log(filter);
     $('<td>', {html: checkbox}).appendTo(tr);
-    $('<td>', {text: filter.name}).appendTo(tr);
+    $('<td>', {text: name}).appendTo(tr);
 
     var td_div = $('<td>').appendTo(tr);
 
-    $.each(filter.action.split(','), function(k, v) { 
-        $('<div>', {text: v}).appendTo(td_div);
+    $.each(filter.actions, function(k, v) { 
+        $('<div>', {text: v.column_name + " " + v.comparison + " " + v.value}).appendTo(td_div);
     });
     return tr;
 }

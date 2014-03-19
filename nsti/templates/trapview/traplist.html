@@ -293,7 +293,7 @@ function add_trap_filter_active(name) {
 //make tags for currently active filters
 function make_tag(name) {
     var API_URL = BASE_URL + 'api/filter/delete-active-filter';
-    var s = $('<span>', {class: 'btn btn-success pull-right label-margin', text: name + ' '});
+    var s = $('<span>', {class: 'btn btn-success pull-right label-margin', text: name + ' ', id: name});
     var x = $('<span>', {class: 'glyphicon glyphicon-remove'});
 
     x.click(function() {
@@ -306,6 +306,20 @@ function make_tag(name) {
     x.appendTo(s);
     return s;
 }
+// preload tags not working yet
+// function reload_active_filters() {
+//     var API_URL = BASE_URL + 'api/filter/add-active-filter';
+//     var data = $('#filter-table').find('span').attr('id');
+//     console.log(data);
+
+//     $.getJSON(API_URL, {id: data}, function(d) {
+//         console.log(d);
+//         $.each(d, function(name) {
+//             var tag = make_tag(name);
+//             tag.appendTo('#filter-table');
+//         });
+//     });
+// }
 
 $(document).ready(function() {
 
@@ -313,14 +327,14 @@ $(document).ready(function() {
     API_URL = BASE_URL + 'api/filter/read';
 
     $.getJSON(API_URL, function(d) {
-        $.each(d.filters, function(index, item){
+        $.each(d.filters, function(name, filter){
             $("#add-filter").append(
-                $("<option></option>")
-                    .text(item.name)
-                );
-            });
+                $("<option></option>").text(name)
+            );
         });
+    });
     draw_filter_table();
+    // reload_active_filters();
 
     //apply filters to traplist page and make tags with 'Apply' button
     $('#apply-filter').click(function() {

@@ -209,7 +209,6 @@ $(document).ready(function() {
             var data = {id: filter_id};
 
             $.getJSON(API_URL, data, function(d) {
-                console.log(d);
                 iatom = d.filters;
                 console.log(iatom);
                 $.each(iatom, function(i, atom) {

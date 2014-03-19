@@ -57,7 +57,9 @@ function get_tr_for_filter(filter) {
     var tr = $('<tr>', {'data-index': filter.name});
     var checkbox = $('<input>', {type: 'checkbox',
                                  class: 'filter-select-toggle',
+                                 'data-id': filter.id,
                                  'data-index': filter.name});
+    console.log(filter);
     $('<td>', {html: checkbox}).appendTo(tr);
     $('<td>', {text: filter.name}).appendTo(tr);
 
@@ -97,30 +99,43 @@ function add_filter() {
     });
 }
 
-function get_column_name_select() {
+function get_column_name_select(given_name) {
     var column_name_sel = $('<select>', {name: 'column_name', class: 'form-control', id: 'new-atom'});
+    set_name = given_name != undefined
     
     $.each(FILTER_DEFS, function(key, value) {
-        column_name_sel.append($('<option>', {value: key, text: value.nicename}));  
+        var opt_data = {value: key, 
+                        text: value.nicename};
+        if(set_name && given_name == value) {
+            opt_data.selected = 'selected';
+        }
+        
+        column_name_sel.append($('<option>', opt_data));  
     })
     
     return column_name_sel;
 }
 
-function get_column_comp_select() {
+function get_column_comp_select(comparison) {
     var column_comp_sel = $('<select>', {class: 'form-control', name: 'comparison', id: 'comparison'});
     return column_comp_sel;
 }
 
-function fill_comp(value, select_box) {
+function fill_comp(value, select_box, given_comparison) {
     select_box.empty();
+    set_comparison = given_comparison != undefined
     
     $.each(FILTER_DEFS[value].comparisons, function(i, d) {
-        select_box.append($('<option>', {value: d.value, text: d.nicename}));
+        var opt_data = {value: d.value, 
+                        text: d.nicename};
+        if (set_comparison && d.value == given_comparison) {
+            opt_data.selected = 'selected';
+        }
+        select_box.append($('<option>', opt_data));
     });
 }
 
-function add_new_atom() {
+function add_new_atom(column_name, column_comparison, column_value) {
     // Make our skeleton
     var new_form = $('<form>', {class: 'atoms form-inline', role: 'form'});
     var form_div = $('<div>', {class: 'row form-select-div'});
@@ -128,7 +143,7 @@ function add_new_atom() {
     
     // Assemble the select box that will hold the column names
     var column_name_div = $('<div>', {class: 'form-group'});
-    var column_name_sel = get_column_name_select();
+    var column_name_sel = get_column_name_select(column_name);
     column_name_div.append(column_name_sel);
     form_div.append(column_name_div);
     
@@ -139,12 +154,15 @@ function add_new_atom() {
     form_div.append(column_comp_div);
     
     // Set the change for the column name to trigger the column comparison redraw
-    column_name_sel.change(function() {fill_comp(column_name_sel.val(), column_comp_sel)});
+    column_name_sel.change(function() {fill_comp(column_name_sel.val(), column_comp_sel, column_comparison)});
     column_name_sel.change();
     
     // Make the text input that will take user input to compare to the column
     var column_value_div = $('<div>', {class: 'form-group'});
-    column_value_div.append($('<input>', {name: 'val', class: 'form-control', placeholder: '...'}));
+    column_value_div.append($('<input>', {name: 'val', 
+                                          class: 'form-control', 
+                                          placeholder: '...', 
+                                          value: (column_value==undefined) ? '' : column_value}));
     form_div.append(column_value_div);
     
     // Make the remove button
@@ -180,6 +198,26 @@ $(document).ready(function() {
     $('#toggle').click(function() {
         var checkboxes = $('.filter-select-toggle');
         checkboxes.attr('checked', !checkboxes.attr('checked'));
+    });
+    
+    $('.edit-selected').click(function() {
+        var API_URL = BASE_URL + 'api/filter/read';
+        var checkboxes = $('.filter-select-toggle:checked');
+
+        if (checkboxes.length != 1) {
+            show_error("You must select exactly one filter.");
+        } else {
+            var filter_id = $(checkboxes[0]).attr('data-id');
+            var data = {id: filter_id};
+
+            $.getJSON(API_URL, data, function(d) {
+                iatom = d.filters[0];
+                console.log(d);
+                $.each(iatom.atom, function(i, atom) {
+                    add_new_atom(atom.column_name, atom.comparison, atom.value);
+                })
+            });
+        }
     });
 
     $('.delete-selected').click(function() {
@@ -218,6 +256,9 @@ $(document).ready(function() {
                 <button type='button' class='btn btn-default btn-delete'>
                     <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
                 </button>
+                <label class='btn btn-default btn-edit'>
+                    <a alt='Edit Selected' data-toggle='tooltip' title='Edit Selected' class='edit-selected glyphicon glyphicon-pencil'></a>
+                </label>
             </div>
         </div>
         <table id='filter-table' class='table table-condensed table-striped table-hover table-bordered'>
@@ -236,6 +277,9 @@ $(document).ready(function() {
                                 <button type='button' class='btn btn-default btn-delete'>
                                     <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
                                 </button>
+                                <label class='btn btn-default btn-edit'>
+                                    <a alt='Edit Selected' data-toggle='tooltip' title='Edit Selected' class='edit-selected glyphicon glyphicon-pencil'></a>
+                                </label>
                             </div>
                         </div>
                     </td>

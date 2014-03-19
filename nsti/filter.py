@@ -69,16 +69,19 @@ def delete_filter():
 
 @app.route('/api/filter/read')
 def read_filter():
-    json_result = {'filters': []}
+    filters = {}
+    json_result = {'filters': filters}
 
-    filters = db.DB.find(db.Filter, True)
-    for f in filters:
-        j = {'name': f.name}
+    db_filters = db.DB.find(db.Filter, True)
+    for f in db_filters:
+        j = {'id': f.id}
         action = []
         for atom in db.DB.find(db.FilterAtom, db.FilterAtom.filter_id == f.id):
-            action.append(' '.join([atom.column_name, atom.comparison, atom.val]))
-        j['action'] = ','.join(action)
-        json_result['filters'].append(j)
+            action.append({'column_name': atom.column_name,
+                           'comparison': atom.comparison,
+                           'value': atom.val})
+        j['actions'] = action
+        filters[f.name] = j
     
     json_str = json.dumps(json_result)
     return Response(response=json_str, status=200, mimetype='application/json')

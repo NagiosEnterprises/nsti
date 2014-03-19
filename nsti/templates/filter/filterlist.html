@@ -59,7 +59,6 @@ function get_tr_for_filter(name, filter) {
                                  class: 'filter-select-toggle',
                                  'data-id': filter.id,
                                  'data-index': name});
-    console.log(filter);
     $('<td>', {html: checkbox}).appendTo(tr);
     $('<td>', {text: name}).appendTo(tr);
 
@@ -210,11 +209,12 @@ $(document).ready(function() {
             var data = {id: filter_id};
 
             $.getJSON(API_URL, data, function(d) {
-                iatom = d.filters[0];
                 console.log(d);
-                $.each(iatom.atom, function(i, atom) {
+                iatom = d.filters;
+                console.log(iatom);
+                $.each(iatom, function(i, atom) {
                     add_new_atom(atom.column_name, atom.comparison, atom.value);
-                })
+                });
             });
         }
     });

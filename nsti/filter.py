@@ -71,8 +71,13 @@ def delete_filter():
 def read_filter():
     filters = {}
     json_result = {'filters': filters}
+    where_clause = db.sql_where_query(db.Filter, request.args)
 
-    db_filters = db.DB.find(db.Filter, True)
+    if where_clause:
+        db_filters = db.DB.find(db.Filter, where_clause)
+    else:
+        db_filters = db.DB.find(db.Filter)
+        
     for f in db_filters:
         j = {'id': f.id}
         action = []

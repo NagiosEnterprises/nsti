@@ -133,15 +133,16 @@ function fill_comp(value, select_box, given_comparison) {
     });
 }
 
-function add_new_atom(column_name, column_comparison, column_value) {
+function add_new_atom(column_name, comparison, value) {
     // Make our skeleton
+    console.log(column_name, comparison, value);
     var new_form = $('<form>', {class: 'atoms form-inline', role: 'form'});
     var form_div = $('<div>', {class: 'row form-select-div'});
     new_form.append(form_div);
     
     // Assemble the select box that will hold the column names
     var column_name_div = $('<div>', {class: 'form-group'});
-    var column_name_sel = get_column_name_select(column_name);
+    var column_name_sel = get_column_name_select();
     column_name_div.append(column_name_sel);
     form_div.append(column_name_div);
     
@@ -152,7 +153,7 @@ function add_new_atom(column_name, column_comparison, column_value) {
     form_div.append(column_comp_div);
     
     // Set the change for the column name to trigger the column comparison redraw
-    column_name_sel.change(function() {fill_comp(column_name_sel.val(), column_comp_sel, column_comparison)});
+    column_name_sel.change(function() {fill_comp(column_name_sel.val(), column_comp_sel, comparison)});
     column_name_sel.change();
     
     // Make the text input that will take user input to compare to the column
@@ -160,7 +161,7 @@ function add_new_atom(column_name, column_comparison, column_value) {
     column_value_div.append($('<input>', {name: 'val', 
                                           class: 'form-control', 
                                           placeholder: '...', 
-                                          value: (column_value==undefined) ? '' : column_value}));
+                                          value: (value==undefined) ? '' : value}));
     form_div.append(column_value_div);
     
     // Make the remove button
@@ -209,16 +210,13 @@ $(document).ready(function() {
 
                 $.getJSON(API_URL, data, function(d) {
                     iatom = d.filters;
-                    console.log(iatom);
                     $.each(iatom, function(index, atom) {
-                        console.log(index);
                         console.log(atom);
-                        
-                        $('#insert-div input[name=val]').val(atom.actions.value);
-                        $('#filter-name').val(index);
-                        add_new_atom(atom.column_name, atom.comparison, atom.value);
-                        $('#add-filter-modal').modal('show');
+                        // $('#insert-div input[name=val]').val(atom.actions[0]);
+                        // $('#filter-name').val(index);
+                        add_new_atom(atom.actions[0].column_name, atom.actions[0].comparison, atom.actions[0].value);
                     });
+                    $('#add-filter-modal').modal('show');
                 });
             }
         });

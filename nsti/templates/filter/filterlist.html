@@ -142,7 +142,7 @@ function add_new_atom(column_name, comparison, value) {
     
     // Assemble the select box that will hold the column names
     var column_name_div = $('<div>', {class: 'form-group'});
-    var column_name_sel = get_column_name_select();
+    var column_name_sel = get_column_name_select(column_name);
     column_name_div.append(column_name_sel);
     form_div.append(column_name_div);
     
@@ -213,7 +213,7 @@ $(document).ready(function() {
                     $.each(iatom, function(index, atom) {
                         console.log(atom);
                         // $('#insert-div input[name=val]').val(atom.actions[0]);
-                        // $('#filter-name').val(index);
+                        $('#filter-name').val(index);
                         add_new_atom(atom.actions[0].column_name, atom.actions[0].comparison, atom.actions[0].value);
                     });
                     $('#add-filter-modal').modal('show');

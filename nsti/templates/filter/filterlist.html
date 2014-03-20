@@ -200,22 +200,28 @@ $(document).ready(function() {
     
     $('.edit-selected').click(function() {
         var API_URL = BASE_URL + 'api/filter/read';
-        var checkboxes = $('.filter-select-toggle:checked');
 
-        if (checkboxes.length != 1) {
-            show_error("You must select exactly one filter.");
-        } else {
-            var filter_id = $(checkboxes[0]).attr('data-id');
-            var data = {id: filter_id};
+        $('.filter-select-toggle:checked').each(function() {
+            if ($(this) > 1) {
+                show_error("You must select exactly one filter.");
+            } else {
+                var data = {id: $(this).data('id')};
 
-            $.getJSON(API_URL, data, function(d) {
-                iatom = d.filters;
-                console.log(iatom);
-                $.each(iatom, function(i, atom) {
-                    add_new_atom(atom.column_name, atom.comparison, atom.value);
+                $.getJSON(API_URL, data, function(d) {
+                    iatom = d.filters;
+                    console.log(iatom);
+                    $.each(iatom, function(index, atom) {
+                        console.log(index);
+                        console.log(atom);
+                        
+                        $('#insert-div input[name=val]').val(atom.actions.value);
+                        $('#filter-name').val(index);
+                        add_new_atom(atom.column_name, atom.comparison, atom.value);
+                        $('#add-filter-modal').modal('show');
+                    });
                 });
-            });
-        }
+            }
+        });
     });
 
     $('.delete-selected').click(function() {

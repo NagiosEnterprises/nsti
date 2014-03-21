@@ -7,10 +7,8 @@ is_installed () {
         if ! which "$file" 2> /dev/null;
         then
             echo "$file is not installed. You need to install using your distro's package manager."
-            exit 1
+            return 1
         fi
     done
     return 0
 }
-
-is_installed gcc make wget

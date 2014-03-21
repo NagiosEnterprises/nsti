@@ -1,7 +1,5 @@
 #!/bin/sh
 
-. ./libinstall.sh
-
 PYTHON_URL='https://www.python.org/ftp/python/2.7/Python-2.7.tar.bz2'
 PYTHON_VER='Python-2.7'
 PYTHON_CFG='--enable-shared'

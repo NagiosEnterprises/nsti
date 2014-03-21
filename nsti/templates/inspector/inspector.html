@@ -242,20 +242,24 @@ $(document).ready(function() {
 	var options = {
         chart: {
             renderTo: 'chart-container-line',
-            type: 'spline'
+            type: 'line'
         },
         title: {
             text: 'Inspector Line Graph'
         },
-        series: [{}]
+        series: []
     };
 
-    var API_URL = BASE_URL + 'api/trapview/read/' + TABLE;
+    var traptype = 'trapoid?=1';
+    var API_URL = BASE_URL + '/api/inspector/chart/read/' + traptype;
      // + '?traptype=' + TABLE;
 
     $.getJSON(API_URL, function(data) {
-        
-        options.series[0].data = data;
+        $.each(data, function(key, value) {
+            var series = value.text;
+            options.series.push(series);
+        });        
+        console.log(data);
         var chart = new Highcharts.Chart(options);
     });
 
@@ -309,7 +313,7 @@ $(document).ready(function() {
             <div class='panel panel-default'>
                 <div class="input-group col-md-5 col-md-offset-2">
                   <span class="input-group-addon">Trap:</span>
-                  <input type="text" class="form-control" placeholder="Insert a metric to be inspected..">
+                  <input type="text" id="trap" class="form-control" placeholder="Insert a metric to be inspected..">
                 </div>
                 <div class="input-group col-md-5 col-md-offset-2" style="margin-top:10px;">
                   <span class="input-group-addon">Value:</span>
@@ -317,6 +321,7 @@ $(document).ready(function() {
                 </div>
                 <div class='col-md-6'>
                     <div id='chart-container-line' class="linechart" style="width:100%; height:400px;">
+
                     </div>
                 </div>
                 <div class='col-md-6'>

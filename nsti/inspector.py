@@ -46,6 +46,22 @@ def inspector_read(trapid):
     json_str = json.dumps(result_dict, default=db.encode_storm_result_set)
     return Response(response=json_str, status=200, mimetype='application/json')
 
+@app.route('/api/inspector/chart/read/<traptype>')
+def inspector_chart(traptype):
+    trapt = request.args.get('traptype')
+
+    where_clause = db.sql_where_query(trapt, request.args)
+    
+    if where_clause:
+        results = db.DB.find(trapt, where_clause)
+    else:
+        results = db.DB.find(trapt)
+
+    result_dict = db.encode_storm_result_set(results)
+    
+    json_str = json.dumps(result_dict, default=db.encode_storm_result_set)
+    return Response(response=json_str, status=200, mimetype='application/json')
+
 @app.route('/api/inspector/test')
 def inspector_test():
     return render_template('inspector/test.html')

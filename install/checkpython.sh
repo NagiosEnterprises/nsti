@@ -7,16 +7,37 @@ PYTHON_VER='Python-2.7'
 PYTHON_CFG='--enable-shared'
 
 install_python () {
-    cd /tmp
-    wget "$PYTHON_URL"
-    tar xf "${PYTHON-VER}.tar.bz2"
-    cd "$PYTHON-VER"
-    ./configure $PYTHON_CFG
-    make && make altinstall
+    (
+        cd /tmp
+
+        if [ ! -f "${PYTHON-VER}.tar.bz2" ];
+        then
+            wget "$PYTHON_URL"
+        fi
+
+        tar xf "${PYTHON-VER}.tar.bz2"
+        cd "$PYTHON-VER"
+        ./configure $PYTHON_CFG
+        make && make altinstall
+
+        cd ..
+        rm "${PYTHON-VER}.tar.bz2" -f
+    )
 }
 
 install_python_pip () {
-    
+    (
+        cd /tmp
+
+        if [ ! -f get-pip.py ];
+        then
+            wget 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py'
+        fi
+
+        python2.7 get-pip.py
+
+        rm get-pip.py -f
+    )
 }
 
 echo "Checking Python version..."

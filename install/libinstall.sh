@@ -14,3 +14,5 @@ is_installed () {
 }
 
 BASEPATH=$(dirname `readlink -f $0`)
+
+. "$BASEPATH/nsti/etc/nsti.py"

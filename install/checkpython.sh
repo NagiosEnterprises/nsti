@@ -10,7 +10,7 @@ install_python () {
 
         if [ ! -f "${PYTHON_VER}.tar.bz2" ];
         then
-            wget "$PYTHON_URL"
+            wget "$PYTHON_URL" --no-check-certificate
         fi
 
         tar xf "${PYTHON_VER}.tar.bz2"
@@ -29,7 +29,7 @@ install_python_pip () {
 
         if [ ! -f get-pip.py ];
         then
-            wget 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py'
+            wget 'https://raw.github.com/pypa/pip/master/contrib/get-pip.py' --no-check-certificate
         fi
 
         python2.7 get-pip.py

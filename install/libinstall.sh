@@ -12,3 +12,5 @@ is_installed () {
     done
     return 0
 }
+
+BASEPATH=$(dirname `readlink -f $0`)

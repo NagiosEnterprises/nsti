@@ -8,18 +8,18 @@ install_python () {
     (
         cd /tmp
 
-        if [ ! -f "${PYTHON-VER}.tar.bz2" ];
+        if [ ! -f "${PYTHON_VER}.tar.bz2" ];
         then
             wget "$PYTHON_URL"
         fi
 
-        tar xf "${PYTHON-VER}.tar.bz2"
-        cd "$PYTHON-VER"
+        tar xf "${PYTHON_VER}.tar.bz2"
+        cd "$PYTHON_VER"
         ./configure $PYTHON_CFG
         make && make altinstall
 
         cd ..
-        rm "${PYTHON-VER}.tar.bz2" -f
+        rm "${PYTHON_VER}.tar.bz2" -f
     )
 }
 

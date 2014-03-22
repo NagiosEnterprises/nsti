@@ -1,7 +1,7 @@
 #!/bin/sh
 
 PIP_TAR='https://pypi.python.org/packages/source/p/pip/pip-1.1.tar.gz'
-SETUPTOOLS='https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py'
+SETUPTOOLS='https://bitbucket.org/pypa/setuptools/raw/bootstrap-py24/ez_setup.py'
 
 install_python_setuptools () {
     (

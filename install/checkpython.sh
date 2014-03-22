@@ -1,6 +1,22 @@
 #!/bin/sh
 
 PIP_TAR='https://pypi.python.org/packages/source/p/pip/pip-1.1.tar.gz'
+SETUPTOOLS='https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py'
+
+install_python_setuptools () {
+    (
+        cd /tmp
+
+        if [ ! -f ez_setup.py ];
+        then
+            wget "$SETUPTOOLS" --no-check-certificate
+        fi
+
+        python ez_setup.py
+
+        rm -f ez_setup.py
+    )
+}
 
 install_python_pip () {
     (
@@ -20,6 +36,12 @@ install_python_pip () {
         rm -rf pip-1.1
     )
 }
+
+echo "Checking is setuptools is installed..."
+if ! is_installed easy_install;
+then
+    install_python_setuptools
+fi
 
 echo "Checking if pip is installed..."
 if ! is_installed pip;

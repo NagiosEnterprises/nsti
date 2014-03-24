@@ -203,7 +203,7 @@ $(document).ready(function() {
         var API_URL = BASE_URL + 'api/filter/read';
 
         $('.filter-select-toggle:checked').each(function() {
-            if ($(this) > 1) {
+            if ($('.filter-select-toggle:checked') != 1) {
                 show_error("You must select exactly one filter.");
             } else {
                 var data = {id: $(this).data('id')};
@@ -213,6 +213,7 @@ $(document).ready(function() {
                     $.each(iatom, function(index, atom) {
                         console.log(atom);
                         // $('#insert-div input[name=val]').val(atom.actions[0]);
+                        $('#insert-div').empty();
                         $('#filter-name').val(index);
                         add_new_atom(atom.actions[0].column_name, atom.actions[0].comparison, atom.actions[0].value);
                     });

@@ -259,7 +259,7 @@ $(document).ready(function() {
         $.each(data, function(name, trap){
             if(INSPECTABLE[name]) {
                 $("#add-inspect").append(
-                    $("<option></option>").text(TRANSLATE[name])
+                    $("<option></option>").text(TRANSLATE[name]).val(name)
                 );
             }           
         });
@@ -277,16 +277,20 @@ $(document).ready(function() {
     };
 
     tid = 25;
-    var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE + '?id=' + tid;
+    var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
+    // + '?id=' + tid
 
     $.getJSON(API_URL, function(data) {
-        // console.log(data);
-        $.each(data, function(key, value) {
-            var series = value.trapoid;
+        console.log(data);
+        var trap = $('#add-inspect option:selected').val();
+        $.each(data, trap, function(index, value) {
+            // series += ', timewritten';
+            series = value;
+            console.log(series);
             options.series.push(series);
         });        
         
-        var chart = new Highcharts.Chart(options);
+        var chart = new Highcharts.Chart(push);
     });
 
     // var options2 = {
@@ -333,6 +337,14 @@ $(document).ready(function() {
                 </tr>
             </thead>
             <tbody id="inspector-view-tbody">
+                <div id='inspect-cat col-md-5' class='input-group'>
+                    <span class='input-group-addon'>Trap:</span>
+                    <select id="add-inspect" class="form-control" style="width:auto;"></select>
+                </div>
+                <!-- <div class='input-group col-md-5'>
+                  <span class="input-group-addon">Value:</span>
+                  <input type="text" class="form-control" placeholder="Possible value for a trap metric..">
+                </div>  -->
             </tbody>
         </table>
         <div class='row container content'>
@@ -340,22 +352,13 @@ $(document).ready(function() {
                 <!-- <div class="input-group col-md-5 col-md-offset-2">
                   <span class="input-group-addon">Trap:</span>
                   <input type="text" id="trap" class="form-control" placeholder="Insert a metric to be inspected..">
-                </div> -->
-                <div id='inspect-cat col-md-5' class='input-group'>
-                    <span class='input-group-addon'>Trap:</span>
-                    <select id="add-inspect" class="form-control" style="width:auto;"></select>
-                    <input type="button" id="apply-inspect" class="btn btn-primary" style="margin-left:15px;" value="Apply">
-                </div>
-                <div class='input-group col-md-5'>
-                  <span class="input-group-addon">Value:</span>
-                  <input type="text" class="form-control" placeholder="Possible value for a trap metric..">
-                </div>                
-                <!-- <div class='col-md-6'>
+                </div> -->                               
+                <div class='col-md-6'>
                     <div id='chart-container-line' class="linechart" style="width:100%; height:400px;"></div>
                 </div>
                 <div class='col-md-6'>
                     <div id='chart-container-pie' class="piechart" style="width:100%; height:400px;"></div>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>

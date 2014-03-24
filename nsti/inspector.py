@@ -48,7 +48,7 @@ def inspector_read(trapid):
 
 @app.route('/api/inspector/chart/read/<traptype>')
 def inspector_chart(traptype):
-    trapt = request.args.get('traptype')
+    trapt = getattr(db, traptype)
 
     where_clause = db.sql_where_query(trapt, request.args)
     

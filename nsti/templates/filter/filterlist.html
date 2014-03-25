@@ -203,19 +203,21 @@ $(document).ready(function() {
         var API_URL = BASE_URL + 'api/filter/read';
 
         $('.filter-select-toggle:checked').each(function() {
-            if ($('.filter-select-toggle:checked') != 1) {
+            if ($('.filter-select-toggle:checked').length != 1) {
                 show_error("You must select exactly one filter.");
             } else {
                 var data = {id: $(this).data('id')};
+                var index = $(this).data('index');
 
                 $.getJSON(API_URL, data, function(d) {
-                    iatom = d.filters;
-                    $.each(iatom, function(index, atom) {
+                    iatom = d.filters[index].actions;
+                    $('#insert-div').empty();
+                    $('#filter-name').val(index);
+
+                    $.each(iatom, function(i, atom) {
                         console.log(atom);
                         // $('#insert-div input[name=val]').val(atom.actions[0]);
-                        $('#insert-div').empty();
-                        $('#filter-name').val(index);
-                        add_new_atom(atom.actions[0].column_name, atom.actions[0].comparison, atom.actions[0].value);
+                        add_new_atom(atom.column_name, atom.comparison, atom.value);
                     });
                     $('#add-filter-modal').modal('show');
                 });

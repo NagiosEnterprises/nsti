@@ -104,7 +104,7 @@ def encode_storm_result_set(storm_obj):
         for attr in info:
             if attr == 'timewritten':
                 try:
-                    trap[attr] = getattr(item, attr).strftime('%d/%m/%Y %H:%M')
+                    trap[attr] = getattr(item, attr).strftime('%s')
                 except:
                     trap[attr] = getattr(item, attr)
             else:
@@ -135,7 +135,9 @@ def sql_where_query(traptype, arguments, acombine=True):
             cond = attribute.is_in(arguments[key])
         #~ Otherwise we want to do an exact match
         else:
-            attribute = getattr(traptype, key)
+            attribute = getattr(traptype, key, None)
+            if attribute is None:
+                continue
             if(key in ['id']):
                 cond = attribute == int(arguments[key])
             else:

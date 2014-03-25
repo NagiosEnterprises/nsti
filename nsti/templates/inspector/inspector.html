@@ -265,7 +265,7 @@ $(document).ready(function() {
         });
     });
 
-	var options = {
+    var options = {
         chart: {
             renderTo: 'chart-container-line',
             type: 'line'
@@ -273,24 +273,31 @@ $(document).ready(function() {
         title: {
             text: 'Inspector Line Graph'
         },
-        series: [{}]
+        xAxis: {
+            type: 'datetime'
+        },
+        series: []
     };
 
     tid = 25;
     var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
     // + '?id=' + tid
 
-    $.getJSON(API_URL, function(data) {
-        console.log(data);
-        var trap = $('#add-inspect option:selected').val();
-        $.each(data, trap, function(index, value) {
-            // series += ', timewritten';
-            series = value;
-            console.log(series);
-            options.series.push(series);
+    $.getJSON(API_URL, function(traps) {
+        var property = $('#add-inspect option:selected').val();
+	new_series = [];
+        $.each(traps, function(index, trap) {
+
+            var timewritten = trap['timewritten'];
+            var value = trap[property];
+
+            new_series.push([timewritten * 1000, value]);
         });        
-        
-        var chart = new Highcharts.Chart(push);
+
+        hc_series = {data: new_series}
+	console.log(hc_series)
+	options.series.push(hc_series);
+        var chart = new Highcharts.Chart(options);
     });
 
     // var options2 = {

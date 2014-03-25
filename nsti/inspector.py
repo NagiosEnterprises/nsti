@@ -1,6 +1,8 @@
 from nsti import app
 import database as db
 
+import datetime
+import time
 from flask import render_template, session, request, abort, Response
 
 try:
@@ -65,3 +67,34 @@ def inspector_chart(traptype):
 @app.route('/api/inspector/test')
 def inspector_test():
     return render_template('inspector/test.html')
+
+@app.route('/api/inspector/chart/read_debug/<traptype>')
+def inspector_chart_debug(traptype):
+    trapt = getattr(db, traptype)
+
+    where_clause = db.sql_where_query(trapt, request.args)
+    
+    if where_clause:
+        results = db.DB.find(trapt, where_clause)
+    else:
+        results = db.DB.find(trapt)
+    
+    start_date = request.args.get('start_date', 0)
+    end_date = request.args.get('end_date', int(time.time()))
+
+    try:
+        start_date = datetime.datetime.fromtimestamp(int(start_date))
+        end_date = datetime.datetime.fromtimestamp(int(end_date))
+    except TypeError:
+        start_date = datetime.datetime.fromtimestamp(0)
+        end_date = datetime.datetime.now()
+
+    results = inspector_results_aggregator(trapt, results, start_date, end_date) 
+    json_str = json.dumps(results)
+    return Response(response=json_str, status=200, mimetype='application/json')
+
+def inspector_results_aggregator(traptype, results, start_date, end_date):
+    from storm.locals import SQL
+    return json_result
+
+

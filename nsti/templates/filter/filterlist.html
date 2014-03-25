@@ -97,18 +97,19 @@ function add_filter() {
     });
 }
 
-function get_column_name_select(given_name) {
-    var column_name_sel = $('<select>', {name: 'column_name', class: 'form-control', id: 'new-atom'});
-    set_name = given_name != undefined
+function get_column_name_select(column_name) {
+    var column_name_sel = $('<select>', {name: column_name, class: 'form-control', id: 'new-atom'});
+    column_name != undefined
+    set_name = column_name
     
     $.each(FILTER_DEFS, function(key, value) {
         var opt_data = {value: key, 
                         text: value.nicename};
-        if(set_name && given_name == value) {
+        if(set_name && column_name == opt_data.value) {
             opt_data.selected = 'selected';
         }
         
-        column_name_sel.append($('<option>', opt_data));  
+        column_name_sel.append($('<option>', opt_data));
     })
     
     return column_name_sel;

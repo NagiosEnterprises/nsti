@@ -306,20 +306,27 @@ function make_tag(name) {
     x.appendTo(s);
     return s;
 }
-// preload tags not working yet
-// function reload_active_filters() {
-//     var API_URL = BASE_URL + 'api/filter/add-active-filter';
-//     var data = $('#filter-table').find('span').attr('id');
-//     console.log(data);
 
-//     $.getJSON(API_URL, {id: data}, function(d) {
-//         console.log(d);
-//         $.each(d, function(name) {
-//             var tag = make_tag(name);
-//             tag.appendTo('#filter-table');
-//         });
-//     });
-// }
+function reload_active_filters() {
+    var API_URL = BASE_URL + 'api/filter/add-active-filter';
+
+    $.getJSON(API_URL, function(k, v) {
+
+        console.log(k, v);
+    });
+
+    // var API_URL = BASE_URL + 'api/filter/add-active-filter';
+    // var data = $('#filter-table').find('span').attr('id');
+    // console.log(data);
+
+    // $.getJSON(API_URL, {id: data}, function(d) {
+    //     console.log(d);
+    //     $.each(d, function(name) {
+    //         var tag = make_tag(name);
+    //         tag.appendTo('#filter-table');
+    //     });
+    // });
+}
 
 $(document).ready(function() {
 
@@ -334,7 +341,7 @@ $(document).ready(function() {
         });
     });
     draw_filter_table();
-    // reload_active_filters();
+    reload_active_filters();
 
     //apply filters to traplist page and make tags with 'Apply' button
     $('#apply-filter').click(function() {

@@ -202,6 +202,7 @@ $(document).ready(function() {
     });
     
     $('.edit-selected').click(function() {
+        $('#insert-div').empty();
         var API_URL = BASE_URL + 'api/filter/read';
 
         $('.filter-select-toggle:checked').each(function() {
@@ -221,7 +222,7 @@ $(document).ready(function() {
                         // $('#insert-div input[name=val]').val(atom.actions[0]);
                         add_new_atom(atom.column_name, atom.comparison, atom.value);
                     });
-                    $('#add-filter-modal').modal('show');
+                    // $('#add-filter-modal').modal('show');
                 });
             }
         });

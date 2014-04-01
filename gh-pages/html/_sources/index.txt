@@ -1,0 +1,28 @@
+.. NSTI documentation master file, created by
+   sphinx-quickstart on Mon Mar 31 11:02:27 2014.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to NSTI's documentation!
+================================
+.. include:: README.rst
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   introduction
+   installation
+   configuration
+   filters
+   inspector
+   troubleshooting
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

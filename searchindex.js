@@ -1,1 +1,1 @@
-Search.setIndex({desctypes:{},terms:{index:0,search:0,welcom:0,titl:1,modul:0,indic:0,content:0,tabl:0,nsti:0,document:0,page:0},titles:["Welcome to NSTI&#8217;s documentation!","&lt;no title&gt;"],modules:{},descrefs:{},filenames:["index","includeme"]})
+Search.setIndex({desctypes:{},terms:{index:0,search:0,document:0,welcom:0,titl:1,modul:0,configur:0,indic:0,filter:0,tabl:0,nsti:0,instal:0,inspector:0,content:0,page:0,troubleshoot:0,introduct:0},titles:["Welcome to NSTI&#8217;s documentation!","&lt;no title&gt;"],modules:{},descrefs:{},filenames:["index","includeme"]})

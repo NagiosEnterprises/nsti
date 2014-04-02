@@ -205,8 +205,8 @@ $(document).ready(function() {
         var API_URL = BASE_URL + 'api/filter/read';
 
         $('.filter-select-toggle:checked').each(function() {
-            if ($('.filter-select-toggle:checked').length != 1) {
-                show_error("You must select exactly one filter.");
+            if($('.filter-select-toggle:checked').length != 1) {
+                show_error('You must select exactly one filter.');
             } else {
                 var data = {id: $(this).data('id')};
                 var index = $(this).data('index');

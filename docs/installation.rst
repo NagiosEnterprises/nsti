@@ -1,4 +1,4 @@
-Installation
+**Installation*
 ============
 
 NSTI performs well with and is designed to run on any Linux distribution.
@@ -47,7 +47,3 @@ If successfull you should see output like the following:
 
 If a message from the install script mentions you do not have wsgi installed, use yum to install it::
 	yum install mod_wsgi
-
-
-
-

@@ -7,16 +7,11 @@ Welcome to NSTI's documentation!
 ================================
 
 Contents:
+.. toctree::
+   :maxdepth: 2
 
    introduction
    installation
-   filters
-   inspector
-   configuration
-   troubleshooting
-
-.. toctree::
-   :maxdepth: 2
 
    includeme
 

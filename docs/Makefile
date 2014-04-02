@@ -92,3 +92,8 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+buildhtml: html
+
+	cd $(BUILDDIR)/html; git add . ; git commit -m "rebuild nsti docs -Luke's servbot"; git push origin gh-pages
+

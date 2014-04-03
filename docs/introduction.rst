@@ -13,6 +13,7 @@ This is a protocol used in network management to collect information and to conf
 Here is an example of the main page view with traps in main trap table:
 
 .. image:: nstimain.png
+	:align: center
 
 *In this example you can see every recieved trap and apply the filters you created to the table*
 
@@ -30,6 +31,7 @@ Since the previous version of NSTI there have been 2 large aditions
 The Inspector allows a user to view a specific trap metric and match them with other traps and display data for comparison. filtering is done by creating a filter with data specifics, such as the following example:
 
 .. image:: newfilter.png
+	:align: center
 
 This template with a few example inputs
         | Trap OID **is exactly**	  1.3.6.1.4.1.2681.1.2.102
@@ -40,4 +42,4 @@ Using filters in this manner will make sifting through traps a lot more convenie
 
 .. note::
 
-	Find out more about NSTI by going through this documentation by using the index or by using the search feature.
+	Find out more about NSTI and naviagte through this documentation by using the index or by using the search feature.

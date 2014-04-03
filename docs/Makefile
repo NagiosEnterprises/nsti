@@ -68,14 +68,21 @@ qthelp:
 	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/NSTI.qhc"
 
 latex:
+	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(BUILDDIR)/latex
+	@echo
+	@echo "Build finished; the LaTeX files are in $(BUILDDIR)/latex."
+	@echo "Run \`make' in that directory to run these through (pdf)latex" \
+	      "(use \`make latexpdf' here to do that automatically)."
+
+latexpdf:
 	$(SPHINXBUILD) -b latex $(ALLSPHINXOPTS) $(PDFBUILDDIR)/latex
-	#
+	#                                          ^^^
 	@echo "Running LaTeX files through pdflatex..."
 	make -C $(PDFBUILDDIR)/latex all-pdf
 	#         ^^^
 	cp $(PDFBUILDDIR)/latex/*.pdf $(PDF)
 	#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-	@echo "pdflatex finished; see $(PDF)"	
+	@echo "pdflatex finished; see $(PDF)"
 
 changes:
 	$(SPHINXBUILD) -b changes $(ALLSPHINXOPTS) $(BUILDDIR)/changes

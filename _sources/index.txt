@@ -13,7 +13,6 @@ Contents:
 
    introduction
    installation
-   includeme
 
 Indices and tables
 ==================

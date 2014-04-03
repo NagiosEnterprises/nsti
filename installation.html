@@ -20,7 +20,6 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="NSTI v3.0 documentation" href="index.html" />
-    <link rel="next" title="<no title>" href="includeme.html" />
     <link rel="prev" title="Introduction" href="introduction.html" /> 
   </head>
   <body>
@@ -30,9 +29,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="includeme.html" title="<no title>"
-             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="introduction.html" title="Introduction"
              accesskey="P">previous</a> |</li>
@@ -52,7 +48,7 @@
 <h2>Installing NSTI Using Git Clone<a class="headerlink" href="#installing-nsti-using-git-clone" title="Permalink to this headline">¶</a></h2>
 <p>First you will need to clone the Git repo to retrieve NSTI.  Make sure you are in the directory location you want the clone to be placed in.</p>
 <dl class="docutils">
-<dt><a href="#id1"><span class="problematic" id="id2">*</span></a>Github clones:</dt>
+<dt>Github clones:</dt>
 <dd><ul class="first last simple">
 <li>&#8216;HTTPS clone &lt;<a class="reference external" href="https://github.com/NagiosEnterprises/nsti.git">https://github.com/NagiosEnterprises/nsti.git</a>&gt;&#8217;</li>
 <li>&#8216;SSH Clone &lt;<a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:NagiosEnterprises/nsti.git&gt;&#8217;</li>
@@ -62,12 +58,12 @@
 </dl>
 <p>Once you have a clone of NSTI on your local machine there are 6 baseline prerequisits to install first:</p>
 <blockquote>
-<a href="#id3"><span class="problematic" id="id4">*</span></a>mysql
-<a href="#id5"><span class="problematic" id="id6">*</span></a>httpd
-<a href="#id7"><span class="problematic" id="id8">*</span></a>gcc
-<a href="#id9"><span class="problematic" id="id10">*</span></a>wget
-<a href="#id11"><span class="problematic" id="id12">*</span></a>make
-<a href="#id13"><span class="problematic" id="id14">*</span></a>tar</blockquote>
+<a href="#id1"><span class="problematic" id="id2">*</span></a>mysql
+<a href="#id3"><span class="problematic" id="id4">*</span></a>httpd
+<a href="#id5"><span class="problematic" id="id6">*</span></a>gcc
+<a href="#id7"><span class="problematic" id="id8">*</span></a>wget
+<a href="#id9"><span class="problematic" id="id10">*</span></a>make
+<a href="#id11"><span class="problematic" id="id12">*</span></a>tar</blockquote>
 <dl class="docutils">
 <dt>To verify and check that these are installed use the install.sh script in the main NSTI directory::</dt>
 <dd>./install.sh</dd>
@@ -96,7 +92,10 @@ MOD_WSGI INSTALLED
 </div>
 <div class="section" id="flask-and-storm">
 <h2>Flask and Storm<a class="headerlink" href="#flask-and-storm" title="Permalink to this headline">¶</a></h2>
-<p><strong>Both of these are inside the requirements.txt that the install script refers to so they should both be installed at this point, but just in case we will go over them and how to install them if, for some reason, they are missing.</strong></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Both of these are inside the requirements.txt that the install script refers to so they should both be installed at this point, but just in case we will go over them and how to install them if, for some reason, they are missing.</p>
+</div>
 <p>NSTI uses Flask as a lightweight web applicatin framework and uses Werkzeug and Jinja2 for templating engines.  Flask is a great microframework that allows extentions to be added granting it access to form validation and database abstration.  You will need Flask so install it using pip or easy_install.</p>
 <p>Storm is a Python programming library for Object-relational mapping (ORM) between one or more SQL databases and Python objects.  This allows NSTI to make queries and demands off of the datasbases to be able to populate, collect, filter, etc. the traps in the database, but also how the traps are displayed or related.  If you see any errors about Storm missing (you definitely will if it is missing) then simply install</p>
 </div>
@@ -133,9 +132,6 @@ python-storm-mysql</blockquote>
             <h4>Previous topic</h4>
             <p class="topless"><a href="introduction.html"
                                   title="previous chapter">Introduction</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="includeme.html"
-                                  title="next chapter">&lt;no title&gt;</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="_sources/installation.txt"
@@ -164,9 +160,6 @@ python-storm-mysql</blockquote>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="includeme.html" title="<no title>"
-             >next</a> |</li>
         <li class="right" >
           <a href="introduction.html" title="Introduction"
              >previous</a> |</li>

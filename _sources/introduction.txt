@@ -38,4 +38,6 @@ This template with a few example inputs
 
 Using filters in this manner will make sifting through traps a lot more convenient especially when you are getting a large number of traps on a large system.
 
-Find out more about NSTI by going through this documentation by using the index or by using the search feature.
+.. note::
+
+	Find out more about NSTI by going through this documentation by using the index or by using the search feature.

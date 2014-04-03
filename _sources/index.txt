@@ -13,10 +13,7 @@ Contents:
 
    introduction
    installation
-   filters
-   inspector
-   configuration
-   troubleshooting
+   includeme
 
 Indices and tables
 ==================
@@ -24,4 +21,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

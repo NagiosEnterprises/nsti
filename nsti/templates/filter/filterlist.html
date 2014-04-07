@@ -202,6 +202,7 @@ $(document).ready(function() {
     });
     
     $('.edit-selected').click(function() {
+        $('#insert-div').empty();
         var API_URL = BASE_URL + 'api/filter/read';
 
         $('.filter-select-toggle:checked').each(function() {

@@ -137,7 +137,7 @@ function fill_comp(value, select_box, given_comparison) {
 
 function add_new_atom(column_name, comparison, value) {
     // Make our skeleton
-    console.log(column_name, comparison, value);
+    // console.log(column_name, comparison, value);
     var new_form = $('<form>', {class: 'atoms form-inline', role: 'form'});
     var form_div = $('<div>', {class: 'row form-select-div'});
     new_form.append(form_div);
@@ -208,6 +208,7 @@ $(document).ready(function() {
         $('.filter-select-toggle:checked').each(function() {
             if($('.filter-select-toggle:checked').length != 1) {
                 show_error('You must select exactly one filter.');
+                $('#error-message').modal('show');
             } else {
                 var data = {id: $(this).data('id')};
                 var index = $(this).data('index');
@@ -218,8 +219,7 @@ $(document).ready(function() {
                     $('#filter-name').val(index);
 
                     $.each(iatom, function(i, atom) {
-                        console.log(atom);
-                        // $('#insert-div input[name=val]').val(atom.actions[0]);
+                        // console.log(atom);
                         add_new_atom(atom.column_name, atom.comparison, atom.value);
                     });
                     $('#add-filter-modal').modal('show');

@@ -16,5 +16,5 @@ function hide_throbber(div_to_show) {
 
 function show_error(message) {
     $('#modal-body-error').text(message);
-    $('#error-message').modal({show: true});
+    $('#error-message').appendTo('body').modal('show');
 }

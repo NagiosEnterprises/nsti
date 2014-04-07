@@ -188,8 +188,20 @@ $(document).ready(function() {
         title: {
             text: 'Inspector Pie Graph'
         },
-        xAxis: {
-            type: 'datetime'
+        tooltip: {
+            pointFormat: '{series.name}'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    color: '#000000',
+                    connectorColor: '#000000',
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                }
+            }
         },
         series: []
     };
@@ -201,16 +213,20 @@ $(document).ready(function() {
         new_series = [];
 
         $.each(traps, function(index, trap) {
-
             var timewritten = trap['timewritten'];
-            var value = trap[property];
+            // var id = trap['id'];
+            var value = trap['id'];
 
             new_series.push([timewritten * 1000, value]);
         });
 
+        new_series.sort(function (a, b) {
+            return a[0] - b[0];
+        });
+        
         hc_series = {data: new_series};
-        options1.series.push(parseFloat(hc_series));
-        options2.series.push(parseFloat(hc_series));
+        options1.series.push(hc_series);
+        options2.series.push(hc_series);
         console.log(hc_series);
         var chart = new Highcharts.Chart(options1);
         var chart = new Highcharts.Chart(options2);
@@ -226,7 +242,6 @@ $(document).ready(function() {
     $('.goto-view').click(function() {
         
     });
-
 
 });
 </script>

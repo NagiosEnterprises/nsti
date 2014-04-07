@@ -27,88 +27,6 @@ var INSPECTABLE = {
     'eventid': true
 };
 
-function make_pagination() {
-    
-    pdiv = $('div#pagination');
-    sdiv = $('div#pagination-summary');
-    sdiv.empty();
-    pdiv.empty();
-    
-    // Set our pagination window
-    if(PAGE - Math.floor(WINDOW/2) < 0) {
-        minpage = 0;
-        maxpage = WINDOW;
-    }
-    else if(PAGE + Math.floor(WINDOW/2) > pages - 1) {
-        minpage = pages - WINDOW;
-        maxpage = pages;
-    }
-    else {
-        minpage = PAGE - Math.floor(WINDOW/2);
-        maxpage = PAGE + Math.floor(WINDOW/2);
-    }
-    
-    pages = Math.ceil(TRAPS.length / PERPAGE);
-    var ul = $('<ul>', {class: 'pagination'});
-    
-    // Draw the << list item
-    var li = $('<li>', {html: '<span>&laquo;</span>'});
-    if(PAGE == 0) {
-        li.addClass('disabled');
-    } else {
-        li.click(function() {load_body(0);});
-    }
-    li.appendTo(ul);
-    
-    // Draw the Prev list item
-    var li = $('<li>', {html: '<span>Prev</span>'});
-    if(PAGE == 0) {
-        li.addClass('disabled');
-    } else {
-        li.click(function() {load_body(PAGE-1);});
-    }
-    li.appendTo(ul);
-    
-    // Draw each individual link
-    var paginated = 0;
-    for(var i=0, l=TRAPS.length; i<pages; i++) {
-        // If this is the first page, we want to deactivate the first arrow
-        if(i >= minpage && i < maxpage) {
-            paginated++;
-            var li = $('<li>', {html: '<span>' + (i+1) + '</span>', pageindex: i});
-            if(i == PAGE) {
-                li.addClass('active')
-            }
-            li.click(function() {var index=$(this).attr('pageindex'); load_body(index);});
-            li.appendTo(ul);
-        }
-    }
-    
-    // Draw the Next list item
-    var li = $('<li>', {html: '<span>Next</span>'});
-    if(PAGE == pages-1) {
-        li.addClass('disabled');
-    } else {
-        li.click(function() {load_body(PAGE+1);});
-    }
-    li.appendTo(ul);
-    
-    // Draw the >> list item
-    var li = $('<li>', {html: '<span>&raquo;</span>'});
-    if(PAGE == pages-1) {
-        li.addClass('disabled');
-    } else {
-        li.click(function() {load_body(pages - 1);});
-    }
-
-    li.appendTo(ul);
-    
-    $('<div>', {class: 'label label-default pull-right', text: 'Page ' + (PAGE + 1) + ' of ' + pages}).appendTo(sdiv);
-    $('<div>', {class: 'label label-default', text: TRAPS.length + ' Traps Total | Displaying ' + (PAGE*PERPAGE) + ' - ' + Math.min(TRAPS.length, (PAGE*PERPAGE) + PERPAGE)}).appendTo(sdiv);
-    
-    ul.appendTo(pdiv);
-}
-
 function normal_row(row) {
     var heading = $('<tr>');
     var klass;
@@ -129,7 +47,6 @@ function normal_row(row) {
     }
     
     $('<td>', {text: row.id}).appendTo(heading);
-    $('<td>', {html: '<input type="checkbox" class="trap-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
     $('<td>', {text: row.timewritten, class: 'text-center'}).appendTo(heading);
     $('<td>', {text: row.trapoid, class: 'text-center'}).appendTo(heading);
     $('<td>', {text: row.hostname, class: 'text-center'}).appendTo(heading);
@@ -144,7 +61,6 @@ function unknown_row(row) {
     var heading = $('<tr>');
     
     $('<td>', {text: row.id}).appendTo(heading);
-    $('<td>', {html: '<input type="checkbox" class="trap-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
     $('<td>', {text: row.timewritten}).appendTo(heading);
     $('<td>', {text: row.trapoid}).appendTo(heading);
     $('<td>', {text: row.hostname}).appendTo(heading);
@@ -161,25 +77,11 @@ function load_body(page) {
         PAGE = page;
     }
     
-    make_pagination();
+    show_throbber('#inspect-table');
     
-    show_throbber('#trap-table');
-    
-    var tbody = $('#trap-table-body');
+    var tbody = $('#inspector-view-tbody');
     
     tbody.empty();
-    
-    switch(TABLE) {
-        case 'Snmptt':
-        case 'SnmpttArchive':
-            var func = normal_row;
-            break;
-        case 'SnmpttUnknown':
-            var func = unknown_row;
-            break;
-    }
-    
-    sliced = TRAPS.slice(PAGE*PERPAGE, (PAGE*PERPAGE) + PERPAGE);
     
     // If there aren't any traps just say so.
     if(sliced.length == 0) {
@@ -194,7 +96,7 @@ function load_body(page) {
 
             app.appendTo(tbody);
         });
-    hide_throbber('#trap-table');
+    hide_throbber('#inspect-table');
     }
 }
 
@@ -202,15 +104,7 @@ function load_table() {
     
     load_header();
     var api_url = BASE_URL + 'api/trapview/read/' + TABLE;
-    
-    if(TABLE == 'Snmptt') {
-        $('.btn-archive').show();
-        $('.btn-delete').show();
-    } else {
-        $('.btn-archive').hide();
-        $('.btn-delete').show();
-    }
-    
+        
     //~ Get the trap JSON
     $.getJSON(api_url, function(data) {
         TRAPS = data;
@@ -223,7 +117,6 @@ function load_header() {
     switch(TABLE) {
         case 'SnmpttUnknown':
             $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
-            $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
@@ -234,7 +127,6 @@ function load_header() {
         case 'SnmpttArchive':
         default:
             $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
-            $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
@@ -243,15 +135,14 @@ function load_header() {
             $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
             break;
     }
-    $('#trap-table-head').html(heading);
+    $('#inspect-table-head').html(heading);
 }
 
-function draw_inspect_table() {
-    fdiv = $('#inspect-cat');
+function set_inspectable() {
+    
 }
 
-$(document).ready(function() {
-
+function load_insepctable(selection) {
     API_URL = BASE_URL + 'api/inspector/read/' + TABLE;
 
     $.getJSON(API_URL, function(d) {
@@ -264,8 +155,18 @@ $(document).ready(function() {
             }           
         });
     });
+}
 
-    var options = {
+$(document).ready(function() {
+
+    load_insepctable();
+
+    $("#add-inspect").change(function() {
+        $('#add-inspect option:selected').text($(this).attr('selected'));
+        set_inspectable();
+    });
+
+    var options1 = {
         chart: {
             renderTo: 'chart-container-line',
             type: 'line'
@@ -279,42 +180,41 @@ $(document).ready(function() {
         series: []
     };
 
-    tid = 25;
+    var options2 = {
+        chart: {
+            renderTo: 'chart-container-pie',
+            type: 'pie'
+        },
+        title: {
+            text: 'Inspector Pie Graph'
+        },
+        xAxis: {
+            type: 'datetime'
+        },
+        series: []
+    };
+
     var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
-    // + '?id=' + tid
 
     $.getJSON(API_URL, function(traps) {
         var property = $('#add-inspect option:selected').val();
-	new_series = [];
+        new_series = [];
+
         $.each(traps, function(index, trap) {
 
             var timewritten = trap['timewritten'];
             var value = trap[property];
 
             new_series.push([timewritten * 1000, value]);
-        });        
+        });
 
-        hc_series = {data: new_series}
-	console.log(hc_series)
-	options.series.push(hc_series);
-        var chart = new Highcharts.Chart(options);
+        hc_series = {data: new_series};
+        options1.series.push(parseFloat(hc_series));
+        options2.series.push(parseFloat(hc_series));
+        console.log(hc_series);
+        var chart = new Highcharts.Chart(options1);
+        var chart = new Highcharts.Chart(options2);
     });
-
-    // var options2 = {
-    //     chart: {
-    //         renderTo: 'chart-container-pie',
-    //         type: 'pie'
-    //     },
-    //     title: {
-    //         text: 'Inspector Pie Graph'
-    //     },
-    //     series: [{}]
-    // };
-
-    // $.getJSON(API_URL, function(data) {
-    //     options2.series[0].data = data;
-    //     var chart = new Highcharts.Chart(options2);
-    // });
 
     $('input[name=table]').change(function() {
         show_throbber('#content');
@@ -333,39 +233,31 @@ $(document).ready(function() {
 {% endblock header %}
 
 {% block content %}
-<div class='row container content'>
+<div>
+    <form class='form-inline'>
+        <div id='inspect-cat' class='input-group'>
+            <span class='input-group-addon'>Trap Type:</span>
+            <select id="add-inspect" class="form-control" style="width:auto;"></select>
+            <input type="button" id="apply-inspect" class="btn btn-primary" style="margin-left:15px;" value="Inspect">
+        </div>
+    </form>
+</div>
+
+<div id='inspect-content' class='row container content'>
     <div class='panel panel-default'>
         <div id="panel-title" class="panel-heading text-right"></div>
-        <table class="table table-condensed table-hover table-striped">
-            <thead>
-                <tr>
-                    <th width="30%">Key</th>
-                    <th width="70%">Value</th>
-                </tr>
-            </thead>
-            <tbody id="inspector-view-tbody">
-                <div id='inspect-cat col-md-5' class='input-group'>
-                    <span class='input-group-addon'>Trap:</span>
-                    <select id="add-inspect" class="form-control" style="width:auto;"></select>
-                </div>
-                <!-- <div class='input-group col-md-5'>
-                  <span class="input-group-addon">Value:</span>
-                  <input type="text" class="form-control" placeholder="Possible value for a trap metric..">
-                </div>  -->
-            </tbody>
+
+        <table id='inspect-table' class="table table-condensed table-hover table-striped">
+            <thead id="inspect-table-head"></thead>
+            <tbody id="inspector-view-tbody"></tbody>
+            <tfoot id='trap-table-foot'></tfoot>
         </table>
-        <div class='row container content'>
-            <div class='panel panel-default'>
-                <!-- <div class="input-group col-md-5 col-md-offset-2">
-                  <span class="input-group-addon">Trap:</span>
-                  <input type="text" id="trap" class="form-control" placeholder="Insert a metric to be inspected..">
-                </div> -->                               
-                <div class='col-md-6'>
-                    <div id='chart-container-line' class="linechart" style="width:100%; height:400px;"></div>
-                </div>
-                <div class='col-md-6'>
-                    <div id='chart-container-pie' class="piechart" style="width:100%; height:400px;"></div>
-                </div>
+        <div class='panel panel-default'>
+            <div class='col-md-6'>
+                <div id='chart-container-line' class="linechart" style="width:100%; height:400px;"></div>
+            </div>
+            <div class='col-md-6'>
+                <div id='chart-container-pie' class="piechart" style="width:100%; height:400px;"></div>
             </div>
         </div>
     </div>

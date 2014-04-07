@@ -208,7 +208,6 @@ $(document).ready(function() {
         $('.filter-select-toggle:checked').each(function() {
             if($('.filter-select-toggle:checked').length != 1) {
                 show_error('You must select exactly one filter.');
-                $('#error-message').modal('show');
             } else {
                 var data = {id: $(this).data('id')};
                 var index = $(this).data('index');

@@ -106,7 +106,7 @@ function normal_row(row) {
     }
     
     $('<td>', {text: row.id}).appendTo(heading);
-    $('<td>', {html: '<input type="checkbox" class="trap-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
+    $('<td>', {html: '<input type="checkbox" class="inspect-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
     $('<td>', {text: row.timewritten, class: 'text-center'}).appendTo(heading);
     $('<td>', {text: row.trapoid, class: 'text-center'}).appendTo(heading);
     $('<td>', {text: row.hostname, class: 'text-center'}).appendTo(heading);
@@ -121,7 +121,7 @@ function unknown_row(row) {
     var heading = $('<tr>');
     
     $('<td>', {text: row.id}).appendTo(heading);
-    $('<td>', {html: '<input type="checkbox" class="trap-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
+    $('<td>', {html: '<input type="checkbox" class="inspect-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
     $('<td>', {text: row.timewritten}).appendTo(heading);
     $('<td>', {text: row.trapoid}).appendTo(heading);
     $('<td>', {text: row.hostname}).appendTo(heading);
@@ -259,7 +259,7 @@ function load_header() {
             $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Uptime', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Message', class: 'text-center message-column'}).appendTo(heading);
             break;
         case 'Snmptt':
         case 'SnmpttArchive':
@@ -271,7 +271,7 @@ function load_header() {
             $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Severity', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Category', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Message', class: 'text-center message-column'}).appendTo(heading);
             break;
     }
     $('#trap-table-head').html(heading);

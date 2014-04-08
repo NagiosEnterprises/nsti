@@ -15,7 +15,7 @@
     margin-top: 20px;
 }
 
-#trap-table {
+#trap-table, #inspect-table {
     font-size:12px;
 }
 
@@ -33,7 +33,11 @@
     margin: 2px 5px 2px 5px;
 }
 
-.trap-controllers {
+.message-column {
+    min-width: 545px;
+}
+
+.trap-controllers, .inspect-controllers {
     margin:10px;
 }
 
@@ -85,4 +89,8 @@ body.modal-open {
 .inspector-icon > .active > a:focus {
     color: #357ebd;
     background-color: transparent;
+}
+
+.inspect-select {
+    width: 70%;
 }

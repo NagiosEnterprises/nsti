@@ -20,17 +20,109 @@ var TRANSLATE = {
     'id': 'ID' };
 
 var INSPECTABLE = {
-    'eventname': true,
-    'category': true,
-    'severity': true,
     'agentip': true,
-    'eventid': true
+    'eventid': true,
+    'category': true,
+    'uptime': true,
+    'severity': true,
+    'traptime': true,
+    'timewritten': true,
+    'hostname': true,
+    'community': true,
+    'traptime': true,
+    'eventname': true,
+    'trapoid': true,
+    'enterprise': true,
 };
+
+var PERPAGE = 6;
+
+function make_pagination() {
+    
+    pdiv = $('div#pagination');
+    sdiv = $('div#pagination-summary');
+    sdiv.empty();
+    pdiv.empty();
+    
+    // Set our pagination window
+    if(PAGE - Math.floor(WINDOW/2) < 0) {
+        minpage = 0;
+        maxpage = WINDOW;
+    }
+    else if(PAGE + Math.floor(WINDOW/2) > pages - 1) {
+        minpage = pages - WINDOW;
+        maxpage = pages;
+    }
+    else {
+        minpage = PAGE - Math.floor(WINDOW/2);
+        maxpage = PAGE + Math.floor(WINDOW/2);
+    }
+    
+    pages = Math.ceil(TRAPS.length / PERPAGE);
+    var ul = $('<ul>', {class: 'pagination'});
+    
+    // Draw the << list item
+    var li = $('<li>', {html: '<span>&laquo;</span>'});
+    if(PAGE == 0) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(0);});
+    }
+    li.appendTo(ul);
+    
+    // Draw the Prev list item
+    var li = $('<li>', {html: '<span>Prev</span>'});
+    if(PAGE == 0) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(PAGE-1);});
+    }
+    li.appendTo(ul);
+    
+    // Draw each individual link
+    var paginated = 0;
+    for(var i=0, l=TRAPS.length; i<pages; i++) {
+        // If this is the first page, we want to deactivate the first arrow
+        if(i >= minpage && i < maxpage) {
+            paginated++;
+            var li = $('<li>', {html: '<span>' + (i+1) + '</span>', pageindex: i});
+            if(i == PAGE) {
+                li.addClass('active')
+            }
+            li.click(function() {var index=$(this).attr('pageindex'); load_body(index);});
+            li.appendTo(ul);
+        }
+    }
+    
+    // Draw the Next list item
+    var li = $('<li>', {html: '<span>Next</span>'});
+    if(PAGE == pages-1) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(PAGE+1);});
+    }
+    li.appendTo(ul);
+    
+    // Draw the >> list item
+    var li = $('<li>', {html: '<span>&raquo;</span>'});
+    if(PAGE == pages-1) {
+        li.addClass('disabled');
+    } else {
+        li.click(function() {load_body(pages - 1);});
+    }
+
+    li.appendTo(ul);
+    
+    $('<div>', {class: 'label label-default pull-right', text: 'Page ' + (PAGE + 1) + ' of ' + pages}).appendTo(sdiv);
+    $('<div>', {class: 'label label-default', text: TRAPS.length + ' Traps Total | Displaying ' + (PAGE*PERPAGE) + ' - ' + Math.min(TRAPS.length, (PAGE*PERPAGE) + PERPAGE)}).appendTo(sdiv);
+    
+    ul.appendTo(pdiv);
+}
 
 function normal_row(row) {
     var heading = $('<tr>');
     var klass;
-    
+
     switch(row.severity) {
         case 'warning':
         case 'Warning':
@@ -47,6 +139,7 @@ function normal_row(row) {
     }
     
     $('<td>', {text: row.id}).appendTo(heading);
+    $('<td>', {html: '<input type="checkbox" class="inspect-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
     $('<td>', {text: row.timewritten, class: 'text-center'}).appendTo(heading);
     $('<td>', {text: row.trapoid, class: 'text-center'}).appendTo(heading);
     $('<td>', {text: row.hostname, class: 'text-center'}).appendTo(heading);
@@ -61,6 +154,7 @@ function unknown_row(row) {
     var heading = $('<tr>');
     
     $('<td>', {text: row.id}).appendTo(heading);
+    $('<td>', {html: '<input type="checkbox" class="inspect-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
     $('<td>', {text: row.timewritten}).appendTo(heading);
     $('<td>', {text: row.trapoid}).appendTo(heading);
     $('<td>', {text: row.hostname}).appendTo(heading);
@@ -76,13 +170,24 @@ function load_body(page) {
     } else {
         PAGE = page;
     }
-    
+
+    make_pagination();
     show_throbber('#inspect-table');
-    
-    var tbody = $('#inspector-view-tbody');
-    
+    var tbody = $('#inspect-table-body');
     tbody.empty();
+
+    switch(TABLE) {
+        case 'Snmptt':
+        case 'SnmpttArchive':
+            var func = normal_row;
+            break;
+        case 'SnmpttUnknown':
+            var func = unknown_row;
+            break;
+    }
     
+    sliced = TRAPS.slice(PAGE*PERPAGE, (PAGE*PERPAGE) + PERPAGE);
+
     // If there aren't any traps just say so.
     if(sliced.length == 0) {
         var app = $('<tr>', {html: '<td colspan="999">No traps found in database.</td>'});
@@ -104,11 +209,74 @@ function load_table() {
     
     load_header();
     var api_url = BASE_URL + 'api/trapview/read/' + TABLE;
-        
+            
+    if(TABLE == 'Snmptt') {
+        $('.btn-archive').show();
+        $('.btn-delete').show();
+    } else {
+        $('.btn-archive').hide();
+        $('.btn-delete').show();
+    }
+
     //~ Get the trap JSON
     $.getJSON(api_url, function(data) {
+        console.log(data);
         TRAPS = data;
         load_body();
+    });
+}
+
+function toggle_selected() {
+    $('.inspect-select-toggle').each(function(d, i) {
+        if($(i).is(':checked')) {
+            $(i).prop('checked', false);
+        } else {
+            $(i).prop('checked', true);
+        }
+    });
+}
+
+function delete_traps() {
+    var id = [];
+    var api_url = BASE_URL + 'api/trapview/delete/' + TABLE;
+    
+    $('.inspect-select-toggle:checked').each(function(i, d) {
+        id.push($(d).attr('data-index'));
+    });
+    
+    $.ajax({
+        url: api_url,
+        data: {id: id},
+        traditional: true,
+        success: function(data) {
+            if(data.error) {
+                show_error(data.error);
+            } else {
+                load_table();
+            }
+        }
+    });
+}
+
+function archive_traps() {
+    var id = [];
+    var api_url = BASE_URL + 'api/trapview/archive';
+    
+    $('.inspect-select-toggle:checked').each(function(i, d) {
+        id.push($(d).attr('data-index'));
+    });
+    
+    $.ajax({
+        url: api_url,
+        data: {id: id},
+        traditional: true,
+        success: function(data) {
+            if(data.error) {
+                show_error(data.error);
+            } else {
+                load_table();
+            }
+        }
     });
 }
 
@@ -117,42 +285,124 @@ function load_header() {
     switch(TABLE) {
         case 'SnmpttUnknown':
             $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Uptime', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Message', class: 'text-center message-column'}).appendTo(heading);
             break;
         case 'Snmptt':
         case 'SnmpttArchive':
         default:
             $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Severity', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Category', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Message', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Message', class: 'text-center message-column'}).appendTo(heading);
             break;
     }
     $('#inspect-table-head').html(heading);
 }
 
-function set_inspectable() {
-    
+// function draw_charts() {
+//     var options1 = {
+//         chart: {
+//             renderTo: 'chart-container-line',
+//             type: 'line'
+//         },
+//         title: {
+//             text: 'Inspector Line Graph'
+//         },
+//         xAxis: {
+//             type: 'datetime'
+//         },
+//         series: []
+//     };
+
+//     var options2 = {
+//         chart: {
+//             renderTo: 'chart-container-pie',
+//             type: 'pie'
+//         },
+//         title: {
+//             text: 'Inspector Pie Graph'
+//         },
+//         tooltip: {
+//             pointFormat: '{series.name}'
+//         },
+//         plotOptions: {
+//             pie: {
+//                 allowPointSelect: true,
+//                 cursor: 'pointer',
+//                 dataLabels: {
+//                     enabled: true,
+//                     color: '#000000',
+//                     connectorColor: '#000000',
+//                     format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+//                 }
+//             }
+//         },
+//         series: []
+//     };
+
+//     var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
+
+//     $.getJSON(API_URL, function(traps) {
+//         var property = $('#add-inspect option:selected').val();
+//         new_series = [];
+
+//         $.each(traps, function(index, trap) {
+//             var timewritten = trap['timewritten'];
+//             // var id = trap['id'];
+//             var value = trap['id'];
+
+//             new_series.push([timewritten * 1000, value]);
+//         });
+
+//         new_series.sort(function (a, b) {
+//             return a[0] - b[0];
+//         });
+        
+//         hc_series = {data: new_series};
+//         options1.series.push(hc_series);
+//         options2.series.push(hc_series);
+//         console.log(hc_series);
+//         var chart = new Highcharts.Chart(options1);
+//         var chart = new Highcharts.Chart(options2);
+//     });
+// }
+
+function set_inspectable(set) {
+    $('#add-inspect option:selected').text(set);
+    draw_charts();
 }
 
-function load_insepctable(selection) {
+function load_insepctable() {
     API_URL = BASE_URL + 'api/inspector/read/' + TABLE;
 
     $.getJSON(API_URL, function(d) {
         data = d[0];
-        $.each(data, function(name, trap){
+        $.each(data, function(name, trap) {
             if(INSPECTABLE[name]) {
                 $("#add-inspect").append(
                     $("<option></option>").text(TRANSLATE[name]).val(name)
                 );
-            }           
+            }
+        });
+    });
+
+    $.getJSON(API_URL, function(d) {
+        data = d[0];
+        $.each(data, function(name, trap) {
+            if(INSPECTABLE[name]) {
+                $("#add-data").append(
+                    $("<option></option>").text(TRANSLATE[name]).val(name)
+                );
+            }
         });
     });
 }
@@ -160,87 +410,41 @@ function load_insepctable(selection) {
 $(document).ready(function() {
 
     load_insepctable();
+    // draw_charts();
 
     $("#add-inspect").change(function() {
-        $('#add-inspect option:selected').text($(this).attr('selected'));
-        set_inspectable();
+        set = $(this).attr('selected');
+        set_inspectable(set);
     });
 
-    var options1 = {
-        chart: {
-            renderTo: 'chart-container-line',
-            type: 'line'
-        },
-        title: {
-            text: 'Inspector Line Graph'
-        },
-        xAxis: {
-            type: 'datetime'
-        },
-        series: []
-    };
-
-    var options2 = {
-        chart: {
-            renderTo: 'chart-container-pie',
-            type: 'pie'
-        },
-        title: {
-            text: 'Inspector Pie Graph'
-        },
-        tooltip: {
-            pointFormat: '{series.name}'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    color: '#000000',
-                    connectorColor: '#000000',
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                }
-            }
-        },
-        series: []
-    };
-
-    var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
-
-    $.getJSON(API_URL, function(traps) {
-        var property = $('#add-inspect option:selected').val();
-        new_series = [];
-
-        $.each(traps, function(index, trap) {
-            var timewritten = trap['timewritten'];
-            // var id = trap['id'];
-            var value = trap['id'];
-
-            new_series.push([timewritten * 1000, value]);
-        });
-
-        new_series.sort(function (a, b) {
-            return a[0] - b[0];
-        });
-        
-        hc_series = {data: new_series};
-        options1.series.push(hc_series);
-        options2.series.push(hc_series);
-        console.log(hc_series);
-        var chart = new Highcharts.Chart(options1);
-        var chart = new Highcharts.Chart(options2);
+    $("#add-data").change(function() {
+        set = $(this).attr('selected');
+        set_inspectable(set);
     });
 
     $('input[name=table]').change(function() {
-        show_throbber('#content');
+        show_throbber('#inspect-content');
         TABLE = $(this).val();
         load_table();
-        hide_throbber('#content');
+        hide_throbber('#inspect-content');
     });
 
     $('.goto-view').click(function() {
         
+    });
+
+    $('#table-normal').trigger('change');
+
+    $('#toggle').click(function() {
+        toggle_selected();
+    });
+    
+    $('.delete-selected').click(function() {
+        delete_traps();
+    });
+    
+    $('.archive-selected').click(function() {
+        archive_traps();
     });
 
 });
@@ -248,33 +452,65 @@ $(document).ready(function() {
 {% endblock header %}
 
 {% block content %}
-<div>
-    <form class='form-inline'>
-        <div id='inspect-cat' class='input-group'>
+<div class='row'>
+    <div class='col-md-3'>
+        <div class='btn-group left-inset' data-toggle='buttons'>
+            <label class='btn btn-primary active'>
+                <input id='table-normal' type='radio' name='table' value='Snmptt' selected='selected'>Normal
+            </label>
+            <label class='btn btn-primary'>
+                <input type='radio' name='table' value='SnmpttArchive'>Archive
+            </label>
+            <label class='btn btn-primary'>
+                <input type='radio' name='table' value='SnmpttUnknown'>Unknown
+            </label>
+        </div>
+    </div>
+    <form class='row form-inline col-md-9'>
+        <div id='inspect-cat' class='input-group inspect-select'>
             <span class='input-group-addon'>Trap Type:</span>
-            <select id="add-inspect" class="form-control" style="width:auto;"></select>
-            <input type="button" id="apply-inspect" class="btn btn-primary" style="margin-left:15px;" value="Inspect">
+            <select id='add-inspect' class='form-control' style='width:auto;'></select>
+            <span class='glyphicon glyphicon-forward inspector-icon'></span>
+            <span class='input-group-addon'>Trap Data:</span>
+            <select id='apply-inspect' class='form-control' style='width:auto;'></select>
+            <input type='button' id='apply-inspect' class='btn btn-primary' style='margin-left:15px;' value="Inspect">
         </div>
     </form>
 </div>
-
 <div id='inspect-content' class='row container content'>
     <div class='panel panel-default'>
-        <div id="panel-title" class="panel-heading text-right"></div>
-
-        <table id='inspect-table' class="table table-condensed table-hover table-striped">
-            <thead id="inspect-table-head"></thead>
-            <tbody id="inspector-view-tbody"></tbody>
-            <tfoot id='trap-table-foot'></tfoot>
-        </table>
-        <div class='panel panel-default'>
-            <div class='col-md-6'>
-                <div id='chart-container-line' class="linechart" style="width:100%; height:400px;"></div>
-            </div>
-            <div class='col-md-6'>
-                <div id='chart-container-pie' class="piechart" style="width:100%; height:400px;"></div>
+        <div class='panel-heading' id='pagination-summary'></div>
+        <div id='pagination' class='panel-body text-center'></div>
+        <div class='pull-left'>
+            <div class='btn-group btn-group-sm inspect-controllers'>
+                <button type='button' class='btn btn-default btn-delete'>
+                    <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
+                </button>
+                <button type='button' class='btn btn-default btn-archive'>
+                    <a alt='Archive Selected' data-toggle='tooltip' title='Archive Selected' class='archive-selected glyphicon glyphicon-tag'></a> 
+                </button>
             </div>
         </div>
+        <table id='inspect-table' class='table table-condensed table-hover table-striped table-bordered'>
+            <thead id='inspect-table-head'></thead>
+            <tfoot id='trap-table-foot'>
+                <tr>
+                    <td colspan='999'>
+                        <div class='pull-left'>
+                            <div class='btn-group btn-group-sm inspect-controllers'>
+                                <button type='button' class='btn btn-default btn-delete'>
+                                    <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
+                                </button>
+                                <button type='button' class='btn btn-default btn-archive'>
+                                    <a alt='Archive Selected' data-toggle='tooltip' title='Archive Selected' class='archive-selected glyphicon glyphicon-tag'></a> 
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody id='inspect-table-body'></tbody>
+        </table>
     </div>
 </div>
 {% endblock content %}

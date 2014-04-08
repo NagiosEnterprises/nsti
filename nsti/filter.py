@@ -96,7 +96,7 @@ def add_active_filter():
     json_result = {}
     name = request.args.get('name', '')
     existing_count = db.DB.find(db.Filter, db.Filter.name == name).count()
-    
+
     if not name:
         json_result['error'] = 'No name was given.'
     elif existing_count == 0:

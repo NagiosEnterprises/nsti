@@ -33,6 +33,7 @@ var INSPECTABLE = {
     'eventname': true,
     'trapoid': true,
     'enterprise': true,
+    'id': true
 };
 
 var PERPAGE = 6;
@@ -220,7 +221,6 @@ function load_table() {
 
     //~ Get the trap JSON
     $.getJSON(api_url, function(data) {
-        console.log(data);
         TRAPS = data;
         load_body();
     });
@@ -308,73 +308,73 @@ function load_header() {
     $('#inspect-table-head').html(heading);
 }
 
-// function draw_charts() {
-//     var options1 = {
-//         chart: {
-//             renderTo: 'chart-container-line',
-//             type: 'line'
-//         },
-//         title: {
-//             text: 'Inspector Line Graph'
-//         },
-//         xAxis: {
-//             type: 'datetime'
-//         },
-//         series: []
-//     };
+function draw_charts() {
+    var options1 = {
+        chart: {
+            renderTo: 'chart-container-line',
+            type: 'line'
+        },
+        title: {
+            text: 'Inspector Line Graph'
+        },
+        xAxis: {
+            type: 'datetime'
+        },
+        series: []
+    };
 
-//     var options2 = {
-//         chart: {
-//             renderTo: 'chart-container-pie',
-//             type: 'pie'
-//         },
-//         title: {
-//             text: 'Inspector Pie Graph'
-//         },
-//         tooltip: {
-//             pointFormat: '{series.name}'
-//         },
-//         plotOptions: {
-//             pie: {
-//                 allowPointSelect: true,
-//                 cursor: 'pointer',
-//                 dataLabels: {
-//                     enabled: true,
-//                     color: '#000000',
-//                     connectorColor: '#000000',
-//                     format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-//                 }
-//             }
-//         },
-//         series: []
-//     };
+    var options2 = {
+        chart: {
+            renderTo: 'chart-container-pie',
+            type: 'pie'
+        },
+        title: {
+            text: 'Inspector Pie Graph'
+        },
+        tooltip: {
+            pointFormat: '{series.name}'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    color: '#000000',
+                    connectorColor: '#000000',
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                }
+            }
+        },
+        series: []
+    };
 
-//     var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
+    var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
 
-//     $.getJSON(API_URL, function(traps) {
-//         var property = $('#add-inspect option:selected').val();
-//         new_series = [];
+    $.getJSON(API_URL, function(traps) {
+        var propertyx = $('#add-inspect option:selected').val();
+        var propertyy = $('#add-data option:selected').val();
+        new_series = [];
 
-//         $.each(traps, function(index, trap) {
-//             var timewritten = trap['timewritten'];
-//             // var id = trap['id'];
-//             var value = trap['id'];
+        $.each(traps, function(index, trap) {
+            var timewritten = trap['timewritten'];
+            var value = trap['id'];
 
-//             new_series.push([timewritten * 1000, value]);
-//         });
+            new_series.push([timewritten * 1000, value]);
+        });
 
-//         new_series.sort(function (a, b) {
-//             return a[0] - b[0];
-//         });
+        new_series.sort(function (a, b) {
+            return a[0] - b[0];
+        });
         
-//         hc_series = {data: new_series};
-//         options1.series.push(hc_series);
-//         options2.series.push(hc_series);
-//         console.log(hc_series);
-//         var chart = new Highcharts.Chart(options1);
-//         var chart = new Highcharts.Chart(options2);
-//     });
-// }
+        hc_series = {data: new_series};
+        options1.series.push(hc_series);
+        options2.series.push(hc_series);
+        console.log(hc_series);
+        var chart = new Highcharts.Chart(options1);
+        var chart = new Highcharts.Chart(options2);
+    });
+}
 
 function set_inspectable(set) {
     $('#add-inspect option:selected').text(set);
@@ -402,7 +402,7 @@ function load_insepctable() {
 $(document).ready(function() {
 
     load_insepctable();
-    // draw_charts();
+    draw_charts();
 
     $("#add-inspect").change(function() {
         set = $(this).attr('selected');
@@ -502,6 +502,20 @@ $(document).ready(function() {
                 </tr>
             </tfoot>
             <tbody id='inspect-table-body'></tbody>
+        </table>
+        <table id='graph-table' class='table'>
+            <tr>
+                <td>
+                    <div>
+                        <div class='col-md-6'>
+                            <div id='chart-container-line' class="linechart" style="height:400px;"></div>
+                        </div>
+                        <div class='col-md-6'>
+                            <div id='chart-container-pie' class="piechart" style="height:400px;"></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
         </table>
     </div>
 </div>

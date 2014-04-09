@@ -401,6 +401,10 @@ function load_insepctable() {
 
 $(document).ready(function() {
 
+    Highcharts.setOptions({
+        colors: ['#428bca', '#5cb85c', '#f0ad4e', '#d9534f', '#5bc0de', '#2bd34e', '#f5c989', '#dd765a']
+    });
+
     load_insepctable();
     draw_charts();
 

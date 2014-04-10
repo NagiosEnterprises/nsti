@@ -314,6 +314,9 @@ function draw_charts() {
             renderTo: 'chart-container-line',
             type: 'line'
         },
+        credits: {
+            enabled: false
+        },
         title: {
             text: 'Inspector Line Graph'
         },
@@ -327,6 +330,9 @@ function draw_charts() {
         chart: {
             renderTo: 'chart-container-pie',
             type: 'pie'
+        },
+        credits: {
+            enabled: false
         },
         title: {
             text: 'Inspector Pie Graph'
@@ -476,6 +482,22 @@ $(document).ready(function() {
         </div>
     </form>
 </div>
+<div class='panel panel-default' style='margin-top:20px;'>
+    <table id='graph-table' class='table'>
+        <tr>
+            <td>
+                <div>
+                    <div class='col-md-6'>
+                        <div id='chart-container-line' class="linechart" style="height:400px;"></div>
+                    </div>
+                    <div class='col-md-6'>
+                        <div id='chart-container-pie' class="piechart" style="height:400px;"></div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
 <div id='inspect-content' class='row container content'>
     <div class='panel panel-default'>
         <div class='panel-heading' id='pagination-summary'></div>
@@ -509,20 +531,6 @@ $(document).ready(function() {
                 </tr>
             </tfoot>
             <tbody id='inspect-table-body'></tbody>
-        </table>
-        <table id='graph-table' class='table'>
-            <tr>
-                <td>
-                    <div>
-                        <div class='col-md-6'>
-                            <div id='chart-container-line' class="linechart" style="height:400px;"></div>
-                        </div>
-                        <div class='col-md-6'>
-                            <div id='chart-container-pie' class="piechart" style="height:400px;"></div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
         </table>
     </div>
 </div>

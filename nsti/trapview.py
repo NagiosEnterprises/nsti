@@ -21,7 +21,7 @@ def traplist():
         session['tablename'] = c_tablename
     else:
         abort(400, 'Bad Request. Table type submitted was bad. Got: %s, expected Snmptt, SnmpttArchive or SnmpttUnknown.' % table)
-    
+
     return render_template('trapview/traplist.html')
 
 @app.route('/trapview/<trapid>')

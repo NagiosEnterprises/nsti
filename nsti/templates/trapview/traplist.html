@@ -26,7 +26,7 @@ function make_pagination() {
     }
     
     pages = Math.ceil(TRAPS.length / PERPAGE);
-    var ul = $('<ul>', {class: 'pagination'});
+    var ul = $('<ul>', {class: 'pagination', style: 'margin-bottom:0;'});
     
     // Draw the << list item
     var li = $('<li>', {html: '<span>&laquo;</span>'});
@@ -278,16 +278,16 @@ function load_header() {
 }
 
 function draw_filter_table() {
-    fdiv = $('#filter-table');
+    fdiv = $('#filter-div');
     reload_active_filters();
 }
 
 function add_trap_filter_active(name) {
     var API_URL = BASE_URL + 'api/filter/add-active-filter';
 
-    $.getJSON(API_URL, {name:name}, function() {
+    $.getJSON(API_URL, {name:name}, function(data) {
         var tag = make_tag(name);
-        tag.appendTo('#filter-table');
+        tag.appendTo('#filter-div');
     });
 }
 
@@ -308,14 +308,18 @@ function make_tag(name) {
     return s;
 }
 
-// load session data to retain active-filters after a page reload
+// load session data to retain active-filters after a page reload- not finished
 function reload_active_filters() {
-    var active = ('{{ session.get("active_filters") }}').decode;
-        obj = $.parseJSON(active);
-    console.log(obj);
-   
-    // var tag = make_tag(name);
-    // tag.appendTo('#filter-table');
+
+    var active = '{{ session.get("active_filters") }}';
+    // var readable = active.html(active).text();
+    console.log(active);
+
+    // var API_URL = BASE_URL + 'api/filter/read-active';
+    // $.getJSON(API_URL, {}, function(data) {
+    //     console.log(data);
+    // });
+    //active.appendTo('#filter-table');
 }
 
 $(document).ready(function() {
@@ -337,7 +341,7 @@ $(document).ready(function() {
         var name = $('#add-filter option:selected').val();
         var add = true;
 
-        $('#filter-table .btn').each(function(v) {
+        $('#filter-div .btn').each(function(v) {
             if(name == $(this).text().trim()) {
                 add = false;
             }
@@ -405,12 +409,15 @@ $(document).ready(function() {
             </div>
         </form>
     </div>
+    <div class='row col-md-10' style='min-height:41px;margin:0 15px 0 15px;'>
+        <div id='filter-div' class='input-group' style='margin-top:7px;'></div>
+    </div>
 </div>
 
 <div id='trap-content' class='row container content'>
     <div class="panel panel-default">
         <div class='panel-heading' id='pagination-summary'></div>
-        <div id='pagination' class='panel-body text-center'></div>
+        <div id='pagination' class='panel-body text-center' style="padding:0;"></div>
         <div class='pull-left'>
             <div class='btn-group btn-group-sm trap-controllers'>
                 <button type='button' class='btn btn-default btn-delete'>

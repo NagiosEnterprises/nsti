@@ -60,7 +60,7 @@ function make_pagination() {
     }
     
     pages = Math.ceil(TRAPS.length / PERPAGE);
-    var ul = $('<ul>', {class: 'pagination'});
+    var ul = $('<ul>', {class: 'pagination', style: 'margin-bottom:0;'});
     
     // Draw the << list item
     var li = $('<li>', {html: '<span>&laquo;</span>'});
@@ -357,8 +357,8 @@ function draw_charts() {
         new_series = [];
 
         $.each(traps, function(index, trap) {
-            var timewritten = trap['timewritten'];
-            var value = trap['id'];
+            var timewritten = trap[propertyx];
+            var value = trap[propertyy];
 
             new_series.push([timewritten * 1000, value]);
         });
@@ -378,7 +378,6 @@ function draw_charts() {
 
 function set_inspectable(set) {
     $('#add-inspect option:selected').text(set);
-    draw_charts();
 }
 
 function load_insepctable() {
@@ -429,6 +428,10 @@ $(document).ready(function() {
         
     });
 
+    $('#apply-inspect').click(function() {
+        draw_charts();
+    });
+
     $('#table-normal').trigger('change');
 
     $('#toggle').click(function() {
@@ -476,7 +479,7 @@ $(document).ready(function() {
 <div id='inspect-content' class='row container content'>
     <div class='panel panel-default'>
         <div class='panel-heading' id='pagination-summary'></div>
-        <div id='pagination' class='panel-body text-center'></div>
+        <div id='pagination' class='panel-body text-center' style="padding:0;"></div>
         <div class='pull-left'>
             <div class='btn-group btn-group-sm inspect-controllers'>
                 <button type='button' class='btn btn-default btn-delete'>

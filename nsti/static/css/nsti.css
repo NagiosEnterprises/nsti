@@ -41,6 +41,11 @@
     margin:10px;
 }
 
+.place-holder-div {
+    margin:0 15px 0 15px;
+    min-height: 41px;
+}
+
 .toggle-checkbox {
     width:30px;
 }

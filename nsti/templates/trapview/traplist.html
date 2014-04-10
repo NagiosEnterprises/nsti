@@ -400,8 +400,17 @@ $(document).ready(function() {
             </label>
         </div>
     </div>
-    <div class="row col-md-9">
-        <form class="form-inline">
+    <div class='row col-md-4'>
+        <form class='form-inline'>
+            <div id='trap-search' class='input-group'>
+                <span class='input-group-addon'>Search:</span>
+                <input type='text' class='form-control' style='width:auto;' placeholder='Search Traplist..'>
+                <input type='button' id='apply-search' class='btn btn-primary' style="margin-left:15px;" value="Search">
+            </div>
+        </form>
+    </div>
+    <div class="row col-md-5">
+        <form class="form-inline" style="margin-left:25px;">
             <div id='filter-table' class='input-group'>
                 <span class='input-group-addon'>Select Filter:</span>
                 <select id="add-filter" class="form-control" style="width:auto;"></select>

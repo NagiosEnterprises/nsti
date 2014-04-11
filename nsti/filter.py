@@ -94,8 +94,14 @@ def read_filter():
 @app.route('/api/filter/add-active-filter')
 def add_active_filter():
     json_result = {}
+    session['active_filters'] = []
     name = request.args.get('name', '')
+    session['active_filters'].append(name)
+    print session
     existing_count = db.DB.find(db.Filter, db.Filter.name == name).count()
+    json_str = json.dumps(json_result)
+    return Response(response=json_str, status=200, mimetype='application/json')
+
 
     if not name:
         json_result['error'] = 'No name was given.'
@@ -105,16 +111,27 @@ def add_active_filter():
         json_result['error'] = 'Filter by that name returns more than one result.'
     else:
         try:
-            active_filters = session.get('active_filters', [])
-            if not name in active_filters:
-                active_filters.append(name)
-            session['active_filters'] = active_filters
+            print session
+            print name in session['active_filters']
+            if not 'active_filters' in session:
+                session['active_filters'] = []
+            if not name in session['active_filters']:
+                session['active_filters'].append(name)
+            print session['active_filters']
             json_result['active_filters'] = session['active_filters']
             json_result['success'] = 'Successfully added filter to list.'
         except Exception, e:
             json_result['error'] = 'Error adding filter to list: %s' % str(e)
             
     json_str = json.dumps(json_result)
+    return Response(response=json_str, status=200, mimetype='application/json')
+
+@app.route('/api/filter/read-active-filter')
+def read_active_filter():
+    print session.get('active_filters')
+    json_result = {'filters': session.get('active_filters', [])}
+    json_str = json.dumps(json_result)
+     
     return Response(response=json_str, status=200, mimetype='application/json')
 
 @app.route('/api/filter/delete-active-filter')

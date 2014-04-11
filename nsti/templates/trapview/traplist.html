@@ -139,6 +139,7 @@ function load_body(page) {
     }
     
     make_pagination();
+    load_filters();
     
     show_throbber('#trap-table');
     
@@ -157,7 +158,6 @@ function load_body(page) {
     }
     
     sliced = TRAPS.slice(PAGE*PERPAGE, (PAGE*PERPAGE) + PERPAGE);
-    
     // If there aren't any traps just say so.
     if(sliced.length == 0) {
         var app = $('<tr>', {html: '<td colspan="999">No traps found in database.</td>'});
@@ -171,8 +171,8 @@ function load_body(page) {
 
             app.appendTo(tbody);
         });
-    hide_throbber('#trap-table');
     }
+    hide_throbber('#trap-table');
 }
 
 function load_table() {
@@ -277,20 +277,26 @@ function load_header() {
     $('#trap-table-head').html(heading);
 }
 
-function draw_filter_table() {
-    fdiv = $('#filter-div');
-    reload_active_filters();
-}
-
 function add_trap_filter_active(name) {
     var API_URL = BASE_URL + 'api/filter/add-active-filter';
 
     $.getJSON(API_URL, {name:name}, function(data) {
+        console.log(name)
         var tag = make_tag(name);
         tag.appendTo('#filter-div');
+        $.getJSON(BASE_URL + 'api/filter/read-active-filter', function(d) {
+            console.log(d);
+        })
     });
 }
 
+function load_filters() {
+    var API_URL = BASE_URL + 'api/filter/read-active-filter';
+
+    $.getJSON(API_URL, function(data) {
+        console.log(data);
+    });
+}
 //make tags for currently active filters
 function make_tag(name) {
     var API_URL = BASE_URL + 'api/filter/delete-active-filter';
@@ -308,18 +314,20 @@ function make_tag(name) {
     return s;
 }
 
-// load session data to retain active-filters after a page reload- not finished
-function reload_active_filters() {
+function do_trap_search() {
+    API_URL = BASE_URL + 'api/trapview/read/' + TABLE;
+    var q = $("#search-arg").val();
+    var pr = {'combiner': 'OR'}
 
-    var active = '{{ session.get("active_filters") }}';
-    // var readable = active.html(active).text();
-    console.log(active);
+    $.each(COLUMNS, function(i) {
+        var keyname = COLUMNS[i] + '__contains';
+        pr[keyname] = q;
+    });
 
-    // var API_URL = BASE_URL + 'api/filter/read-active';
-    // $.getJSON(API_URL, {}, function(data) {
-    //     console.log(data);
-    // });
-    //active.appendTo('#filter-table');
+    $.getJSON(API_URL, pr, function(data) {
+        TRAPS = data;
+        load_body();
+     });
 }
 
 $(document).ready(function() {
@@ -334,8 +342,9 @@ $(document).ready(function() {
             );
         });
     });
-    draw_filter_table();
 
+    $('#trap-search').click(do_trap_search);
+    
     //apply filters to traplist page and make tags with 'Apply' button
     $('#apply-filter').click(function() {
         var name = $('#add-filter option:selected').val();
@@ -349,11 +358,8 @@ $(document).ready(function() {
 
         if(add == true) {
             add_trap_filter_active(name);
-            draw_filter_table();
             load_body();
-        } else {
-            draw_filter_table();
-        }
+        } 
     });
     
     $('input[name=table]').change(function() {
@@ -402,10 +408,10 @@ $(document).ready(function() {
     </div>
     <div class='row col-md-4'>
         <form class='form-inline'>
-            <div id='trap-search' class='input-group'>
+            <div id='d-trap-search' class='input-group'>
                 <span class='input-group-addon'>Search:</span>
-                <input type='text' class='form-control' style='width:auto;' placeholder='Search Traplist..'>
-                <input type='button' id='apply-search' class='btn btn-primary' style="margin-left:10px;" value="Search">
+                <input type='text' id='search-arg' class='form-control' style='width:auto;' placeholder='Search Traplist..'>
+                <input type="button" id='trap-search' class='btn btn-primary' style="margin-left:10px;" value="Search">
             </div>
         </form>
     </div>
@@ -418,8 +424,8 @@ $(document).ready(function() {
             </div>
         </form>
     </div>
-    <div class='row col-md-10' style='min-height:41px;margin:0 15px 0 15px;'>
-        <div id='filter-div' class='input-group' style='margin-top:7px;'></div>
+    <div class='row col-md-11' style='min-height:35px;margin:7px 15px 0 15px;'>
+        <div id='filter-div' class='input-group'></div>
     </div>
 </div>
 

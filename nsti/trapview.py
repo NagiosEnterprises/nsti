@@ -39,8 +39,14 @@ def trapview(trapid):
 @app.route('/api/trapview/read/<tablename>')
 def read(tablename):
     traptype = getattr(db, tablename)
+
+    bool_combine = request.args.get('combiner', 'AND')
+    if bool_combine == 'OR':
+        acombine = False
+    else:
+        acombine = True
     
-    where_clause = db.sql_where_query(traptype, request.args)
+    where_clause = db.sql_where_query(traptype, request.args, acombine)
     
     if where_clause:
         results = db.DB.find(traptype, where_clause)

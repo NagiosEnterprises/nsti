@@ -472,16 +472,19 @@ $(document).ready(function() {
         </div>
     </div>
     <form class='row form-inline col-md-9'>
-        <div id='inspect-cat' class='input-group inspect-select'>
-            <span class='input-group-addon'>X Axis:</span>
-            <select id='add-inspect' class='form-control' style='width:auto;'></select>
-            <span class='glyphicon glyphicon-forward inspector-icon'></span>
-            <span class='input-group-addon'>Y Axis:</span>
-            <select id='add-data' class='form-control' style='width:auto;'></select>
-            <input type='button' id='apply-inspect' class='btn btn-primary' style='margin-left:15px;' value="Inspect">
+        <div class='row-fluid'>
+            <div id='inspect-cat' class='input-group inspect-select'>
+                <span class='input-group-addon'>X Axis:</span>
+                <select id='add-inspect' class='form-control' style='width:auto;'></select>
+                <span class='glyphicon glyphicon-forward inspector-icon'></span>
+                <span class='input-group-addon'>Y Axis:</span>
+                <select id='add-data' class='form-control' style='width:auto;'></select>
+                <input type='button' id='apply-inspect' class='btn btn-primary' style='margin-left:15px;' value="Inspect">
+            </div>
         </div>
     </form>
 </div>
+<div style="min-height:35px;visibility:hidden;"></div>
 <div class='panel panel-default' style='margin-top:20px;'>
     <table id='graph-table' class='table'>
         <tr>

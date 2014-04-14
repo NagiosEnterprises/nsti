@@ -160,7 +160,7 @@ function load_body(page) {
     sliced = TRAPS.slice(PAGE*PERPAGE, (PAGE*PERPAGE) + PERPAGE);
     // If there aren't any traps just say so.
     if(sliced.length == 0) {
-        var app = $('<tr>', {html: '<td colspan="999">No traps found in database.</td>'});
+        var app = $('<tr>', {html: '<td colspan="999"><center>No traps found in database.</center></td>'});
         app.appendTo(tbody);
     }
     // Otherwise draw the trap table

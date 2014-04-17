@@ -344,6 +344,13 @@ $(document).ready(function() {
     });
 
     $('#trap-search').click(do_trap_search);
+
+    $('#search-arg').keypress(function(event) {
+        if (event.which == 13) {
+            event.preventDefault();
+            do_trap_search();
+        }
+    });
     
     //apply filters to traplist page and make tags with 'Apply' button
     $('#apply-filter').click(function() {

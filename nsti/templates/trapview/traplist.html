@@ -139,7 +139,7 @@ function load_body(page) {
     }
     
     make_pagination();
-    load_filters();
+    // load_filters();
     
     show_throbber('#trap-table');
     
@@ -281,7 +281,7 @@ function add_trap_filter_active(name) {
     var API_URL = BASE_URL + 'api/filter/add-active-filter';
 
     $.getJSON(API_URL, {name:name}, function(data) {
-        console.log(name)
+        console.log(name);
         var tag = make_tag(name);
         tag.appendTo('#filter-div');
         $.getJSON(BASE_URL + 'api/filter/read-active-filter', function(d) {
@@ -290,13 +290,13 @@ function add_trap_filter_active(name) {
     });
 }
 
-function load_filters() {
-    var API_URL = BASE_URL + 'api/filter/read-active-filter';
+// function load_filters() {
+//     var API_URL = BASE_URL + 'api/filter/read-active-filter';
 
-    $.getJSON(API_URL, function(data) {
-        console.log(data);
-    });
-}
+//     $.getJSON(API_URL, function(data) {
+//         console.log(data);
+//     });
+// }
 //make tags for currently active filters
 function make_tag(name) {
     var API_URL = BASE_URL + 'api/filter/delete-active-filter';
@@ -330,7 +330,18 @@ function do_trap_search() {
      });
 }
 
+function create_pourover_library() {
+    var API_URL = BASE_URL + 'api/trapview/read/' + TABLE;
+
+    $.getJSON(API_URL, function(data) {
+        var data = [data],collection;
+        collection = new PourOver.Collection(data);
+    });
+}
+
 $(document).ready(function() {
+
+    create_pourover_library();
 
     //populate select options to apply filters to traplist
     API_URL = BASE_URL + 'api/filter/read';
@@ -365,7 +376,14 @@ $(document).ready(function() {
 
         if(add == true) {
             add_trap_filter_active(name);
-            load_body();
+
+            API_URL = BASE_URL + 'api/filter/read';
+
+            $.getJSON(API_URL, name, function(data) {
+                console.log(data.filters[name].actions[0]);
+                load_body();
+
+            });
         } 
     });
     

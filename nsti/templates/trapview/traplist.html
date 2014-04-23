@@ -2,8 +2,10 @@
 
 {% block header %}
 <script>
-/* Table drawing functions */
 
+var COLLECTION;
+
+/* Table drawing functions */
 function make_pagination() {
     
     pdiv = $('div#pagination');
@@ -281,15 +283,12 @@ function add_trap_filter_active(name) {
     var API_URL = BASE_URL + 'api/filter/add-active-filter';
 
     $.getJSON(API_URL, {name:name}, function(data) {
-        console.log(name);
         var tag = make_tag(name);
         tag.appendTo('#filter-div');
-        $.getJSON(BASE_URL + 'api/filter/read-active-filter', function(d) {
-            console.log(d);
-        })
     });
 }
 
+//old stuff for traplist filtering
 // function load_filters() {
 //     var API_URL = BASE_URL + 'api/filter/read-active-filter';
 
@@ -297,6 +296,7 @@ function add_trap_filter_active(name) {
 //         console.log(data);
 //     });
 // }
+
 //make tags for currently active filters
 function make_tag(name) {
     var API_URL = BASE_URL + 'api/filter/delete-active-filter';
@@ -334,8 +334,8 @@ function create_pourover_library() {
     var API_URL = BASE_URL + 'api/trapview/read/' + TABLE;
 
     $.getJSON(API_URL, function(data) {
-        var data = [data],collection;
-        collection = new PourOver.Collection(data);
+        COLLECTION = new PourOver.Collection(data);
+        console.log(COLLECTION);
     });
 }
 
@@ -380,9 +380,29 @@ $(document).ready(function() {
             API_URL = BASE_URL + 'api/filter/read';
 
             $.getJSON(API_URL, name, function(data) {
-                console.log(data.filters[name].actions[0]);
-                load_body();
+                var filter = data.filters[name].actions[0];
+                var filter_column = filter.column_name;
 
+                if (filter_column == 'timewritten') {
+                    timewritval = Date.parse(filter.value) / 1000;
+
+                    if (filter.comparison == '__gt') {
+                        var trap_filter = PourOver.makeRangeFilter(filter_column, [[timewritval + 1, 1/0]]);
+                    } else if (filter.comparison == '__lt') {
+                        var trap_filter = PourOver.makeRangeFilter(filter_column, [[0, timewritval]]);
+                    } else if (filter.comparison == '' || filter.comparison == '__contains') {
+                        var trap_filter = PourOver.makeExactFilter(filter_column, [[timewritval]]);
+                    }  
+                }   
+                
+                COLLECTION.addFilters([trap_filter]);
+                COLLECTION.filters.timewritten.query(String([trap_filter.values[0]]));
+                var trap_filter_cids = COLLECTION.filters.timewritten.current_query.cid;
+                var trap_filter_result = COLLECTION.get(trap_filter_cids);
+
+                console.log(trap_filter_result);
+                // TRAPS = 
+                load_body();
             });
         } 
     });

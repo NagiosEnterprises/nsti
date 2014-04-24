@@ -93,12 +93,12 @@ def encode_storm_result_set(storm_obj):
         raise TypeError(repr(storm_obj) + " is not JSON serializable")
 
     result = []
-    
+
     try:
         info = [x for x in storm_obj[0].__class__.__dict__.keys() if not x.startswith('_')]
     except IndexError:
         return result
-    
+
     for item in storm_obj:
         trap = {}
         for attr in info:
@@ -110,18 +110,17 @@ def encode_storm_result_set(storm_obj):
             else:
                 trap[attr] = getattr(item, attr)
         result.append(trap)
-    print result
     return result
 
 
 def sql_where_query(traptype, arguments, acombine=True):
     '''Gets the actual query function that will be passed to find
     given the arguments we are searching for.
-    
+
     @param traptype - The object that will be queried
     @param arguments - Dictionary that holds the key values for searching'''
     query = None
-    
+
     for key in arguments.keys():
         #~ If it ends with contain, we want to do a LIKE
         if key.endswith('__contains'):

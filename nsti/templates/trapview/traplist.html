@@ -3,16 +3,14 @@
 {% block header %}
 <script>
 
-var COLLECTION;
-
 /* Table drawing functions */
 function make_pagination() {
-    
+
     pdiv = $('div#pagination');
     sdiv = $('div#pagination-summary');
     sdiv.empty();
     pdiv.empty();
-    
+
     // Set our pagination window
     if(PAGE - Math.floor(WINDOW/2) < 0) {
         minpage = 0;
@@ -26,10 +24,10 @@ function make_pagination() {
         minpage = PAGE - Math.floor(WINDOW/2);
         maxpage = PAGE + Math.floor(WINDOW/2);
     }
-    
+
     pages = Math.ceil(TRAPS.length / PERPAGE);
     var ul = $('<ul>', {class: 'pagination', style: 'margin-bottom:0;'});
-    
+
     // Draw the << list item
     var li = $('<li>', {html: '<span>&laquo;</span>'});
     if(PAGE == 0) {
@@ -38,7 +36,7 @@ function make_pagination() {
         li.click(function() {load_body(0);});
     }
     li.appendTo(ul);
-    
+
     // Draw the Prev list item
     var li = $('<li>', {html: '<span>Prev</span>'});
     if(PAGE == 0) {
@@ -47,7 +45,7 @@ function make_pagination() {
         li.click(function() {load_body(PAGE-1);});
     }
     li.appendTo(ul);
-    
+
     // Draw each individual link
     var paginated = 0;
     for(var i=0, l=TRAPS.length; i<pages; i++) {
@@ -62,7 +60,7 @@ function make_pagination() {
             li.appendTo(ul);
         }
     }
-    
+
     // Draw the Next list item
     var li = $('<li>', {html: '<span>Next</span>'});
     if(PAGE == pages-1) {
@@ -71,7 +69,7 @@ function make_pagination() {
         li.click(function() {load_body(PAGE+1);});
     }
     li.appendTo(ul);
-    
+
     // Draw the >> list item
     var li = $('<li>', {html: '<span>&raquo;</span>'});
     if(PAGE == pages-1) {
@@ -81,17 +79,17 @@ function make_pagination() {
     }
 
     li.appendTo(ul);
-    
+
     $('<div>', {class: 'label label-default pull-right', text: 'Page ' + (PAGE + 1) + ' of ' + pages}).appendTo(sdiv);
     $('<div>', {class: 'label label-default', text: TRAPS.length + ' Traps Total | Displaying ' + (PAGE*PERPAGE) + ' - ' + Math.min(TRAPS.length, (PAGE*PERPAGE) + PERPAGE)}).appendTo(sdiv);
-    
+
     ul.appendTo(pdiv);
 }
 
 function normal_row(row) {
     var heading = $('<tr>');
     var klass;
-    
+
     switch(row.severity) {
         case 'warning':
         case 'Warning':
@@ -106,7 +104,7 @@ function normal_row(row) {
             klass = 'success';
             break;
     }
-    
+
     $('<td>', {text: row.id}).appendTo(heading);
     $('<td>', {html: '<input type="checkbox" class="trap-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
     $('<td>', {text: row.timewritten, class: 'text-center'}).appendTo(heading);
@@ -121,7 +119,7 @@ function normal_row(row) {
 
 function unknown_row(row) {
     var heading = $('<tr>');
-    
+
     $('<td>', {text: row.id}).appendTo(heading);
     $('<td>', {html: '<input type="checkbox" class="trap-select-toggle" data-index="' + row.id + '"><a target="_blank" href="trapview/' + row.id + '?traptype=' + TABLE + '" class="glyphicon glyphicon-eye-open goto-view"></a>'}).appendTo(heading);
     $('<td>', {text: row.timewritten}).appendTo(heading);
@@ -129,7 +127,7 @@ function unknown_row(row) {
     $('<td>', {text: row.hostname}).appendTo(heading);
     $('<td>', {text: row.uptime}).appendTo(heading);
     $('<td>', {text: row.formatline.substring(0, TRUNCATE)}).appendTo(heading);
-    
+
     return heading;
 }
 
@@ -139,16 +137,16 @@ function load_body(page) {
     } else {
         PAGE = page;
     }
-    
+
     make_pagination();
     // load_filters();
-    
+
     show_throbber('#trap-table');
-    
+
     var tbody = $('#trap-table-body');
-    
+
     tbody.empty();
-    
+
     switch(TABLE) {
         case 'Snmptt':
         case 'SnmpttArchive':
@@ -158,7 +156,7 @@ function load_body(page) {
             var func = unknown_row;
             break;
     }
-    
+
     sliced = TRAPS.slice(PAGE*PERPAGE, (PAGE*PERPAGE) + PERPAGE);
     // If there aren't any traps just say so.
     if(sliced.length == 0) {
@@ -178,10 +176,10 @@ function load_body(page) {
 }
 
 function load_table() {
-    
+
     load_header();
     var api_url = BASE_URL + 'api/trapview/read/' + TABLE;
-    
+
     if(TABLE == 'Snmptt') {
         $('.btn-archive').show();
         $('.btn-delete').show();
@@ -189,7 +187,7 @@ function load_table() {
         $('.btn-archive').hide();
         $('.btn-delete').show();
     }
-    
+
     //~ Get the trap JSON
     $.getJSON(api_url, function(data) {
         TRAPS = data;
@@ -210,11 +208,11 @@ function toggle_selected() {
 function delete_traps() {
     var id = [];
     var api_url = BASE_URL + 'api/trapview/delete/' + TABLE;
-    
+
     $('.trap-select-toggle:checked').each(function(i, d) {
         id.push($(d).attr('data-index'));
     });
-    
+
     $.ajax({
         url: api_url,
         data: {id: id},
@@ -232,11 +230,11 @@ function delete_traps() {
 function archive_traps() {
     var id = [];
     var api_url = BASE_URL + 'api/trapview/archive';
-    
+
     $('.trap-select-toggle:checked').each(function(i, d) {
         id.push($(d).attr('data-index'));
     });
-    
+
     $.ajax({
         url: api_url,
         data: {id: id},
@@ -277,6 +275,26 @@ function load_header() {
             break;
     }
     $('#trap-table-head').html(heading);
+}
+
+function remove_trap_filter_active(name) {
+    var API_URL = BASE_URL + 'api/filter/delete-active-filter';
+    var data = {};
+    var block = true;
+
+    if (name === undefined) {
+        data['all'] = 1;
+    }
+    else {
+        data['name'] = name;
+    }
+
+    $.getJSON(API_URL, data, function(d) {
+        block = false;
+        if (d.error) {
+            console.log(d.error);
+        }
+    }).error(function() {block = false;});
 }
 
 function add_trap_filter_active(name) {
@@ -330,21 +348,13 @@ function do_trap_search() {
      });
 }
 
-function create_pourover_library() {
-    var API_URL = BASE_URL + 'api/trapview/read/' + TABLE;
-
-    $.getJSON(API_URL, function(data) {
-        COLLECTION = new PourOver.Collection(data);
-        console.log(COLLECTION);
-    });
-}
 
 $(document).ready(function() {
 
-    create_pourover_library();
 
     //populate select options to apply filters to traplist
     API_URL = BASE_URL + 'api/filter/read';
+    remove_trap_filter_active();
 
     $.getJSON(API_URL, function(d) {
         $.each(d.filters, function(name, filter){
@@ -362,7 +372,7 @@ $(document).ready(function() {
             do_trap_search();
         }
     });
-    
+
     //apply filters to traplist page and make tags with 'Apply' button
     $('#apply-filter').click(function() {
         var name = $('#add-filter option:selected').val();
@@ -376,62 +386,34 @@ $(document).ready(function() {
 
         if(add == true) {
             add_trap_filter_active(name);
-
-            API_URL = BASE_URL + 'api/filter/read';
-
-            $.getJSON(API_URL, name, function(data) {
-                var filter = data.filters[name].actions[0];
-                var filter_column = filter.column_name;
-
-                if (filter_column == 'timewritten') {
-                    timewritval = Date.parse(filter.value) / 1000;
-
-                    if (filter.comparison == '__gt') {
-                        var trap_filter = PourOver.makeRangeFilter(filter_column, [[timewritval + 1, 1/0]]);
-                    } else if (filter.comparison == '__lt') {
-                        var trap_filter = PourOver.makeRangeFilter(filter_column, [[0, timewritval]]);
-                    } else if (filter.comparison == '' || filter.comparison == '__contains') {
-                        var trap_filter = PourOver.makeExactFilter(filter_column, [[timewritval]]);
-                    }  
-                }   
-                
-                COLLECTION.addFilters([trap_filter]);
-                COLLECTION.filters.timewritten.query(String([trap_filter.values[0]]));
-                var trap_filter_cids = COLLECTION.filters.timewritten.current_query.cid;
-                var trap_filter_result = COLLECTION.get(trap_filter_cids);
-
-                console.log(trap_filter_result);
-                // TRAPS = 
-                load_body();
-            });
-        } 
+        }
     });
-    
+
     $('input[name=table]').change(function() {
         show_throbber('#trap-content');
         TABLE = $(this).val();
         load_table();
         hide_throbber('#trap-content');
     });
-    
+
     $('.goto-view').click(function() {
-        
+
     });
-    
+
     $('#table-normal').trigger('change');
-    
+
     $('#toggle').click(function() {
         toggle_selected();
     });
-    
+
     $('.delete-selected').click(function() {
         delete_traps();
     });
-    
+
     $('.archive-selected').click(function() {
         archive_traps();
     });
-    
+
 });
 </script>
 {% endblock header %}
@@ -484,7 +466,7 @@ $(document).ready(function() {
                     <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
                 </button>
                 <button type='button' class='btn btn-default btn-archive'>
-                    <a alt='Archive Selected' data-toggle='tooltip' title='Archive Selected' class='archive-selected glyphicon glyphicon-tag'></a> 
+                    <a alt='Archive Selected' data-toggle='tooltip' title='Archive Selected' class='archive-selected glyphicon glyphicon-tag'></a>
                 </button>
             </div>
         </div>
@@ -499,7 +481,7 @@ $(document).ready(function() {
                                     <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
                                 </button>
                                 <button type='button' class='btn btn-default btn-archive'>
-                                    <a alt='Archive Selected' data-toggle='tooltip' title='Archive Selected' class='archive-selected glyphicon glyphicon-tag'></a> 
+                                    <a alt='Archive Selected' data-toggle='tooltip' title='Archive Selected' class='archive-selected glyphicon glyphicon-tag'></a>
                                 </button>
                             </div>
                         </div>
@@ -526,3 +508,5 @@ $(document).ready(function() {
     </div>
 </div>
 {% endblock content %}
+
+

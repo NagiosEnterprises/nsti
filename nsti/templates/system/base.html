@@ -13,8 +13,6 @@
         <script src='{{ static("js/bootstrap.min.js") }}'></script>
         <script src='{{ static("js/nsti.js") }}'></script>
         <script src='{{ static("js/highcharts.js") }}'></script>
-        <script src='{{ static("js/underscore-min.js") }}'></script>
-        <script src='{{ static("js/pourover.js") }}'></script>
         <script>
         var BASE_URL = '{{ request.url_root }}';
         var TRUNCATE = {{ session.TRUNCATE or 100 }};
@@ -45,7 +43,7 @@
         <div id='global-throbber'>
             <img src='{{ static("img/throbber.gif") }}' alt='throbber'>
         </div>
-        
+
         <div class='modal fade' id='error-message' tabindex='-1' role='dialog' aria-labelledby='error-message-label' aria-hidden='true'>
             <div class='modal-dialog'>
                 <div class='modal-content'>

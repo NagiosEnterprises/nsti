@@ -299,34 +299,34 @@ $(document).ready(function() {
 </div>
 
 <div class="modal fade" id="add-filter-modal" hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Create A New Filter</h4>
-      </div>
-      <div class="modal-body">
-        <form>
-            <table>
-                <td valign="top">
-                    <label>New Filter Name:</label>
-                    <input type="text" class="form-control" id="filter-name" placeholder="New Filter"><br><br>
-                </td>
-            </table>
-        </form>
-        <div id="atom-home">
-            <h4 class="modal-title">Filters</h4><br>
-            <div id="insert-div">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Create A New Filter</h4>
             </div>
-            <br>
-            <input type="button" id="new-atom-button" class="btn btn-default" value="Add New Filter">
+            <div class="modal-body">
+                <form>
+                    <table>
+                        <td valign="top">
+                            <label>New Filter Name:</label>
+                            <input type="text" class="form-control" id="filter-name" placeholder="New Filter"><br><br>
+                        </td>
+                    </table>
+                </form>
+                <div id="atom-home">
+                    <h4 class="modal-title">Filters</h4><br>
+                    <div id="insert-div">
+                    </div>
+                    <br>
+                    <input type="button" id="new-atom-button" class="btn btn-default" value="Add New Filter">
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-default" id="modal-reset">Reset</button>
+                    <button type="submit" class="btn btn-primary" id="add-new-filter">Add New Filter</button>
+                </div>
+            </div>
         </div>
-
-          <div class="modal-footer">
-            <button type="reset" class="btn btn-default" id="modal-reset">Reset</button>
-            <button type="submit" class="btn btn-primary" id="add-new-filter">Add New Filter</button>
-          </div>
-        </div>
-    </div>
+   </div>
 </div>
 {% endblock content %}

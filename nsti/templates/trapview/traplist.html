@@ -322,18 +322,23 @@ function add_trap_filter_active(name) {
         var tag = make_tag(name);
         tag.appendTo('#filter-div');
     });
+
+    API_URL = BASE_URL + 'api/filter/read';
+
+    $.getJSON(API_URL, {filters: name}, function(index) {
+        var active_filter = index.filters[name].actions[0];
+        var active_actions = active_filter[0]
+
+        console.log(active_filter);
+    });
+
+    // $.getJSON(API_URL, pr, function(data) {
+    //     TRAPS = data;
+    //     load_body();
+    //  });
 }
 
-//old stuff for traplist filtering
-// function load_filters() {
-//     var API_URL = BASE_URL + 'api/filter/read-active-filter';
-
-//     $.getJSON(API_URL, function(data) {
-//         console.log(data);
-//     });
-// }
-
-//make tags for currently active filters
+//make tags for active filters applied to traplist
 function make_tag(name) {
     var API_URL = BASE_URL + 'api/filter/delete-active-filter';
     var s = $('<span>', {class: 'btn btn-success make-tag', text: name + ' ', id: name});
@@ -353,7 +358,7 @@ function make_tag(name) {
 function do_trap_search() {
     API_URL = BASE_URL + 'api/trapview/read/' + TABLE;
     var q = $("#search-arg").val();
-    var pr = {'combiner': 'OR'}
+    var pr = {'combiner': 'OR'};
 
     $.each(COLUMNS, function(i) {
         var keyname = COLUMNS[i] + '__contains';
@@ -499,6 +504,7 @@ function add_new_atom(column_name, comparison, value) {
     
     $('#insert-div').append(new_form);
 }
+//end filter creation functions
 
 //populate list of existing filter to apply to traplist
 function filter_select_populate() {

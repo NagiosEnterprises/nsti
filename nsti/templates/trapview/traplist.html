@@ -2,6 +2,24 @@
 
 {% block header %}
 <script>
+/* Declare some comparison operators */
+var LESS_THAN = {nicename: 'is less than', value: '__lt'};
+var GREATER_THAN = {nicename: 'is greater than', value: '__gt'};
+var CONTAINS = {nicename: 'contains', value: '__contains'};
+var EXACTLY = {nicename: 'is exactly', value: ''};
+
+/* Create a datastructure that explains what is viable as a filter and
+ * what properties should most definitely exist.
+ */
+var FILTER_DEFS = {
+    timewritten: construct_new_atom('Date', [LESS_THAN, GREATER_THAN]),
+    trapoid: construct_new_atom('Trap OID', [CONTAINS, EXACTLY]),
+    enterprise: construct_new_atom('Enterpise OID', [CONTAINS, EXACTLY]),
+    hostname: construct_new_atom('Hostname', [CONTAINS, EXACTLY]),
+    category: construct_new_atom('Category', [CONTAINS, EXACTLY]),
+    severity: construct_new_atom('Severity', [CONTAINS, EXACTLY]),
+    agentip: construct_new_atom('Agent IP', [CONTAINS, EXACTLY])
+}
 
 /* Table drawing functions */
 function make_pagination() {
@@ -318,7 +336,7 @@ function add_trap_filter_active(name) {
 //make tags for currently active filters
 function make_tag(name) {
     var API_URL = BASE_URL + 'api/filter/delete-active-filter';
-    var s = $('<span>', {class: 'btn btn-success pull-right label-margin', text: name + ' ', id: name});
+    var s = $('<span>', {class: 'btn btn-success make-tag', text: name + ' ', id: name});
     var x = $('<span>', {class: 'glyphicon glyphicon-remove'});
 
     x.click(function() {
@@ -348,12 +366,144 @@ function do_trap_search() {
      });
 }
 
+/* Helper function for creating the FILTER_DEF datastructure. */
+function construct_new_atom(nicename, comparisons) {
+    if (comparisons == undefined) {
+        comparisons = [];
+    }
+    
+    return {nicename: nicename,
+            comparisons: comparisons}
+}
 
-$(document).ready(function() {
+function add_filter() {
+    var API_URL = BASE_URL + 'api/filter/create';
+    var name = $('#filter-name').val();
+    var atoms = [];
 
+    $('form.atoms').each(function(d) {
+        var k = {};
+        var j = $(this).serializeArray();
 
-    //populate select options to apply filters to traplist
+        $.each(j, function(i, n) {
+            k[n.name] = n.value;
+        });
+        k = JSON.stringify(k);
+        atoms.push(k);
+    });
+
+    show_throbber();
+    $.getJSON(API_URL, {atoms: atoms, 'name': name}, function(d) {
+        if(d.error) {
+            show_error("Error: Failed to add new filter: " + d.error);
+        } else {
+            filter_select_populate();
+            $('#add-filter-modal').modal('hide');
+        }
+        hide_throbber();
+    });
+}
+
+function get_tr_for_filter(name, filter) {
+    var tr = $('<tr>', {'data-index': name});
+    var checkbox = $('<input>', {type: 'checkbox',
+                                 class: 'filter-select-toggle',
+                                 'data-id': filter.id,
+                                 'data-index': name});
+    $('<td>', {html: checkbox}).appendTo(tr);
+    $('<td>', {text: name}).appendTo(tr);
+
+    var td_div = $('<td>').appendTo(tr);
+
+    $.each(filter.actions, function(k, v) { 
+        $('<div>', {text: v.column_name + " " + v.comparison + " " + v.value}).appendTo(td_div);
+    });
+    return tr;
+}
+
+function get_column_name_select(column_name) {
+    var column_name_sel = $('<select>', {name: 'column_name', class: 'form-control', id: 'new-atom'});
+    column_name != undefined
+    set_name = column_name
+    
+    $.each(FILTER_DEFS, function(key, value) {
+        var opt_data = {value: key, 
+                        text: value.nicename};
+        if(set_name && column_name == opt_data.value) {
+            opt_data.selected = 'selected';
+        }
+        
+        column_name_sel.append($('<option>', opt_data));
+    })
+    
+    return column_name_sel;
+}
+
+function get_column_comp_select(comparison) {
+    var column_comp_sel = $('<select>', {class: 'form-control', name: 'comparison', id: 'comparison'});
+    return column_comp_sel;
+}
+
+function fill_comp(value, select_box, given_comparison) {
+    select_box.empty();
+    set_comparison = given_comparison != undefined
+    
+    $.each(FILTER_DEFS[value].comparisons, function(i, d) {
+        var opt_data = {value: d.value, 
+                        text: d.nicename};
+        if (set_comparison && d.value == given_comparison) {
+            opt_data.selected = 'selected';
+        }
+        select_box.append($('<option>', opt_data));
+    });
+}
+
+function add_new_atom(column_name, comparison, value) {
+    // Make our skeleton
+    // console.log(column_name, comparison, value);
+    var new_form = $('<form>', {class: 'atoms form-inline', role: 'form'});
+    var form_div = $('<div>', {class: 'row form-select-div'});
+    new_form.append(form_div);
+    
+    // Assemble the select box that will hold the column names
+    var column_name_div = $('<div>', {class: 'form-group'});
+    var column_name_sel = get_column_name_select(column_name);
+    column_name_div.append(column_name_sel);
+    form_div.append(column_name_div);
+    
+    // Assemble the select box that will hold the comparison operator for the column name
+    var column_comp_div = $('<div>', {class: 'form-group'});
+    var column_comp_sel = get_column_comp_select();
+    column_comp_div.append(column_comp_sel);
+    form_div.append(column_comp_div);
+    
+    // Set the change for the column name to trigger the column comparison redraw
+    column_name_sel.change(function() {fill_comp(column_name_sel.val(), column_comp_sel, comparison)});
+    column_name_sel.change();
+    
+    // Make the text input that will take user input to compare to the column
+    var column_value_div = $('<div>', {class: 'form-group'});
+    column_value_div.append($('<input>', {name: 'val', 
+                                          class: 'form-control', 
+                                          placeholder: '...', 
+                                          value: (value==undefined) ? '' : value}));
+    form_div.append(column_value_div);
+    
+    // Make the remove button
+    var remove_atom_div = $('<div>', {class: 'form-group'});
+    var remove_atom_btn = $('<button>', {class: 'btn btn-default remove_atom', type: 'button'});
+    remove_atom_btn.append($('<span>', {class: "glyphicon glyphicon-remove brick-red"}));
+    remove_atom_btn.click(function() {new_form.remove();});
+    remove_atom_div.append(remove_atom_btn);
+    form_div.append(remove_atom_div);
+    
+    $('#insert-div').append(new_form);
+}
+
+//populate list of existing filter to apply to traplist
+function filter_select_populate() {
     API_URL = BASE_URL + 'api/filter/read';
+    $('#add-filter').empty();
     remove_trap_filter_active();
 
     $.getJSON(API_URL, function(d) {
@@ -363,6 +513,11 @@ $(document).ready(function() {
             );
         });
     });
+}
+
+$(document).ready(function() {
+
+    filter_select_populate();
 
     $('#trap-search').click(do_trap_search);
 
@@ -371,6 +526,21 @@ $(document).ready(function() {
             event.preventDefault();
             do_trap_search();
         }
+    });
+
+    $('#new-filter, #modal-reset').click(function() {
+        $('#insert-div').empty();
+        $('#filter-name').val("");
+        add_new_atom();
+        $('#add-filter-modal').modal('show');
+    });
+
+    $('#add-new-filter').click(function() {
+        add_filter();
+    });
+
+    $('#new-atom-button').click(function() {
+        add_new_atom();
     });
 
     //apply filters to traplist page and make tags with 'Apply' button
@@ -444,13 +614,16 @@ $(document).ready(function() {
     <div class="row col-md-5">
         <form class="form-inline" style="margin-left:25px;">
             <div id='filter-table' class='input-group'>
+                <span class='input-group-addon btn btn-primary'>
+                    <a alt='Add Filter' id='new-filter' title='Add Filter' class='glyphicon glyphicon-plus'></a>
+                </span>
                 <span class='input-group-addon'>Select Filter:</span>
                 <select id="add-filter" class="form-control" style="width:auto;"></select>
                 <input type="button" id="apply-filter" class="btn btn-primary" style="margin-left:10px;" value="Apply">
             </div>
         </form>
     </div>
-    <div class='row col-md-11' style='min-height:35px;margin:7px 15px 0 15px;'>
+    <div class='row col-md-11' style='min-height:40px;margin:7px 15px 0 15px;'>
         <div id='filter-div' class='input-group'></div>
     </div>
 </div>
@@ -491,5 +664,38 @@ $(document).ready(function() {
         </table>
     </div>
 </div>
+
 <div class="modal fade" id="trapview-modal" role="dialog" hidden="true"></div>
+
+<div class="modal fade" id="add-filter-modal" hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Create A New Filter</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <table>
+                        <td valign="top">
+                            <label>New Filter Name:</label>
+                            <input type="text" class="form-control" id="filter-name" placeholder="New Filter"><br><br>
+                        </td>
+                    </table>
+                </form>
+                <div id="atom-home">
+                    <h4 class="modal-title">Filters</h4><br>
+                    <div id="insert-div">
+                    </div>
+                    <br>
+                    <input type="button" id="new-atom-button" class="btn btn-default" value="Add New Filter">
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-default" id="modal-reset">Reset</button>
+                    <button type="submit" class="btn btn-primary" id="add-new-filter">Add New Filter</button>
+                </div>
+            </div>
+        </div>
+   </div>
+</div>
 {% endblock content %}

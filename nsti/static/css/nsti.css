@@ -99,3 +99,8 @@ body.modal-open {
 .inspect-select {
     width: 80%;
 }
+
+.make-tag {
+    margin-left: 5px;
+    margin-bottom: 5px;
+}

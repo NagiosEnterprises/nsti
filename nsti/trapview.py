@@ -40,13 +40,10 @@ def trapview(trapid):
 def read(tablename):
     traptype = getattr(db, tablename)
 
-    bool_combine = request.args.get('combiner', 'AND')
-    if bool_combine == 'OR':
-        acombine = False
-    else:
-        acombine = True
+    # use_session_filters = request.args.get('use_session_filters', False)
+    use_session_filters = 1
     
-    where_clause = db.sql_where_query(traptype, request.args, acombine)
+    where_clause = db.sql_where_query(traptype, request.args, use_session_filters)
     
     if where_clause:
         results = db.DB.find(traptype, where_clause)

@@ -195,6 +195,7 @@ function load_body(page) {
 
 function load_table() {
 
+    show_applied_filters();
     load_header();
     var api_url = BASE_URL + 'api/trapview/read/' + TABLE;
 
@@ -206,8 +207,9 @@ function load_table() {
         $('.btn-delete').show();
     }
 
+    pr = {'use_session_filters': 1}
     //~ Get the trap JSON
-    $.getJSON(api_url, function(data) {
+    $.getJSON(api_url, pr, function(data) {
         TRAPS = data;
         load_body();
     });
@@ -321,21 +323,8 @@ function add_trap_filter_active(name) {
     $.getJSON(API_URL, {name:name}, function(data) {
         var tag = make_tag(name);
         tag.appendTo('#filter-div');
+        load_table();
     });
-
-    API_URL = BASE_URL + 'api/filter/read';
-
-    $.getJSON(API_URL, {filters: name}, function(index) {
-        var active_filter = index.filters[name].actions[0];
-        var active_actions = active_filter[0]
-
-        console.log(active_filter);
-    });
-
-    // $.getJSON(API_URL, pr, function(data) {
-    //     TRAPS = data;
-    //     load_body();
-    //  });
 }
 
 //make tags for active filters applied to traplist
@@ -348,7 +337,7 @@ function make_tag(name) {
         var d = $(this).parent(".btn");
         $.getJSON(API_URL, {name: name}, function() {
             d.remove();
-            load_body();
+            load_table();
         });
     });
     x.appendTo(s);
@@ -358,7 +347,8 @@ function make_tag(name) {
 function do_trap_search() {
     API_URL = BASE_URL + 'api/trapview/read/' + TABLE;
     var q = $("#search-arg").val();
-    var pr = {'combiner': 'OR'};
+    var pr = {'combiner': 'OR',
+              'use_session_filters': 1};
 
     $.each(COLUMNS, function(i) {
         var keyname = COLUMNS[i] + '__contains';
@@ -518,6 +508,18 @@ function filter_select_populate() {
                 $("<option></option>").text(name)
             );
         });
+    });
+}
+
+function show_applied_filters() {
+    fdiv =  $('#filter-div');
+    fdiv.empty();
+
+    var API_URL = BASE_URL + 'api/filter/read-active-filter'
+    $.getJSON(API_URL, function(d) {
+        $.each(d.filters, function(i, e) {
+            fdiv.append(make_tag(e));
+        })
     });
 }
 

@@ -19,5 +19,5 @@ def landing():
 
 #~ Now import all of our modules
 import nsti.trapview
-import nsti.filter
+import nsti.filters
 import nsti.inspector

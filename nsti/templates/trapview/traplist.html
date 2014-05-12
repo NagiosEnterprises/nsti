@@ -21,6 +21,38 @@ var FILTER_DEFS = {
     agentip: construct_new_atom('Agent IP', [CONTAINS, EXACTLY])
 }
 
+var TRANSLATE = {
+    'agentip': 'Agent IP',
+    'eventid': 'Event ID',
+    'category': 'Category',
+    'uptime': 'Uptime',
+    'severity': 'Severity',
+    'traptime': 'Trap Time',
+    'timewritten': 'Time Written To Database',
+    'formatline': 'Message',
+    'hostname': 'Hostname',
+    'community': 'Community',
+    'eventname': 'Event Name',
+    'trapoid': 'Trap OID',
+    'trapread': 'Trap Read',
+    'enterprise': 'Enterprise',
+    'id': 'ID' };
+
+var INSPECTABLE = {
+    'id': true,
+    'agentip': true,
+    'eventid': true,
+    'category': true,
+    'uptime': true,
+    'severity': true,
+    'traptime': true,
+    'hostname': true,
+    'traptime': true,
+    'eventname': true,
+    'trapoid': true,
+    'enterprise': true
+};
+
 /* Table drawing functions */
 function make_pagination() {
 
@@ -496,6 +528,107 @@ function add_new_atom(column_name, comparison, value) {
 }
 //end filter creation functions
 
+//create highcharts graphs
+function draw_charts() {
+    var options1 = {
+        chart: {
+            renderTo: 'chart-container-line',
+            type: 'line'
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: 'Inspector Line Graph'
+        },
+        xAxis: {
+            type: 'datetime'
+        },
+        series: []
+    };
+
+    var options2 = {
+        chart: {
+            renderTo: 'chart-container-pie',
+            type: 'pie'
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: 'Inspector Pie Graph'
+        },
+        yAxis: {
+            max: 25
+        },
+        tooltip: {
+            pointFormat: '{series.name}'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    color: '#000000',
+                    connectorColor: '#000000',
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                }
+            }
+        },
+        series: []
+    };
+
+    var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
+
+    $.getJSON(API_URL, function(traps) {
+        var inspect_target = $('#add-data option:selected').val();
+        new_series = [];
+
+        $.each(traps, function(index, trap) {
+            var timewritten = trap.timewritten;
+
+            if(!isNaN(trap[inspect_target])) {
+                var value = trap[inspect_target];
+            } else {
+                var value = parseFloat(trap[inspect_target]);
+            }
+
+            new_series.push([timewritten * 1000, value]);
+        });
+
+        new_series.sort(function (a, b) {
+            return a[0] - b[0];
+        });
+        
+        hc_series = {data: new_series};
+        options1.series.push(hc_series);
+        options2.series.push(hc_series);
+        var chart = new Highcharts.Chart(options1);
+        var chart = new Highcharts.Chart(options2);
+    });
+}
+//end graph build
+
+function set_inspectable(set) {
+    $('#add-data option:selected').text(set);
+}
+
+function load_insepctable() {
+    API_URL = BASE_URL + 'api/inspector/read/' + TABLE;
+
+    $.getJSON(API_URL, function(d) {
+        data = d[0];
+        $.each(data, function(name, trap) {
+            if(INSPECTABLE[name]) {
+                $("#add-data").append(
+                    $("<option></option>").text(TRANSLATE[name]).val(name)
+                );
+            }
+        });
+    });
+}
+
 //populate list of existing filter to apply to traplist
 function filter_select_populate() {
     API_URL = BASE_URL + 'api/filter/read';
@@ -567,6 +700,31 @@ $(document).ready(function() {
         }
     });
 
+    $("#collapse-div").button('toggle');
+    $("#collapse-div").click(function() {
+        if ($(this).text()==="Expand") {
+            $(this).button('open');
+        } else {
+            $(this).button('reset');
+        }
+    });
+
+    Highcharts.setOptions({
+        colors: ['#428bca', '#5cb85c', '#f0ad4e', '#d9534f', '#5bc0de', '#2bd34e', '#f5c989', '#dd765a']
+    });
+
+    load_insepctable();
+    draw_charts();
+
+    $("#add-data").change(function() {
+        set = $(this).attr('selected');
+        set_inspectable(set);
+    });
+
+    $('#apply-inspect').click(function() {
+        draw_charts();
+    });
+
     $('input[name=table]').change(function() {
         show_throbber('#trap-content');
         TABLE = $(this).val();
@@ -633,6 +791,33 @@ $(document).ready(function() {
     </div>
     <div class='row col-md-11' style='min-height:40px;margin:7px 15px 0 15px;'>
         <div id='filter-div' class='input-group'></div>
+    </div>
+</div>
+
+<div class='panel panel-default' style='margin-top:20px;'>
+    <div class='panel-heading'>
+        <button type='button' id='collapse-div' class='btn label label-default' data-toggle='collapse' data-target='#inspector-div' data-open-text='Collapse'>Expand</button>
+    </div>
+    <div id='inspector-div' class='collapse'>
+        <div class='input-group inspect-select' style='margin:10px 0 0 10px;'>
+            <span class='input-group-addon'>Graph By:</span>
+            <select id='add-data' class='form-control' style='width:auto;'></select>
+            <input type='button' id='apply-inspect' class='btn btn-primary' style='margin-left:15px;' value="Draw Graphs">
+        </div>
+        <table id='graph-table' class='table'>
+            <tr>
+                <td style='border:none;'>
+                    <div>
+                        <div class='col-md-6'>
+                            <div id='chart-container-line' class="linechart" style="height:400px;"></div>
+                        </div>
+                        <div class='col-md-5'>
+                            <div id='chart-container-pie' class="piechart" style="height:400px;"></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
 

@@ -533,7 +533,8 @@ function draw_charts() {
     var options1 = {
         chart: {
             renderTo: 'chart-container-line',
-            type: 'line'
+            type: 'scatter',
+            zoomType: 'x'
         },
         credits: {
             enabled: false
@@ -583,9 +584,11 @@ function draw_charts() {
 
     $.getJSON(API_URL, function(traps) {
         var inspect_target = $('#add-data option:selected').val();
+        var count = 0;
         new_series = [];
 
         $.each(traps, function(index, trap) {
+            count++;
             var timewritten = trap.timewritten;
 
             if(!isNaN(trap[inspect_target])) {
@@ -595,6 +598,9 @@ function draw_charts() {
             }
 
             new_series.push([timewritten * 1000, value]);
+
+            if(count >= 20)
+                return false;
         });
 
         new_series.sort(function (a, b) {
@@ -700,7 +706,6 @@ $(document).ready(function() {
         }
     });
 
-    $("#collapse-div").button('toggle');
     $("#collapse-div").click(function() {
         if ($(this).text()==="Expand") {
             $(this).button('open');
@@ -797,6 +802,7 @@ $(document).ready(function() {
 <div class='panel panel-default' style='margin-top:20px;'>
     <div class='panel-heading'>
         <button type='button' id='collapse-div' class='btn label label-default' data-toggle='collapse' data-target='#inspector-div' data-open-text='Collapse'>Expand</button>
+        <p class='pull-right' style='color:#777777;'><b>SNMP Trap Data Visualizer</b></p>
     </div>
     <div id='inspector-div' class='collapse'>
         <div class='input-group inspect-select' style='margin:10px 0 0 10px;'>

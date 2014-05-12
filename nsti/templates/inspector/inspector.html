@@ -20,20 +20,18 @@ var TRANSLATE = {
     'id': 'ID' };
 
 var INSPECTABLE = {
+    'id': true,
     'agentip': true,
     'eventid': true,
     'category': true,
     'uptime': true,
     'severity': true,
     'traptime': true,
-    'timewritten': true,
     'hostname': true,
-    'community': true,
     'traptime': true,
     'eventname': true,
     'trapoid': true,
-    'enterprise': true,
-    'id': true
+    'enterprise': true
 };
 
 var PERPAGE = 6;
@@ -361,13 +359,17 @@ function draw_charts() {
     var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
 
     $.getJSON(API_URL, function(traps) {
-        var propertyx = $('#add-inspect option:selected').val();
-        var propertyy = $('#add-data option:selected').val();
+        var inspect_target = $('#add-data option:selected').val();
         new_series = [];
 
         $.each(traps, function(index, trap) {
-            var timewritten = trap[propertyx];
-            var value = trap[propertyy];
+            var timewritten = trap.timewritten;
+
+            if(!isNaN(trap[inspect_target])) {
+                var value = trap[inspect_target];
+            } else {
+                var value = parseFloat(trap[inspect_target]);
+            }
 
             new_series.push([timewritten * 1000, value]);
         });
@@ -379,14 +381,13 @@ function draw_charts() {
         hc_series = {data: new_series};
         options1.series.push(hc_series);
         options2.series.push(hc_series);
-        console.log(hc_series);
         var chart = new Highcharts.Chart(options1);
         var chart = new Highcharts.Chart(options2);
     });
 }
 
 function set_inspectable(set) {
-    $('#add-inspect option:selected').text(set);
+    $('#add-data option:selected').text(set);
 }
 
 function load_insepctable() {
@@ -396,9 +397,6 @@ function load_insepctable() {
         data = d[0];
         $.each(data, function(name, trap) {
             if(INSPECTABLE[name]) {
-                $("#add-inspect").append(
-                    $("<option></option>").text(TRANSLATE[name]).val(name)
-                );
                 $("#add-data").append(
                     $("<option></option>").text(TRANSLATE[name]).val(name)
                 );
@@ -415,11 +413,6 @@ $(document).ready(function() {
 
     load_insepctable();
     draw_charts();
-
-    $("#add-inspect").change(function() {
-        set = $(this).attr('selected');
-        set_inspectable(set);
-    });
 
     $("#add-data").change(function() {
         set = $(this).attr('selected');
@@ -477,10 +470,7 @@ $(document).ready(function() {
     <form class='row form-inline col-md-9'>
         <div class='row-fluid'>
             <div id='inspect-cat' class='input-group inspect-select'>
-                <span class='input-group-addon'>X Axis:</span>
-                <select id='add-inspect' class='form-control' style='width:auto;'></select>
-                <span class='glyphicon glyphicon-forward inspector-icon'></span>
-                <span class='input-group-addon'>Y Axis:</span>
+                <span class='input-group-addon'>Inspect By:</span>
                 <select id='add-data' class='form-control' style='width:auto;'></select>
                 <input type='button' id='apply-inspect' class='btn btn-primary' style='margin-left:15px;' value="Inspect">
             </div>

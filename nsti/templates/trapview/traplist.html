@@ -540,10 +540,15 @@ function draw_charts() {
             enabled: false
         },
         title: {
-            text: 'Inspector Line Graph'
+            text: 'Inspector Line Graph - Time Written'
         },
         xAxis: {
             type: 'datetime'
+        },
+        yAxis: {
+            title: {
+                text: 'Trap ID'
+            },
         },
         series: []
     };
@@ -557,7 +562,7 @@ function draw_charts() {
             enabled: false
         },
         title: {
-            text: 'Inspector Pie Graph'
+            text: 'Inspector Pie Graph- Severity'
         },
         yAxis: {
             max: 25
@@ -583,33 +588,53 @@ function draw_charts() {
     var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
 
     $.getJSON(API_URL, function(traps) {
-        var inspect_target = $('#add-data option:selected').val();
+        $('#add-data').val('severity');
+        var inspect_target = 'id';
         var count = 0;
-        new_series = [];
+        new_series1 = [];
+        new_series2 = [];
+        var ok = 0;
+        var normal = 0;
+        var warning = 0;
+        var critical = 0;
 
         $.each(traps, function(index, trap) {
             count++;
             var timewritten = trap.timewritten;
+            var value1 = trap[inspect_target];
+            new_series1.push([timewritten * 1000, value1]);
 
-            if(!isNaN(trap[inspect_target])) {
-                var value = trap[inspect_target];
-            } else {
-                var value = parseFloat(trap[inspect_target]);
+            var value2 = trap.severity;
+
+            if (value2 == 'ok') {
+                ok++;
+            } else if (value2 == 'normal') {
+                normal++;
+            } else if (value2 == 'warning') {
+                warning++;
+            } else if (value2 == 'critical') {
+                critical++;
             }
 
-            new_series.push([timewritten * 1000, value]);
-
-            if(count >= 20)
+            if(count >= 20) {
                 return false;
+            }
         });
 
-        new_series.sort(function (a, b) {
+        new_series2.push(['OK', ok], ['Normal', normal], ['Warning', warning], ['Critical', critical]);
+
+        new_series1.sort(function (a, b) {
             return a[0] - b[0];
         });
-        
-        hc_series = {data: new_series};
-        options1.series.push(hc_series);
-        options2.series.push(hc_series);
+
+        new_series2.sort(function (a, b) {
+            return a[0] - b[0];
+        });
+
+        hc_series1 = {name: 'Traps', data: new_series1};
+        hc_series2 = {data: new_series2};
+        options1.series.push(hc_series1);
+        options2.series.push(hc_series2);
         var chart = new Highcharts.Chart(options1);
         var chart = new Highcharts.Chart(options2);
     });

@@ -40,16 +40,11 @@ var TRANSLATE = {
 
 var INSPECTABLE = {
     'agentip': true,
-    'eventid': true,
     'category': true,
     'uptime': true,
     'severity': true,
-    'traptime': true,
     'hostname': true,
     'traptime': true,
-    'eventname': true,
-    'trapoid': true,
-    'enterprise': true,
     'id': true
 };
 
@@ -530,25 +525,53 @@ function add_new_atom(column_name, comparison, value) {
 
 //create highcharts graphs
 function draw_charts() {
+    graphObject1 = [];
+    graphObject2 = [];
+
     var options1 = {
         chart: {
-            renderTo: 'chart-container-line',
+            renderTo: 'chart-container-scatter',
             type: 'scatter',
-            zoomType: 'x'
+            zoomType: 'xy',
+            inverted: true
         },
         credits: {
             enabled: false
         },
         title: {
-            text: 'Inspector Line Graph - Time Written'
+            text: 'Trap Scatter Plot' 
         },
         xAxis: {
-            type: 'datetime'
+            type: 'category'
         },
         yAxis: {
-            title: {
-                text: 'Trap ID'
-            },
+            type: 'datetime'
+            // title: {
+            //     // text: 'Trap '
+            // },
+        },
+        plotOptions: {
+            scatter: {
+                marker: {
+                    radius: 5,
+                    states: {
+                        hover: {
+                            enabled: true,
+                        }
+                    }
+                },
+                states: {
+                    hover: {
+                        marker: {
+                            enabled: false,
+                        }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<b>{series.name}</b><br>',
+                    pointFormat: '{point.x} sec, {point.y} Traps'
+                }
+            }
         },
         series: []
     };
@@ -562,13 +585,13 @@ function draw_charts() {
             enabled: false
         },
         title: {
-            text: 'Inspector Pie Graph- Severity'
+            text: 'Trap Pie Graph'
         },
         yAxis: {
             max: 25
         },
         tooltip: {
-            pointFormat: '{series.name}'
+            pointFormat: '{series.name}: <b>{point.y} Traps</b>'
         },
         plotOptions: {
             pie: {
@@ -588,58 +611,270 @@ function draw_charts() {
     var API_URL = BASE_URL + 'api/inspector/chart/read/' + TABLE;
 
     $.getJSON(API_URL, function(traps) {
-        $('#add-data').val('severity');
-        var inspect_target = 'id';
+        var inspect_target = $('#add-data option:selected').val();
         var count = 0;
-        new_series1 = [];
-        new_series2 = [];
-        var ok = 0;
-        var normal = 0;
-        var warning = 0;
-        var critical = 0;
+        scatter_count1 = 0;
+        scatter_count2 = 0;
+        scatter_count3 = 0;
+        scatter_count4 = 0;
+        pie_count1 = 0;
+        pie_count2 = 0;
+        pie_count3 = 0;
+        pie_count4 = 0;
+
+        var trap_series = [];
 
         $.each(traps, function(index, trap) {
+            var timewritten = parseFloat(trap.timewritten);
             count++;
-            var timewritten = trap.timewritten;
-            var value1 = trap[inspect_target];
-            new_series1.push([timewritten * 1000, value1]);
 
-            var value2 = trap.severity;
-
-            if (value2 == 'ok') {
-                ok++;
-            } else if (value2 == 'normal') {
-                normal++;
-            } else if (value2 == 'warning') {
-                warning++;
-            } else if (value2 == 'critical') {
-                critical++;
+            var current_series = trap_series[trap.category];
+            if (!current_series) {
+                current_series = {
+                    name: trap.category,
+                    data: []
+                };
+                options1.series.push(current_series);
+                trap_series[trap.category] = current_series;
             }
 
-            if(count >= 20) {
-                return false;
+            current_series.data.push({
+                name: trap.category,
+                x: timewritten * 1000
+            });
+
+            switch (inspect_target) {
+
+                case 'category':
+                //******may need to account for other possible categories******
+                    var value1 = trap.category;
+                    var value2 = trap.category;
+
+                    if (value1 == 'Closure') {
+                        scatter_count1++;
+                    } else if (value2 == 'Status Event') {
+                        scatter_count2++;
+                    } else if (value2 == 'Other Event') {
+                        scatter_count3++;
+                    }
+
+                    if (value2 == 'Closure') {
+                        pie_count1++;
+                    } else if (value2 == 'Status Event') {
+                        pie_count2++;
+                    } else if (value2 == 'Other Event') {
+                        pie_count3++;
+                    }
+
+                    if (count >= traps.length) {
+                        // options1.series.push(trap_series);
+                        console.log(options1);
+
+                        graphObject2 = {
+                            type: 'pie',
+                            name: 'Category',
+                            data: [
+                                ['Closure', pie_count1],
+                                ['Status Event', pie_count2],
+                                ['Other Event', pie_count3]
+                            ]
+                        }
+                        console.log(graphObject2);
+                    }
+
+                    break;
+
+                case 'uptime':
+                //should be a catch all for possible uptime returns
+                    if (value1 == 'OK') {
+                        scatter_count1++;
+                    } else if (value2 == 'Normal') {
+                        scatter_count2++;
+                    } else if (value2 == 'Warning') {
+                        scatter_count3++;
+                    } else if (value2 == 'Critical') {
+                        scatter_count4++;
+                    }
+
+                    if (value2 == 'OK') {
+                        pie_count1++;
+                    } else if (value2 == 'Normal') {
+                        pie_count2++;
+                    } else if (value2 == 'Warning') {
+                        pie_count3++;
+                    } else if (value2 == 'Critical') {
+                        pie_count4++;
+                    }
+
+
+                    var value2 = Date.parse(trap.uptime);
+                    console.log(value2);
+
+                    if (count >= traps.length) {
+                        graphObject1 = [
+                            {
+                                name: 'Uptime',
+                                color: '#75d175',
+                                data: [
+                                    ['OK', scatter_count1]
+                                ]
+                            },
+                            {
+                                name: 'Uptime',
+                                color: '#428bca',
+                                data: [
+                                    ['Normal', scatter_count2],
+                                ]
+                            },
+                            {
+                                name: 'Uptime',
+                                color: '#f0ad4e',
+                                data: [
+                                    ['Warning', scatter_count3]
+                                ]
+                            },
+                            {
+                                name: 'Uptime',
+                                color: '#d9534f',
+                                data: [
+                                    ['Critical', scatter_count4]
+                                ]
+                            }
+                        ];
+
+                        graphObject2 = {
+                            type: 'pie',
+                            name: 'Uptime',
+                            data: [
+                                ['OK', pie_count1],
+                                ['Normal', pie_count2],
+                                ['Warning', pie_count3],
+                                ['Critical', pie_count4]
+                            ]
+                        }
+                    }
+
+                    break;
+
+                case 'severity':
+                    var value1 = trap.severity;
+                    var value2 = trap.severity;
+
+                    if (value1 == 'ok') {
+                        scatter_count1++;
+                    } else if (value2 == 'normal') {
+                        scatter_count2++;
+                    } else if (value2 == 'warning') {
+                        scatter_count3++;
+                    } else if (value2 == 'critical') {
+                        scatter_count4++;
+                    }
+
+                    if (value2 == 'ok') {
+                        pie_count1++;
+                    } else if (value2 == 'normal') {
+                        pie_count2++;
+                    } else if (value2 == 'warning') {
+                        pie_count3++;
+                    } else if (value2 == 'critical') {
+                        pie_count4++;
+                    }
+                    
+                    if (count >= traps.length) {
+                        // graphObject1.push(
+                        //     {
+                        //         name: 'Uptime',
+                        //         color: '#75d175',
+                        //         data: [
+                        //             ['OK', scatter_count1]
+                        //         ]
+                        //     },
+                        //     {
+                        //         name: 'Uptime',
+                        //         color: '#428bca',
+                        //         data: [
+                        //             ['Normal', scatter_count2],
+                        //         ]
+                        //     },
+                        //     {
+                        //         name: 'Uptime',
+                        //         color: '#f0ad4e',
+                        //         data: [
+                        //             ['Warning', scatter_count3]
+                        //         ]
+                        //     },
+                        //     {
+                        //         name: 'Uptime',
+                        //         color: '#d9534f',
+                        //         data: [
+                        //             ['Critical', scatter_count4]
+                        //         ]
+                        //     }
+                        // );
+
+                        graphObject2 = {
+                            type: 'pie',
+                            name: 'Severity',
+                            data: [
+                                ['OK', pie_count1],
+                                ['Normal', pie_count2],
+                                ['Warning', pie_count3],
+                                ['Critical', pie_count4]
+                            ]
+                        }
+                        console.log(graphObject1);
+                        console.log(graphObject2);
+                    }
+
+                    break;
+
+                case 'hostname':
+                    var value2 = trap.hostname;
+
+                    break;
+
+                case 'agentip':
+                    var value2 = trap.agentip;
+
+                    break;
+
+                case 'eventname':
+                    var value2 = trap.eventname;
+
+                    break;
+
+                case 'id':
+                    var value2 = trap.id;
+
+                    break;
+
+                default:
+
+                    break;
             }
+
+            // new_series1.push([timewritten * 1000, value1]);
+
+            function limit_trap_count() {
+                if(count >= 20) {
+                    return false;
+                }    
+            }
+            
         });
 
-        new_series2.push(['OK', ok], ['Normal', normal], ['Warning', warning], ['Critical', critical]);
+        // new_series1.sort(function (a, b) {
+        //     return a[0] - b[0];
+        // });
 
-        new_series1.sort(function (a, b) {
-            return a[0] - b[0];
-        });
-
-        new_series2.sort(function (a, b) {
-            return a[0] - b[0];
-        });
-
-        hc_series1 = {name: 'Traps', data: new_series1};
-        hc_series2 = {data: new_series2};
-        options1.series.push(hc_series1);
-        options2.series.push(hc_series2);
+        
+        // options1.series.push(graphObject1);
+        options2.series.push(graphObject2);
         var chart = new Highcharts.Chart(options1);
         var chart = new Highcharts.Chart(options2);
     });
 }
-//end graph build
+//end graph builds
 
 function set_inspectable(set) {
     $('#add-data option:selected').text(set);
@@ -667,6 +902,8 @@ function filter_select_populate() {
     remove_trap_filter_active();
 
     $.getJSON(API_URL, function(d) {
+        $("#add-filter").append($("<option value='Select' selected></option>"));
+
         $.each(d.filters, function(name, filter){
             $("#add-filter").append(
                 $("<option></option>").text(name)
@@ -840,7 +1077,7 @@ $(document).ready(function() {
                 <td style='border:none;'>
                     <div>
                         <div class='col-md-6'>
-                            <div id='chart-container-line' class="linechart" style="height:400px;"></div>
+                            <div id='chart-container-scatter' class="linechart" style="height:400px;"></div>
                         </div>
                         <div class='col-md-5'>
                             <div id='chart-container-pie' class="piechart" style="height:400px;"></div>

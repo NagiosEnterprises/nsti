@@ -44,6 +44,35 @@ def create_filter():
     json_str = json.dumps(json_result)
     return Response(response=json_str, status=200, mimetype='application/json')
 
+@app.route('/api/filter/edit')
+def edit_filter():
+    json_result = {}
+
+    name = request.args.get('name', '')
+    existing_count = db.DB.find(db.Filter, db.Filter.name == name).count()
+
+    if name != '' and existing_count != 0:
+        delete_filter()
+        new_filter = db.Filter(name)
+        result = db.DB.add(new_filter)
+        try:
+            for atom in request.args.getlist('atoms[]'):
+                atom_info = json.loads(atom)
+                new_atom = db.FilterAtom()
+                new_atom.column_name = atom_info['column_name']
+                new_atom.comparison = atom_info['comparison']
+                new_atom.val = atom_info['val']
+                new_filter.filter_atom.add(new_atom)
+            db.DB.flush()
+            json_result['success'] = 'Successfully added new filter to the database.'
+        except Exception, e:
+            json_result['error'] = str(e)
+    else:
+        json_result['error'] = 'Given name "%s" not found in database' % name
+
+    json_str = json.dumps(json_result)
+    return Response(response=json_str, status=200, mimetype='application/json')
+
 @app.route('/api/filter/delete')
 def delete_filter():
     json_result = {}

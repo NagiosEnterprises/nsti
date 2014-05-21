@@ -53,6 +53,7 @@ function load_filters() {
     });
 }
 
+//******
 function get_tr_for_filter(name, filter) {
     var tr = $('<tr>', {'data-index': name});
     var checkbox = $('<input>', {type: 'checkbox',
@@ -69,6 +70,7 @@ function get_tr_for_filter(name, filter) {
     });
     return tr;
 }
+//******* change comparison to nice name
 
 function add_filter() {
     var API_URL = BASE_URL + 'api/filter/create';
@@ -87,6 +89,36 @@ function add_filter() {
     });
 
     show_throbber();
+
+    $.getJSON(API_URL, {atoms: atoms, 'name': name}, function(d) {
+        if(d.error) {
+            show_error("Error: Failed to add new filter: " + d.error);
+        } else {
+            load_filters();
+            $('#add-filter-modal').modal('hide');
+        }
+        hide_throbber();
+    });
+}
+
+function edit_filter() {
+    var API_URL = BASE_URL + 'api/filter/edit';
+    var name = $('#filter-name').val();
+    var atoms = [];
+
+    $('form.atoms').each(function(d) {
+        var k = {};
+        var j = $(this).serializeArray();
+
+        $.each(j, function(i, n) {
+            k[n.name] = n.value;
+        });
+        k = JSON.stringify(k);
+        atoms.push(k);
+    });
+
+    show_throbber();
+
     $.getJSON(API_URL, {atoms: atoms, 'name': name}, function(d) {
         if(d.error) {
             show_error("Error: Failed to add new filter: " + d.error);
@@ -182,14 +214,24 @@ $(document).ready(function() {
     load_filters();
 
     $('#add-filter-click, #modal-reset').click(function() {
+        $('#filter-action').val('add');
+        $('#do-filter-action').html('Add New Filter');
+        $('#filter-name').attr('readonly', false);
         $('#insert-div').empty();
         $('#filter-name').val("");
         add_new_atom();
         $('#add-filter-modal').modal('show');
     });
 
-    $('#add-new-filter').click(function() {
-        add_filter();
+    $('#do-filter-action').click(function() {
+
+        var filter_action = $('#filter-action').val();
+
+        if (filter_action == 'add') {
+            add_filter();    
+        } else {
+            edit_filter();
+        }
     });
 
     $('#new-atom-button').click(function() {
@@ -202,6 +244,7 @@ $(document).ready(function() {
     });
     
     $('.edit-selected').click(function() {
+        $('#filter-action').val('edit');
         $('#insert-div').empty();
         var API_URL = BASE_URL + 'api/filter/read';
 
@@ -218,10 +261,12 @@ $(document).ready(function() {
                     $('#filter-name').val(index);
 
                     $.each(iatom, function(i, atom) {
-                        // console.log(atom);
                         add_new_atom(atom.column_name, atom.comparison, atom.value);
                     });
+
                     $('#add-filter-modal').modal('show');
+                    $('#do-filter-action').html('Edit Filter');
+                    $('#filter-name').attr('readonly', true);
                 });
             }
         });
@@ -323,7 +368,8 @@ $(document).ready(function() {
                 </div>
                 <div class="modal-footer">
                     <button type="reset" class="btn btn-default" id="modal-reset">Reset</button>
-                    <button type="submit" class="btn btn-primary" id="add-new-filter">Add New Filter</button>
+                    <button type="submit" class="btn btn-primary" id="do-filter-action">Add New Filter</button>
+                    <input type="hidden" id="filter-action">
                 </div>
             </div>
         </div>

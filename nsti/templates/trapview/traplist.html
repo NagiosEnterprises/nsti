@@ -540,7 +540,8 @@ function draw_charts() {
             text: 'Trap Bar Graph' 
         },
         xAxis: {
-            categories: ['Closure', 'Status Event', 'Other Event']
+            type: 'category'
+            // categories: ['Closure', 'Status Event', 'Other Event']
         },
         yAxis: {
             min: 0,
@@ -611,6 +612,7 @@ function draw_charts() {
 
         $.each(traps, function(index, trap) {
             var timewritten = parseFloat(trap.timewritten);
+            var trapid = trap.id;
             count++;
 
             // var current_series = trap_series[trap.category];
@@ -654,13 +656,8 @@ function draw_charts() {
 
                     if (count >= traps.length) {
                         graphObject1 = {
-                            type: 'bar',
                             name: 'Category',
-                            data: [
-                                ['Closure', pie_count1],
-                                ['Status Event', pie_count2],
-                                ['Other Event', pie_count3]
-                            ]
+                            data: [scatter_count1, scatter_count2, scatter_count3]
                         }
 
                         graphObject2 = {
@@ -678,6 +675,9 @@ function draw_charts() {
 
                 case 'uptime':
                 //should be a catch all for possible uptime returns
+                    var value1 = trap.uptime;
+                    var value2 = trap.uptime;
+
                     if (value1 == 'OK') {
                         scatter_count1++;
                     } else if (value2 == 'Normal') {
@@ -698,40 +698,26 @@ function draw_charts() {
                         pie_count4++;
                     }
 
-                    var value2 = Date.parse(trap.uptime);
-                    console.log(value2);
-
                     if (count >= traps.length) {
-                        graphObject1 = [
-                            {
-                                name: 'Uptime',
+                        graphObject1 = {
+                            data: [{
+                                name: 'OK',
                                 color: '#75d175',
-                                data: [
-                                    ['OK', scatter_count1]
-                                ]
-                            },
-                            {
-                                name: 'Uptime',
+                                y: scatter_count1
+                            }, {
+                                name: 'Normal',
                                 color: '#428bca',
-                                data: [
-                                    ['Normal', scatter_count2],
-                                ]
-                            },
-                            {
-                                name: 'Uptime',
+                                y: scatter_count2
+                            }, {
+                                name: 'Warning',
                                 color: '#f0ad4e',
-                                data: [
-                                    ['Warning', scatter_count3]
-                                ]
-                            },
-                            {
-                                name: 'Uptime',
+                                y: scatter_count3
+                            }, {
+                                name: 'Critical',
                                 color: '#d9534f',
-                                data: [
-                                    ['Critical', scatter_count4]
-                                ]
-                            }
-                        ];
+                                y: scatter_count4
+                            }]
+                        }
 
                         graphObject2 = {
                             type: 'pie',
@@ -772,36 +758,25 @@ function draw_charts() {
                     }
                     
                     if (count >= traps.length) {
-                        // graphObject1.push(
-                        //     {
-                        //         name: 'Uptime',
-                        //         color: '#75d175',
-                        //         data: [
-                        //             ['OK', scatter_count1]
-                        //         ]
-                        //     },
-                        //     {
-                        //         name: 'Uptime',
-                        //         color: '#428bca',
-                        //         data: [
-                        //             ['Normal', scatter_count2],
-                        //         ]
-                        //     },
-                        //     {
-                        //         name: 'Uptime',
-                        //         color: '#f0ad4e',
-                        //         data: [
-                        //             ['Warning', scatter_count3]
-                        //         ]
-                        //     },
-                        //     {
-                        //         name: 'Uptime',
-                        //         color: '#d9534f',
-                        //         data: [
-                        //             ['Critical', scatter_count4]
-                        //         ]
-                        //     }
-                        // );
+                        graphObject1 = {
+                            data: [{
+                                name: 'OK',
+                                color: '#75d175',
+                                y: scatter_count1
+                            }, {
+                                name: 'Normal',
+                                color: '#428bca',
+                                y: scatter_count2
+                            }, {
+                                name: 'Warning',
+                                color: '#f0ad4e',
+                                y: scatter_count3
+                            }, {
+                                name: 'Critical',
+                                color: '#d9534f',
+                                y: scatter_count4
+                            }]
+                        }
 
                         graphObject2 = {
                             type: 'pie',
@@ -813,8 +788,6 @@ function draw_charts() {
                                 ['Critical', pie_count4]
                             ]
                         }
-                        console.log(graphObject1);
-                        console.log(graphObject2);
                     }
 
                     break;
@@ -1037,9 +1010,9 @@ $(document).ready(function() {
     <div class="row col-md-5">
         <form class="form-inline" style="margin-left:25px;">
             <div id='filter-table' class='input-group'>
-                <span class='input-group-addon btn btn-primary'>
-                    <a alt='Add Filter' id='new-filter' title='Add Filter' class='glyphicon glyphicon-plus'></a>
-                </span>
+                <a alt='Add Filter' id='new-filter' title='Add Filter' class='input-group-addon'>
+                <span class='glyphicon glyphicon-plus'></span>
+                </a>
                 <span class='input-group-addon'>Select Filter:</span>
                 <select id="add-filter" class="form-control" style="width:auto;"></select>
                 <input type="button" id="apply-filter" class="btn btn-primary" style="margin-left:10px;" value="Apply">

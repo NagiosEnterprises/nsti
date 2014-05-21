@@ -667,8 +667,29 @@ function draw_charts() {
                     }
 
                     if (count >= traps.length) {
-                        // options1.series.push(trap_series);
-                        console.log(options1);
+                        graphObject1 = [
+                            {
+                                name: 'Closure',
+                                color: '#75d175',
+                                data: [
+                                    ['Closure', scatter_count1]
+                                ]
+                            },
+                            {
+                                name: 'Status Event',
+                                color: '#428bca',
+                                data: [
+                                    ['Status Event', scatter_count2],
+                                ]
+                            },
+                            {
+                                name: 'Other Event',
+                                color: '#f0ad4e',
+                                data: [
+                                    ['Other Event', scatter_count3]
+                                ]
+                            }
+                        ];
 
                         graphObject2 = {
                             type: 'pie',
@@ -679,7 +700,6 @@ function draw_charts() {
                                 ['Other Event', pie_count3]
                             ]
                         }
-                        console.log(graphObject2);
                     }
 
                     break;
@@ -855,12 +875,11 @@ function draw_charts() {
 
             // new_series1.push([timewritten * 1000, value1]);
 
-            function limit_trap_count() {
-                if(count >= 20) {
-                    return false;
-                }    
-            }
-            
+            // function limit_trap_count() {
+            //     if(count >= 50) {
+            //         return false;
+            //     }    
+            // }
         });
 
         // new_series1.sort(function (a, b) {
@@ -868,7 +887,7 @@ function draw_charts() {
         // });
 
         
-        // options1.series.push(graphObject1);
+        options1.series.push(graphObject1);
         options2.series.push(graphObject2);
         var chart = new Highcharts.Chart(options1);
         var chart = new Highcharts.Chart(options2);

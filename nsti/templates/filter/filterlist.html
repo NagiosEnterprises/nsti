@@ -21,6 +21,14 @@ var FILTER_DEFS = {
     agentip: construct_new_atom('Agent IP', [CONTAINS, EXACTLY])
 }
 
+
+
+var TRANSLATE = {
+    '__lt': '*less than*',
+    '__gt': '*greater than*',
+    '__contains': '*contains*',
+    '':'*is exactly*'};
+
 /* Helper function for creating the FILTER_DEF datastructure. */
 function construct_new_atom(nicename, comparisons) {
     if (comparisons == undefined) {
@@ -66,7 +74,7 @@ function get_tr_for_filter(name, filter) {
     var td_div = $('<td>').appendTo(tr);
 
     $.each(filter.actions, function(k, v) { 
-        $('<div>', {text: v.column_name + " " + v.comparison + " " + v.value}).appendTo(td_div);
+        $('<div>', {text: v.column_name + " " + TRANSLATE[v.comparison] + " " + v.value}).appendTo(td_div);
     });
     return tr;
 }

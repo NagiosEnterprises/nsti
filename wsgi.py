@@ -1,6 +1,12 @@
 import sys
+import os
 
-sys.path.append('/usr/local/nsti')
-from server import app as application
+basedir = os.path.abspath(os.path.dirname(__file__))
+nstidir = os.path.join(basedir, 'nsti')
 
-app.secret_key = 'mysecretkey'
+print nstidir
+
+sys.path.append(nstidir)
+from nsti import app as application
+
+application.secret_key = 'mysecretkey'

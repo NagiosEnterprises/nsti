@@ -984,7 +984,7 @@ $(document).ready(function() {
 {% endblock header %}
 
 {% block content %}
-<div class='row'>
+<div class='row' style='min-width:1200px;'>
     <div class='col-md-3'>
         <div class='btn-group left-inset' data-toggle='buttons'>
             <label class='btn btn-primary active'>
@@ -1014,7 +1014,7 @@ $(document).ready(function() {
                 <span class='glyphicon glyphicon-plus'></span>
                 </a>
                 <span class='input-group-addon'>Select Filter:</span>
-                <select id="add-filter" class="form-control" style="width:auto;"></select>
+                <select id="add-filter" class="form-control" style="width:auto;max-width:200px;"></select>
                 <input type="button" id="apply-filter" class="btn btn-primary" style="margin-left:10px;" value="Apply">
             </div>
         </form>

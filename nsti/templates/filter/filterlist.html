@@ -61,7 +61,6 @@ function load_filters() {
     });
 }
 
-//******
 function get_tr_for_filter(name, filter) {
     var tr = $('<tr>', {'data-index': name});
     var checkbox = $('<input>', {type: 'checkbox',
@@ -78,7 +77,6 @@ function get_tr_for_filter(name, filter) {
     });
     return tr;
 }
-//******* change comparison to nice name
 
 function add_filter() {
     var API_URL = BASE_URL + 'api/filter/create';

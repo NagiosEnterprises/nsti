@@ -6,22 +6,23 @@ from flask import session
 from storm.tracer import debug
 import storm.store
 
-debug(True) # The flag enables or disables statement logging
+debug(True)  # The flag enables or disables statement logging
 
 
 LIMIT = app.config.get('PERPAGE', 50)
 
 #~ Setup our DB connect string for Storm
-db_connect = '%s://%s:%s@%s:%s/%s' % (  app.config.get('DB_TYPE'),
-                                        app.config.get('DB_USER'),
-                                        app.config.get('DB_PASS'),
-                                        app.config.get('DB_HOST'),
-                                        app.config.get('DB_PORT'),
-                                        app.config.get('DB_NAME'))
+db_connect = '%s://%s:%s@%s:%s/%s' % (app.config.get('DB_TYPE'),
+                                      app.config.get('DB_USER'),
+                                      app.config.get('DB_PASS'),
+                                      app.config.get('DB_HOST'),
+                                      app.config.get('DB_PORT'),
+                                      app.config.get('DB_NAME'))
 
 #~ Establish the database connection
 DATABASE = SL.create_database(db_connect)
 DB = SL.Store(DATABASE)
+
 
 class Snmptt(object):
     __storm_table__ = 'snmptt'
@@ -41,6 +42,7 @@ class Snmptt(object):
     trapread = SL.Int()
     timewritten = SL.DateTime()
 
+
 class SnmpttArchive(object):
     __storm_table__ = 'snmptt_archive'
     id = SL.Int(primary=True)
@@ -59,6 +61,7 @@ class SnmpttArchive(object):
     trapread = SL.Int()
     timewritten = SL.DateTime()
 
+
 class SnmpttUnknown(object):
     __storm_table__ = 'snmptt_unknown'
     id = SL.Int(primary=True)
@@ -73,6 +76,7 @@ class SnmpttUnknown(object):
     trapread = SL.Int()
     timewritten = SL.DateTime()
 
+
 class FilterAtom(object):
     __storm_table__ = 'filter_atom'
     id = SL.Int(primary=True)
@@ -81,13 +85,16 @@ class FilterAtom(object):
     val = SL.Unicode()
     filter_id = SL.Int()
 
+
 class Filter(object):
     __storm_table__ = 'filter'
     id = SL.Int(primary=True)
     name = SL.Unicode()
     filter_atom = SL.ReferenceSet(id, FilterAtom.filter_id)
+
     def __init__(self, name):
         self.name = name
+
 
 def encode_storm_result_set(storm_obj):
     if not isinstance(storm_obj, storm.store.ResultSet):
@@ -105,7 +112,7 @@ def encode_storm_result_set(storm_obj):
         for attr in info:
             if attr == 'timewritten':
                 try:
-                    trap[attr] = getattr(item, attr).strftime('%s')
+                    trap[attr] = getattr(item, attr).strftime('%x %X')
                 except:
                     trap[attr] = getattr(item, attr)
             else:
@@ -168,7 +175,9 @@ def sql_where_query(traptype, arguments, use_session_filters=False):
     given the arguments we are searching for.
 
     @param traptype - The object that will be queried
-    @param arguments - Dictionary that holds the key values for searching'''
+    @param arguments - Dictionary that holds the key values for searching
+
+    '''
     query = None
     queryable = get_queryable_keys(traptype, arguments)
 
@@ -176,9 +185,7 @@ def sql_where_query(traptype, arguments, use_session_filters=False):
         all_filters = filters.read_filter_raw()
         active_filters = session.get('active_filters')
         filter_queryable = get_active_filters_as_queryable(all_filters, active_filters)
-        print 'Query: %r, FQuery: %r' % (queryable, filter_queryable)
         queryable.update(filter_queryable)
-        print 'Combined: %r' % queryable
     acombine = get_combiner(arguments)
 
     for key in queryable:

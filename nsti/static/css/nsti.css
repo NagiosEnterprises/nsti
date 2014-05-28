@@ -19,6 +19,10 @@
     font-size:12px;
 }
 
+.table-responsive {
+    overflow-x: auto;
+}
+
 #global-throbber {
     position:absolute;
     top:50%;
@@ -31,10 +35,6 @@
 
 .goto-view {
     margin: 2px 5px 2px 5px;
-}
-
-.message-column {
-    min-width: 545px;
 }
 
 .trap-controllers, .inspect-controllers {
@@ -83,11 +83,11 @@ body.modal-open {
 }
 
 .brick-red {
-    color: #C00000;    
+    color: #C00000;
 }
 
 .form-select-div {
-   margin:0 0 10px 10px; 
+   margin:0 0 10px 10px;
 }
 
 .inspector-icon > .active > a:hover,
@@ -104,3 +104,4 @@ body.modal-open {
     margin-left: 5px;
     margin-bottom: 5px;
 }
+

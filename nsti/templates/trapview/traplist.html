@@ -154,7 +154,7 @@ function normal_row(row) {
     $('<td>', {text: row.hostname, class: 'text-center'}).appendTo(heading);
     $('<td>', {text: row.severity.toUpperCase(), class: klass + " text-center"}).appendTo(heading);
     $('<td>', {text: row.category, class: 'text-center'}).appendTo(heading);
-    $('<td>', {text: row.formatline.substring(0, TRUNCATE)}).appendTo(heading);
+    $('<td>', {class: 'message-row-trunc', text: row.formatline.substring(0, TRUNCATE)}).appendTo(heading);
 
     return heading;
 }
@@ -168,7 +168,7 @@ function unknown_row(row) {
     $('<td>', {text: row.trapoid}).appendTo(heading);
     $('<td>', {text: row.hostname}).appendTo(heading);
     $('<td>', {text: row.uptime}).appendTo(heading);
-    $('<td>', {text: row.formatline.substring(0, TRUNCATE)}).appendTo(heading);
+    $('<td>', {class: 'message-row-trunc', text: row.formatline.substring(0, TRUNCATE)}).appendTo(heading);
 
     return heading;
 }
@@ -209,8 +209,16 @@ function load_body(page) {
     else {
         $.each(sliced, function(i, d) {
             var app;
-            app = func(d);
+            var date_check = [];
 
+
+            date_check.push(d.timewritten);
+            $.each(date_check, function(k, v) {
+                var readable = new Date(v);
+                console.log(readable);
+            });
+
+            app = func(d);
             app.appendTo(tbody);
         });
     }
@@ -297,7 +305,7 @@ function load_header() {
     var heading = $('<tr>');
     switch(TABLE) {
         case 'SnmpttUnknown':
-            $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'ID', class: 'text-center', href: "javascript:SortTable(0, 'N');"}).appendTo(heading);
             $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
             $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
@@ -390,7 +398,7 @@ function construct_new_atom(nicename, comparisons) {
     if (comparisons == undefined) {
         comparisons = [];
     }
-    
+
     return {nicename: nicename,
             comparisons: comparisons}
 }
@@ -434,7 +442,7 @@ function get_tr_for_filter(name, filter) {
 
     var td_div = $('<td>').appendTo(tr);
 
-    $.each(filter.actions, function(k, v) { 
+    $.each(filter.actions, function(k, v) {
         $('<div>', {text: v.column_name + " " + v.comparison + " " + v.value}).appendTo(td_div);
     });
     return tr;
@@ -444,17 +452,17 @@ function get_column_name_select(column_name) {
     var column_name_sel = $('<select>', {name: 'column_name', class: 'form-control', id: 'new-atom'});
     column_name != undefined
     set_name = column_name
-    
+
     $.each(FILTER_DEFS, function(key, value) {
-        var opt_data = {value: key, 
+        var opt_data = {value: key,
                         text: value.nicename};
         if(set_name && column_name == opt_data.value) {
             opt_data.selected = 'selected';
         }
-        
+
         column_name_sel.append($('<option>', opt_data));
     })
-    
+
     return column_name_sel;
 }
 
@@ -466,9 +474,9 @@ function get_column_comp_select(comparison) {
 function fill_comp(value, select_box, given_comparison) {
     select_box.empty();
     set_comparison = given_comparison != undefined
-    
+
     $.each(FILTER_DEFS[value].comparisons, function(i, d) {
-        var opt_data = {value: d.value, 
+        var opt_data = {value: d.value,
                         text: d.nicename};
         if (set_comparison && d.value == given_comparison) {
             opt_data.selected = 'selected';
@@ -483,31 +491,31 @@ function add_new_atom(column_name, comparison, value) {
     var new_form = $('<form>', {class: 'atoms form-inline', role: 'form'});
     var form_div = $('<div>', {class: 'row form-select-div'});
     new_form.append(form_div);
-    
+
     // Assemble the select box that will hold the column names
     var column_name_div = $('<div>', {class: 'form-group'});
     var column_name_sel = get_column_name_select(column_name);
     column_name_div.append(column_name_sel);
     form_div.append(column_name_div);
-    
+
     // Assemble the select box that will hold the comparison operator for the column name
     var column_comp_div = $('<div>', {class: 'form-group'});
     var column_comp_sel = get_column_comp_select();
     column_comp_div.append(column_comp_sel);
     form_div.append(column_comp_div);
-    
+
     // Set the change for the column name to trigger the column comparison redraw
     column_name_sel.change(function() {fill_comp(column_name_sel.val(), column_comp_sel, comparison)});
     column_name_sel.change();
-    
+
     // Make the text input that will take user input to compare to the column
     var column_value_div = $('<div>', {class: 'form-group'});
-    column_value_div.append($('<input>', {name: 'val', 
-                                          class: 'form-control', 
-                                          placeholder: '...', 
+    column_value_div.append($('<input>', {name: 'val',
+                                          class: 'form-control',
+                                          placeholder: '...',
                                           value: (value==undefined) ? '' : value}));
     form_div.append(column_value_div);
-    
+
     // Make the remove button
     var remove_atom_div = $('<div>', {class: 'form-group'});
     var remove_atom_btn = $('<button>', {class: 'btn btn-default remove_atom', type: 'button'});
@@ -515,7 +523,7 @@ function add_new_atom(column_name, comparison, value) {
     remove_atom_btn.click(function() {new_form.remove();});
     remove_atom_div.append(remove_atom_btn);
     form_div.append(remove_atom_div);
-    
+
     $('#insert-div').append(new_form);
 }
 //end filter creation functions
@@ -535,7 +543,7 @@ function draw_charts() {
             enabled: false
         },
         title: {
-            text: 'Trap Bar Graph' 
+            text: 'Trap Bar Graph'
         },
         xAxis: {
             type: 'category'
@@ -616,22 +624,6 @@ function draw_charts() {
             var trapid = trap.id;
             count++;
 
-            // var current_series = trap_series[trap.category];
-            // if (!current_series) {
-            //     current_series = {
-            //         name: trap.category,
-            //         data: []
-            //     };
-
-            //     options1.series.push(current_series);
-            //     trap_series[trap.category] = current_series;
-            // }
-
-            // current_series.data.push({
-            //     name: trap.category,
-            //     x: timewritten * 1000
-            // });
-
             switch (inspect_target) {
 
                 case 'category':
@@ -708,7 +700,7 @@ function draw_charts() {
                     } else if (value2 == 'critical') {
                         pie_count4++;
                     }
-                    
+
                     if (count >= traps.length) {
                         graphObject1 = {
                             data: [{
@@ -977,7 +969,7 @@ $(document).ready(function() {
 {% endblock header %}
 
 {% block content %}
-<div class='row' style='min-width:1200px;'>
+<div class='row'>
     <div class='col-md-3'>
         <div class='btn-group left-inset' data-toggle='buttons'>
             <label class='btn btn-primary active'>

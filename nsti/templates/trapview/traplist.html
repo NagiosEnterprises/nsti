@@ -39,13 +39,10 @@ var TRANSLATE = {
     'id': 'ID' };
 
 var INSPECTABLE = {
-    'agentip': true,
     'category': true,
-    'uptime': true,
     'severity': true,
     'hostname': true,
-    'traptime': true,
-    'id': true
+    'trapoid': true
 };
 
 /* Table drawing functions */
@@ -527,10 +524,11 @@ function add_new_atom(column_name, comparison, value) {
 function draw_charts() {
     graphObject1 = [];
     graphObject2 = [];
+    counter = [];
 
     var options1 = {
         chart: {
-            renderTo: 'chart-container-scatter',
+            renderTo: 'chart-container-bar',
             type: 'bar'
         },
         credits: {
@@ -541,11 +539,13 @@ function draw_charts() {
         },
         xAxis: {
             type: 'category'
-            // categories: ['Closure', 'Status Event', 'Other Event']
         },
         yAxis: {
             min: 0,
             title: 'Number of Traps'
+        },
+        legend: {
+            labelFormat: '{name}'
         },
         plotOptions: {
             series: {
@@ -599,15 +599,16 @@ function draw_charts() {
     $.getJSON(API_URL, function(traps) {
         var inspect_target = $('#add-data option:selected').val();
         var count = 0;
-        scatter_count1 = 0;
-        scatter_count2 = 0;
-        scatter_count3 = 0;
-        scatter_count4 = 0;
+        bar_count1 = 0;
+        bar_count2 = 0;
+        bar_count3 = 0;
+        bar_count4 = 0;
         pie_count1 = 0;
         pie_count2 = 0;
         pie_count3 = 0;
         pie_count4 = 0;
 
+        var container = [];
         var trap_series = [];
 
         $.each(traps, function(index, trap) {
@@ -639,11 +640,11 @@ function draw_charts() {
                     var value2 = trap.category;
 
                     if (value1 == 'Closure') {
-                        scatter_count1++;
+                        bar_count1++;
                     } else if (value2 == 'Status Event') {
-                        scatter_count2++;
+                        bar_count2++;
                     } else if (value2 == 'Other Event') {
-                        scatter_count3++;
+                        bar_count3++;
                     }
 
                     if (value2 == 'Closure') {
@@ -656,8 +657,19 @@ function draw_charts() {
 
                     if (count >= traps.length) {
                         graphObject1 = {
-                            name: 'Category',
-                            data: [scatter_count1, scatter_count2, scatter_count3]
+                            data: [{
+                                name: 'Closure',
+                                color: '#75d175',
+                                y: bar_count1
+                            }, {
+                                name: 'Status Event',
+                                color: '#428bca',
+                                y: bar_count2
+                            }, {
+                                name: 'Other Event',
+                                color: '#f0ad4e',
+                                y: bar_count3
+                            }]
                         }
 
                         graphObject2 = {
@@ -673,78 +685,18 @@ function draw_charts() {
 
                     break;
 
-                case 'uptime':
-                //should be a catch all for possible uptime returns
-                    var value1 = trap.uptime;
-                    var value2 = trap.uptime;
-
-                    if (value1 == 'OK') {
-                        scatter_count1++;
-                    } else if (value2 == 'Normal') {
-                        scatter_count2++;
-                    } else if (value2 == 'Warning') {
-                        scatter_count3++;
-                    } else if (value2 == 'Critical') {
-                        scatter_count4++;
-                    }
-
-                    if (value2 == 'OK') {
-                        pie_count1++;
-                    } else if (value2 == 'Normal') {
-                        pie_count2++;
-                    } else if (value2 == 'Warning') {
-                        pie_count3++;
-                    } else if (value2 == 'Critical') {
-                        pie_count4++;
-                    }
-
-                    if (count >= traps.length) {
-                        graphObject1 = {
-                            data: [{
-                                name: 'OK',
-                                color: '#75d175',
-                                y: scatter_count1
-                            }, {
-                                name: 'Normal',
-                                color: '#428bca',
-                                y: scatter_count2
-                            }, {
-                                name: 'Warning',
-                                color: '#f0ad4e',
-                                y: scatter_count3
-                            }, {
-                                name: 'Critical',
-                                color: '#d9534f',
-                                y: scatter_count4
-                            }]
-                        }
-
-                        graphObject2 = {
-                            type: 'pie',
-                            name: 'Uptime',
-                            data: [
-                                ['OK', pie_count1],
-                                ['Normal', pie_count2],
-                                ['Warning', pie_count3],
-                                ['Critical', pie_count4]
-                            ]
-                        }
-                    }
-
-                    break;
-
                 case 'severity':
                     var value1 = trap.severity;
                     var value2 = trap.severity;
 
                     if (value1 == 'ok') {
-                        scatter_count1++;
+                        bar_count1++;
                     } else if (value2 == 'normal') {
-                        scatter_count2++;
+                        bar_count2++;
                     } else if (value2 == 'warning') {
-                        scatter_count3++;
+                        bar_count3++;
                     } else if (value2 == 'critical') {
-                        scatter_count4++;
+                        bar_count4++;
                     }
 
                     if (value2 == 'ok') {
@@ -762,19 +714,19 @@ function draw_charts() {
                             data: [{
                                 name: 'OK',
                                 color: '#75d175',
-                                y: scatter_count1
+                                y: bar_count1
                             }, {
                                 name: 'Normal',
                                 color: '#428bca',
-                                y: scatter_count2
+                                y: bar_count2
                             }, {
                                 name: 'Warning',
                                 color: '#f0ad4e',
-                                y: scatter_count3
+                                y: bar_count3
                             }, {
                                 name: 'Critical',
                                 color: '#d9534f',
-                                y: scatter_count4
+                                y: bar_count4
                             }]
                         }
 
@@ -793,22 +745,74 @@ function draw_charts() {
                     break;
 
                 case 'hostname':
-                    var value2 = trap.hostname;
+                    container.push(trap.hostname);
+
+                    if (count >= traps.length) {
+                        counter = {};
+                        for (var i = 0; i < container.length; i++) {
+
+                            if(counter[container[i]]) {
+                                counter[container[i]] = counter[container[i]] + 1;
+                            } else {
+                                counter[container[i]] = 1;
+                            }
+                        }
+
+                        var ipdata = [];
+                        $.each(counter, function(ip, num) {
+                            obj = {
+                                name: ip,
+                                y: num
+                            }
+                            ipdata.push(obj);
+                        });
+
+                        graphObject1 = {
+                            type: 'bar',
+                            data: ipdata
+                        }
+
+                        graphObject2 = {
+                            type: 'pie',
+                            data: ipdata
+                        }
+                    }
 
                     break;
 
-                case 'agentip':
-                    var value2 = trap.agentip;
+                case 'trapoid':
+                    container.push(trap.trapoid);
 
-                    break;
+                    if (count >= traps.length) {
+                        counter = {};
+                        for (var i = 0; i < container.length; i++) {
 
-                case 'eventname':
-                    var value2 = trap.eventname;
+                            if(counter[container[i]]) {
+                                counter[container[i]] = counter[container[i]] + 1;
+                            } else {
+                                counter[container[i]] = 1;
+                            }
+                        }
 
-                    break;
+                        var trapoidata = [];
+                        $.each(counter, function(oid, num) {
+                            obj = {
+                                name: oid,
+                                y: num
+                            }
+                            trapoidata.push(obj);
+                        });
 
-                case 'id':
-                    var value2 = trap.id;
+                        graphObject1 = {
+                            type: 'bar',
+                            data: trapoidata
+                        }
+
+                        graphObject2 = {
+                            type: 'pie',
+                            data: trapoidata
+                        }
+                    }
 
                     break;
 
@@ -816,19 +820,8 @@ function draw_charts() {
 
                     break;
             }
-
-            // new_series1.push([timewritten * 1000, value1]);
-
-            // function limit_trap_count() {
-            //     if(count >= 50) {
-            //         return false;
-            //     }    
-            // }
         });
-        
-        // graphObject1.sort(function (a, b) {
-        //     return a[0] - b[0];
-        // });
+
         console.log(graphObject1);
 
         options1.series.push(graphObject1);
@@ -1040,7 +1033,7 @@ $(document).ready(function() {
                 <td style='border:none;'>
                     <div>
                         <div class='col-md-6'>
-                            <div id='chart-container-scatter' class="linechart" style="height:400px;"></div>
+                            <div id='chart-container-bar' class="linechart" style="height:400px;"></div>
                         </div>
                         <div class='col-md-6'>
                             <div id='chart-container-pie' class="piechart" style="height:400px;"></div>

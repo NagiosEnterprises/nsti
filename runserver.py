@@ -3,8 +3,6 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 nstidir = os.path.join(basedir)
 
-print nstidir
-
 sys.path.append(nstidir)
 
 from nsti import nsti 

@@ -21,13 +21,26 @@ var FILTER_DEFS = {
     agentip: construct_new_atom('Agent IP', [CONTAINS, EXACTLY])
 }
 
-
-
 var TRANSLATE = {
-    '__lt': '*less than*',
-    '__gt': '*greater than*',
-    '__contains': '*contains*',
-    '':'*is exactly*'};
+    'agentip': 'Agent IP',
+    'eventid': 'Event ID',
+    'category': 'Category',
+    'uptime': 'Uptime',
+    'severity': 'Severity',
+    'traptime': 'Trap Time',
+    'timewritten': 'Time Written To Database',
+    'formatline': 'Message',
+    'hostname': 'Hostname',
+    'community': 'Community',
+    'eventname': 'Event Name',
+    'trapoid': 'Trap OID',
+    'trapread': 'Trap Read',
+    'enterprise': 'Enterprise',
+    'id': 'ID',
+    '__lt': 'is less than',
+    '__gt': 'is greater than',
+    '__contains': 'contains',
+    '':'is exactly'};
 
 /* Helper function for creating the FILTER_DEF datastructure. */
 function construct_new_atom(nicename, comparisons) {
@@ -73,7 +86,7 @@ function get_tr_for_filter(name, filter) {
     var td_div = $('<td>').appendTo(tr);
 
     $.each(filter.actions, function(k, v) { 
-        $('<div>', {text: v.column_name + " " + TRANSLATE[v.comparison] + " " + v.value}).appendTo(td_div);
+        $('<div>', {text: TRANSLATE[v.column_name] + " " + TRANSLATE[v.comparison] + " " + v.value}).appendTo(td_div);
     });
     return tr;
 }

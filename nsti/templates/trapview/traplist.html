@@ -209,14 +209,6 @@ function load_body(page) {
     else {
         $.each(sliced, function(i, d) {
             var app;
-            var date_check = [];
-
-
-            date_check.push(d.timewritten);
-            $.each(date_check, function(k, v) {
-                var readable = new Date(v);
-                console.log(readable);
-            });
 
             app = func(d);
             app.appendTo(tbody);
@@ -307,22 +299,22 @@ function load_header() {
         case 'SnmpttUnknown':
             $('<th>', {text: 'ID', class: 'text-center', href: "javascript:SortTable(0, 'N');"}).appendTo(heading);
             $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Uptime', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Date Received', class: 'text-center', href: "javascript:SortTable(2, 'D', 'mdy');"}).appendTo(heading);
+            $('<th>', {text: 'Trap OID', class: 'text-center', href: "javascript:SortTable(3, 'T');"}).appendTo(heading);
+            $('<th>', {text: 'Hostname', class: 'text-center', href: "javascript:SortTable(4, 'T');"}).appendTo(heading);
+            $('<th>', {text: 'Uptime', class: 'text-center', href: "javascript:SortTable(5, 'N');"}).appendTo(heading);
             $('<th>', {text: 'Message', class: 'text-center message-column'}).appendTo(heading);
             break;
         case 'Snmptt':
         case 'SnmpttArchive':
         default:
-            $('<th>', {text: 'ID', class: 'text-center'}).appendTo(heading);
-            $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Date Received', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Trap OID', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Hostname', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Severity', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Category', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'ID', class: 'text-center', href: "javascript:SortTable(0, 'N');"}).appendTo(heading);
+            $('<th>', {html: '<input type="checkbox" id="toggle">'}).appendTo(heading);
+            $('<th>', {text: 'Date Received', class: 'text-center', href: "javascript:SortTable(2, 'D', 'mdy');"}).appendTo(heading);
+            $('<th>', {text: 'Trap OID', class: 'text-center', href: "javascript:SortTable(3, 'T');"}).appendTo(heading);
+            $('<th>', {text: 'Hostname', class: 'text-center', href: "javascript:SortTable(4, 'T');"}).appendTo(heading);
+            $('<th>', {text: 'Severity', class: 'text-center', href: "javascript:SortTable(5, 'T');"}).appendTo(heading);
+            $('<th>', {text: 'Category', class: 'text-center', href: "javascript:SortTable(6, 'T');"}).appendTo(heading);
             $('<th>', {text: 'Message', class: 'text-center message-column'}).appendTo(heading);
             break;
     }
@@ -814,8 +806,6 @@ function draw_charts() {
             }
         });
 
-        console.log(graphObject1);
-
         options1.series.push(graphObject1);
         options2.series.push(graphObject2);
         var chart = new Highcharts.Chart(options1);
@@ -871,6 +861,14 @@ function show_applied_filters() {
         })
     });
 }
+
+//table sort function
+function init_table_sort() {
+    var trapTableSort = new TSorter;
+    trapTableSort.init('trap-table');
+}
+window.onload = init_table_sort;
+
 
 $(document).ready(function() {
 
@@ -1051,7 +1049,7 @@ $(document).ready(function() {
                 </button>
             </div>
         </div>
-        <table id='trap-table' class='table table-condensed table-striped table-hover table-bordered'>
+        <table id='trap-table' class='table table-condensed table-striped table-hover table-bordered sortable'>
             <thead id='trap-table-head'></thead>
             <tfoot id='trap-table-foot'>
                 <tr>

@@ -13,10 +13,5 @@ Contents:
 
    introduction
    installation
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   filters
+   visualizer

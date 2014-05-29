@@ -6,7 +6,7 @@ from flask import session
 from storm.tracer import debug
 import storm.store
 
-debug(True)  # The flag enables or disables statement logging
+debug(False)  # The flag enables or disables statement logging
 
 
 LIMIT = app.config.get('PERPAGE', 50)

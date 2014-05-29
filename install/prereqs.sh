@@ -3,7 +3,7 @@
 PREREQS='mysql httpd gcc wget make tar'
 
 #install prereqs- only supporting yum packager FOR NOW
-yum install -y mysql httpd gcc wget make tar mod_wsgi
+yum install -y mysql httpd gcc wget make tar mod_wsgi python-pip
 
 echo "Checking installer prereqs..."
 echo "-----------------------------"

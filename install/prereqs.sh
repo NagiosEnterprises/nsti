@@ -31,15 +31,22 @@ echo "MOD_WSGI INSTALLED"
 echo "----------------------------"
 echo ""
 
-echo "Checking users and groups..."
+echo "Creating users and groups..."
 echo "----------------------------"
 if ! cat /etc/passwd | grep nagios;
 then
-    echo 'No user `nagios`. Add a user for nagios and make sure it is in the nagcmd group.'
-    echo 'Apache must also be in nagcmd.'
-    exit 1
+
+    # Add nagios user
+    add_user nagios
+	add_group nagios
+	add_group nagcmd
+	
+	# Add nagios user to nagios group
+	add_to_groups nagios nagios nagcmd
+    add_to_groups apache nagios nagcmd
+
 fi
 echo "---------------------------"
-echo "USERS/GROUPS OK"
+echo "USERS/GROUPS CREATED"
 echo "---------------------------"
 echo ""

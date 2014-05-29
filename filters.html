@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Filters &mdash; NSTI v3.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '3.0',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NSTI v3.0 documentation" href="index.html" />
+    <link rel="next" title="<no title>" href="visualizer.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="visualizer.html" title="<no title>"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">NSTI v3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="filters">
+<h1>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="filtering-snmp-traps-with-nsti">
+<h2>Filtering SNMP traps with NSTI<a class="headerlink" href="#filtering-snmp-traps-with-nsti" title="Permalink to this headline">¶</a></h2>
+<p>The biggest addition that was made to NSTI 3.0 is that you can now create filters than can be applied to the main traplist.  This allows you to check specific columns and values to be able to understand the SNMP data you have recieved.</p>
+<p>Here is the Filter page where you can create, edit and delete filters:</p>
+<div align="center" class="align-center"><img alt="filtermain.png" class="align-center" src="filtermain.png" /></div>
+</div>
+<div class="section" id="adding-editing-and-deleting">
+<h2>Adding, Editing and Deleting<a class="headerlink" href="#adding-editing-and-deleting" title="Permalink to this headline">¶</a></h2>
+<p>This page is designed to give you full control of your filters and to make is much faster.  Here is and example of a new filter creation window.  You can select the item you want to be filtered, the comparison and the value to filter against.</p>
+<div align="center" class="align-center"><img alt="filteraddex.png" class="align-center" src="filteraddex.png" /></div>
+<p>To edit an existing filter all you have to do is select a single filters&#8217; checkbox and click the pen icon.  This will allow you to change anything in the filter other than the title.</p>
+<p>You can also add new filters from the traplist where they are applied:</p>
+<img align="left" alt="trapFilterSelect.png" class="align-left" src="trapFilterSelect.png" />
+<div class="line-block">
+<div class="line">Just click the plus sign to add a new filter and you will see the exact same window that you use to add a filter from the filter page.  Once you || select add filter you will be able to select it from the dropdown menu</div>
+</div>
+</div>
+<div class="section" id="applying-filters-to-the-traplist">
+<h2>Applying Filters to the Traplist<a class="headerlink" href="#applying-filters-to-the-traplist" title="Permalink to this headline">¶</a></h2>
+<p>Once you have your filters made navigate back to the traplist page.  Now all you have to do to apply it is use the &#8216;Select Filter&#8217; dropdown and select the filter you want to apply.  Once a filter has been applied you will see a green tag in the left side above the trap table.  This tag means that the filter you selected and applied is currently active on the traplist page.  To remove a filter tag simply click the &#8216;X&#8217; on the tag to delete it.</p>
+<div align="center" class="align-center"><img alt="traplistApplyFilter.png" class="align-center" src="traplistApplyFilter.png" /></div>
+<div class="line-block">
+<div class="line">As you can see above the table has been filtered with the following:</div>
+<div class="line-block">
+<div class="line">Hostname        Contains        .41</div>
+<div class="line">Severity        Contains        critical</div>
+</div>
+</div>
+<p>If you have multiple filters then you can apply them on top of each other to get a more specific trap table.  There is no limit to how many filters you can apply at one time, but you can always create a filter with multiple specifications.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Filters</a><ul>
+<li><a class="reference external" href="#filtering-snmp-traps-with-nsti">Filtering SNMP traps with NSTI</a></li>
+<li><a class="reference external" href="#adding-editing-and-deleting">Adding, Editing and Deleting</a></li>
+<li><a class="reference external" href="#applying-filters-to-the-traplist">Applying Filters to the Traplist</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="installation.html"
+                                  title="previous chapter">Installation</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="visualizer.html"
+                                  title="next chapter">&lt;no title&gt;</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/filters.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="visualizer.html" title="<no title>"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="index.html">NSTI v3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2014, Nicholas Scott, Luke Groschen.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+    </div>
+  </body>
+</html>

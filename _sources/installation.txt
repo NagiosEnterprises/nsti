@@ -15,12 +15,12 @@ Github clones:
 
 Once you have a clone of NSTI on your local machine there are 6 baseline prerequisits to install first:
 
-	*mysql 
-	*httpd
-	*gcc
-	*wget
-	*make
-	*tar
+- mysql 
+- httpd
+- gcc
+- wget
+- make
+- tar
 
 To verify and check that these are installed use the install.sh script in the main NSTI directory::
 	./install.sh
@@ -76,5 +76,12 @@ The nsti.py file is located here::
 
 	/nsti/nsti/etc/nsti.py
 
+
 This is where you will set your database type, host, name, user and password.  To test if you succesfully configured your database use the runserver.py in the /nsti directory.  It will output any connection errors and you will be able to adjust settings accordingly.
 
+Another point to be made is that you will need to verify that the database NSTI is writing to was created.  If it wasn't you will recieve similar errors to the following:
+
+	ERROR 1049 (42000): Unknown database 'snmptt'
+	Unable to add database schema. Does the snmptt exist?
+
+This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to.

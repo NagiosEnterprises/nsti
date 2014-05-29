@@ -47,3 +47,10 @@ If you use the Search on the traplist it will show any of the matching keys that
 .. note::
 
 	Find out more about NSTI and naviagte through this documentation by using the index or by using the search feature.
+
+
+:Authors:
+	Nicholas Scott,
+	Luke Groschen
+
+:Version: 3.0 as of May 2014

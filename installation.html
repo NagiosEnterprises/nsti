@@ -57,13 +57,14 @@
 </dd>
 </dl>
 <p>Once you have a clone of NSTI on your local machine there are 6 baseline prerequisits to install first:</p>
-<blockquote>
-<a href="#id1"><span class="problematic" id="id2">*</span></a>mysql
-<a href="#id3"><span class="problematic" id="id4">*</span></a>httpd
-<a href="#id5"><span class="problematic" id="id6">*</span></a>gcc
-<a href="#id7"><span class="problematic" id="id8">*</span></a>wget
-<a href="#id9"><span class="problematic" id="id10">*</span></a>make
-<a href="#id11"><span class="problematic" id="id12">*</span></a>tar</blockquote>
+<ul class="simple">
+<li>mysql</li>
+<li>httpd</li>
+<li>gcc</li>
+<li>wget</li>
+<li>make</li>
+<li>tar</li>
+</ul>
 <dl class="docutils">
 <dt>To verify and check that these are installed use the install.sh script in the main NSTI directory::</dt>
 <dd>./install.sh</dd>
@@ -110,6 +111,11 @@ python-storm-mysql</blockquote>
 <div class="highlight-python"><pre>/nsti/nsti/etc/nsti.py</pre>
 </div>
 <p>This is where you will set your database type, host, name, user and password.  To test if you succesfully configured your database use the runserver.py in the /nsti directory.  It will output any connection errors and you will be able to adjust settings accordingly.</p>
+<p>Another point to be made is that you will need to verify that the database NSTI is writing to was created.  If it wasn&#8217;t you will recieve similar errors to the following:</p>
+<blockquote>
+ERROR 1049 (42000): Unknown database &#8216;snmptt&#8217;
+Unable to add database schema. Does the snmptt exist?</blockquote>
+<p>This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to.</p>
 </div>
 </div>
 

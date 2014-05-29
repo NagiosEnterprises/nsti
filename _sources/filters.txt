@@ -19,7 +19,7 @@ Here is the Filter page where you can create, edit and delete filters:
 Adding, Editing and Deleting
 -----------------------------
 
-This page is designed to give you full control of your filters and to make is much faster.  Here is and example of a new filter creation window.  You can select the item you want to be filtered, the comparison and the value to filter against.
+This page is designed to give you full control of your filters and to make it much faster.  Here is and example of a new filter creation window.  You can select the item you want to be filtered, the comparison and the value to filter against:
 
 .. image:: filteraddex.png
 	:align: center
@@ -32,7 +32,7 @@ You can also add new filters from the traplist where they are applied:
 .. image:: trapFilterSelect.png
 	:align: left
 
-Just click the plus sign to add a new filter and you will see the exact same window that you use to add a filter from the filter page.  Once you |select add filter you will be able to select it from the dropdown menu
+Just click the plus sign to add a new filter and you will see the exact same window that you use to add a filter from the filter page.  Once you select add filter you will be able to choose it from the dropdown menu.
 
 
 

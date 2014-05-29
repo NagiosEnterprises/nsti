@@ -38,11 +38,11 @@ then
 
     # Add nagios user
     add_user nagios
-	add_group nagios
-	add_group nagcmd
+    add_group nagios
+    add_group nagcmd
 	
-	# Add nagios user to nagios group
-	add_to_groups nagios nagios nagcmd
+    # Add nagios user to nagios group
+    add_to_groups nagios nagios nagcmd
     add_to_groups apache nagios nagcmd
 
 fi

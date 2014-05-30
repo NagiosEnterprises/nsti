@@ -24,8 +24,7 @@
 -- Table structure for table `snmptt`
 --
 
-DROP TABLE IF EXISTS `snmptt`;
-CREATE TABLE `snmptt` (
+CREATE TABLE IF NOT EXISTS `snmptt` (
       `id` mediumint(9) NOT NULL auto_increment,
       `eventname` varchar(50) default NULL,
       `eventid` varchar(50) default NULL,
@@ -48,11 +47,9 @@ CREATE TABLE `snmptt` (
 --
 -- Table structure for table `snmptt_archive`
 --
-
-DROP TABLE IF EXISTS `snmptt_archive`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `snmptt_archive` (
+CREATE TABLE IF NOT EXISTS `snmptt_archive` (
   `id` mediumint(9) NOT NULL AUTO_INCREMENT,
   `snmptt_id` mediumint(9) NOT NULL,
   `eventname` varchar(50) DEFAULT NULL,
@@ -76,11 +73,9 @@ CREATE TABLE `snmptt_archive` (
 --
 -- Table structure for table `snmptt_unknown`
 --
-
-DROP TABLE IF EXISTS `snmptt_unknown`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `snmptt_unknown` (
+CREATE TABLE IF NOT EXISTS `snmptt_unknown` (
   `id` mediumint(9) NOT NULL AUTO_INCREMENT,
   `trapoid` varchar(100) DEFAULT NULL,
   `enterprise` varchar(100) DEFAULT NULL,
@@ -109,11 +104,9 @@ CREATE TABLE `snmptt_unknown` (
 --
 -- Table structure for table `filter_atom`
 --
-
-DROP TABLE IF EXISTS `filter_atom`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `filter_atom` (
+CREATE TABLE IF NOT EXISTS `filter_atom` (
   `id` mediumint(9) NOT NULL AUTO_INCREMENT,
   `column_name` varchar(100) DEFAULT NULL,
   `comparison` varchar(100) DEFAULT NULL,
@@ -126,14 +119,11 @@ CREATE TABLE `filter_atom` (
 --
 -- Table structure for table `filter`
 --
-
-DROP TABLE IF EXISTS `filter`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `filter` (
+CREATE TABLE IF NOT EXISTS `filter` (
   `id` mediumint(9) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL UNIQUE,
   `combiner` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-

@@ -2,7 +2,7 @@
 
 PREREQS='mysql httpd gcc wget make tar'
 
-#install prereqs- only supporting yum packager FOR NOW
+#install database prereqs- only supporting yum packager FOR NOW
 yum install -y mysql mysql-devel mysql-server httpd
 
 #set mysql user and password

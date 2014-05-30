@@ -16,7 +16,7 @@ chkconfig mysqld on
 chkconfig httpd on
 
 #install more prereqs
-gcc wget make tar mod_wsgi python-devel
+yum install -y gcc wget make tar mod_wsgi python-devel
 
 #grab pip
 curl https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py | python

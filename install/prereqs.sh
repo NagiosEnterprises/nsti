@@ -2,6 +2,9 @@
 
 PREREQS='mysql httpd gcc wget make tar'
 
+#add the epel repo to yum to get mod_wsgi
+add_yum_repo epel
+
 #install prereqs- only supporting yum packager FOR NOW
 yum install -y mysql httpd gcc wget make tar mod_wsgi python-pip
 

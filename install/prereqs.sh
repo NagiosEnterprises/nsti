@@ -7,7 +7,6 @@ yum install -y mysql mysql-devel mysql-server httpd
 
 #make sure our services are running
 service mysqld start
-service httpd start
 
 #set mysql user and password
 /usr/bin/mysqladmin -u root password 'nsti'

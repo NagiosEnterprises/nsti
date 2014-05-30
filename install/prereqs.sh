@@ -5,12 +5,14 @@ PREREQS='mysql httpd gcc wget make tar'
 #install database prereqs- only supporting yum packager FOR NOW
 yum install -y mysql mysql-devel mysql-server httpd
 
-#set mysql user and password
-/usr/bin/mysqladmin -u root password 'nsti'
-
 #make sure our services are running
 service mysqld start
 service httpd start
+
+#set mysql user and password
+/usr/bin/mysqladmin -u root password 'nsti'
+service mysqld restart
+
 #set to start on system startup
 chkconfig mysqld on
 chkconfig httpd on

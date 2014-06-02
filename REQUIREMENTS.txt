@@ -1,0 +1,5 @@
+Sphinx==1.2.2
+sphinx-bootstrap-theme
+Flask
+MySQL-python
+storm

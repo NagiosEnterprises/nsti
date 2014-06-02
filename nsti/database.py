@@ -183,7 +183,7 @@ def sql_where_query(traptype, arguments, use_session_filters=False):
 
     if use_session_filters:
         all_filters = filters.read_filter_raw()
-        active_filters = session.get('active_filters')
+        active_filters = session.get('active_filters', [])
         filter_queryable = get_active_filters_as_queryable(all_filters, active_filters)
         queryable.update(filter_queryable)
     acombine = get_combiner(arguments)

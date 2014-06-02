@@ -40,18 +40,18 @@ def trapview(trapid):
 def read(tablename):
     traptype = getattr(db, tablename)
 
-    # use_session_filters = request.args.get('use_session_filters', False)
-    use_session_filters = 1
-    
+    use_session_filters = request.args.get('use_session_filters', False)
+    # use_session_filters = 1
+        
     where_clause = db.sql_where_query(traptype, request.args, use_session_filters)
-    
+        
     if where_clause:
         results = db.DB.find(traptype, where_clause)
     else:
         results = db.DB.find(traptype)
-    
+        
     result_dict = db.encode_storm_result_set(results)
-    
+        
     json_str = json.dumps(result_dict, default=db.encode_storm_result_set)
     return Response(response=json_str, status=200, mimetype='application/json')
     

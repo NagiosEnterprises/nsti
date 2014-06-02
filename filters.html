@@ -1,28 +1,34 @@
 <!DOCTYPE html>
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Filters &mdash; NSTI v3.0 documentation</title>
+    <title>Filters &mdash; NSTI 3.0 documentation</title>
+    
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.1.0/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '3.0',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="NSTI v3.0 documentation" href="index.html" />
+    <link rel="top" title="NSTI 3.0 documentation" href="index.html" />
     <link rel="next" title="SNMP Trap Data Visualizer" href="visualizer.html" />
     <link rel="prev" title="Installation" href="installation.html" />
 <meta charset='utf-8'>
@@ -33,11 +39,104 @@
   </head>
   <body>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          NSTI</a>
+        <span class="navbar-text navbar-version pull-left"><b>3.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
             
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualizer.html">SNMP Trap Data Visualizer</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Filters</a><ul>
+<li><a class="reference internal" href="#filtering-snmp-traps-with-nsti">Filtering SNMP traps with NSTI</a></li>
+<li><a class="reference internal" href="#adding-editing-and-deleting">Adding, Editing and Deleting</a></li>
+<li><a class="reference internal" href="#applying-filters-to-the-traplist">Applying Filters to the Traplist</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="installation.html" title="Previous Chapter: Installation"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm">&laquo; Installation</span>
+    </a>
+  </li>
+  <li>
+    <a href="visualizer.html" title="Next Chapter: SNMP Trap Data Visualizer"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm">SNMP Trap Data V... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/filters.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
   <div class="section" id="filters">
 <h1>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h1>
 <p>One of the most asked for features in NSTI and even any SNMP handling is Filters.  Check here on how to use them in the best way.</p>
@@ -45,21 +144,21 @@
 <h2>Filtering SNMP traps with NSTI<a class="headerlink" href="#filtering-snmp-traps-with-nsti" title="Permalink to this headline">¶</a></h2>
 <p>The biggest addition that was made to NSTI 3.0 is that you can now create filters than can be applied to the main traplist.  This allows you to check specific columns and values to be able to understand the SNMP data you have recieved.</p>
 <p>Here is the Filter page where you can create, edit and delete filters:</p>
-<div align="center" class="align-center"><img alt="_images/filtermain.png" class="align-center" src="_images/filtermain.png" /></div>
+<img alt="_images/filtermain.png" class="align-center" src="_images/filtermain.png" />
 </div>
 <div class="section" id="adding-editing-and-deleting">
 <h2>Adding, Editing and Deleting<a class="headerlink" href="#adding-editing-and-deleting" title="Permalink to this headline">¶</a></h2>
 <p>This page is designed to give you full control of your filters and to make it much faster.  Here is and example of a new filter creation window.  You can select the item you want to be filtered, the comparison and the value to filter against:</p>
-<div align="center" class="align-center"><img alt="_images/filteraddex.png" class="align-center" src="_images/filteraddex.png" /></div>
+<img alt="_images/filteraddex.png" class="align-center" src="_images/filteraddex.png" />
 <p>To edit an existing filter all you have to do is select a single filters&#8217; checkbox and click the pen icon.  This will allow you to change anything in the filter other than the title.</p>
 <p>You can also add new filters from the traplist where they are applied:</p>
-<img align="left" alt="_images/trapFilterSelect.png" class="align-left" src="_images/trapFilterSelect.png" />
+<img alt="_images/trapFilterSelect.png" class="align-left" src="_images/trapFilterSelect.png" />
 <p>Just click the plus sign to add a new filter and you will see the exact same window that you use to add a filter from the filter page.  Once you select add filter you will be able to choose it from the dropdown menu.</p>
 </div>
 <div class="section" id="applying-filters-to-the-traplist">
 <h2>Applying Filters to the Traplist<a class="headerlink" href="#applying-filters-to-the-traplist" title="Permalink to this headline">¶</a></h2>
 <p>Once you have your filters made navigate back to the traplist page.  Now all you have to do to apply it is use the &#8216;Select Filter&#8217; dropdown and select the filter you want to apply.  Once a filter has been applied you will see a green tag in the left side above the trap table.  This tag means that the filter you selected and applied is currently active on the traplist page.  To remove a filter tag simply click the &#8216;X&#8217; on the tag to delete it.</p>
-<div align="center" class="align-center"><img alt="_images/traplistApplyFilter.png" class="align-center" src="_images/traplistApplyFilter.png" /></div>
+<img alt="_images/traplistApplyFilter.png" class="align-center" src="_images/traplistApplyFilter.png" />
 <div class="line-block">
 <div class="line">As you can see above the table has been filtered with the following:</div>
 <div class="line-block">
@@ -72,11 +171,10 @@
 </div>
 
 
-          </div>
-        </div>
-      </div>  
-      <div class="clearer"></div>
     </div>
+      
+  </div>
+</div>
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -84,7 +182,8 @@
       
     </p>
     <p>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.<br/>
+        &copy; Copyright 2014, Nicholas Scott, Luke Groschen.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
     </p>
   </div>
 </footer>

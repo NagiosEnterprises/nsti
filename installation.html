@@ -1,28 +1,34 @@
 <!DOCTYPE html>
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; NSTI v3.0 documentation</title>
+    <title>Installation &mdash; NSTI 3.0 documentation</title>
+    
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.1.0/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '3.0',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
-    <link rel="top" title="NSTI v3.0 documentation" href="index.html" />
+    <link rel="top" title="NSTI 3.0 documentation" href="index.html" />
     <link rel="next" title="Filters" href="filters.html" />
     <link rel="prev" title="Introduction" href="introduction.html" />
 <meta charset='utf-8'>
@@ -33,11 +39,104 @@
   </head>
   <body>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          NSTI</a>
+        <span class="navbar-text navbar-version pull-left"><b>3.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="divider-vertical"></li>
             
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualizer.html">SNMP Trap Data Visualizer</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#installing-nsti-using-git-clone">Installing NSTI Using Git Clone</a></li>
+<li><a class="reference internal" href="#flask-and-storm">Flask and Storm</a></li>
+<li><a class="reference internal" href="#mysql-configuration">MySQL Configuration</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="introduction.html" title="Previous Chapter: Introduction"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm">&laquo; Introduction</span>
+    </a>
+  </li>
+  <li>
+    <a href="filters.html" title="Next Chapter: Filters"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm">Filters &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/installation.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>NSTI performs well with and is designed to run on any Linux distribution.</p>
@@ -55,10 +154,10 @@
 </dl>
 <p>Now that you have the clone go into the nsti folder,</p>
 <blockquote>
-cd /nsti</blockquote>
+<div>cd /nsti</div></blockquote>
 <p>and run,</p>
 <blockquote>
-sh install.sh</blockquote>
+<div>sh install.sh</div></blockquote>
 <p>Once you have a clone of NSTI on your local machine and run the install script there are some prerequisits that the installer will run using the yum installer.  Support for the other repos will be added in another version.  If you have another repo that does not use yum just install the following packages manually with the installer of your choice:</p>
 <ul class="simple">
 <li>mysql</li>
@@ -68,12 +167,12 @@ sh install.sh</blockquote>
 </ul>
 <p>Then restart mysqld, set mysql user and password and set mysqld and apache to start on startup</p>
 <blockquote>
-<p>service mysqld start
+<div><p>service mysqld start
 /usr/bin/mysqladmin -u root password &#8216;nsti&#8217;
 service mysqld restart</p>
 <p>chkconfig mysqld on
 chkconfig httpd on</p>
-</blockquote>
+</div></blockquote>
 <p>Now continues with prerequisite installation</p>
 <ul>
 <li><p class="first">gcc</p>
@@ -88,17 +187,18 @@ chkconfig httpd on</p>
 </li>
 <li><p class="first">python-devel</p>
 <blockquote>
-<p>curl <a class="reference external" href="https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py">https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py</a> | python</p>
-</blockquote>
+<div><p>curl <a class="reference external" href="https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py">https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py</a> | python</p>
+</div></blockquote>
 </li>
 </ul>
 <p>If any of the packages failed to install you will see error outputs such as the following:</p>
-<div class="highlight-python"><pre>    'Cannot continue install until all of these prereqs are met.'
+<div class="highlight-python"><div class="highlight"><pre>    &#39;Cannot continue install until all of these prereqs are met.&#39;
 
-    'mod_wsgi is not installed in Apache. Please use your package manager to install it.'
+    &#39;mod_wsgi is not installed in Apache. Please use your package manager to install it.&#39;
 
-    'No user `nagios`. Add a user for nagios and make sure it is in the nagcmd group.'
-'Apache must also be in nagcmd.'</pre>
+    &#39;No user `nagios`. Add a user for nagios and make sure it is in the nagcmd group.&#39;
+&#39;Apache must also be in nagcmd.&#39;
+</pre></div>
 </div>
 </div>
 <div class="section" id="flask-and-storm">
@@ -114,24 +214,24 @@ chkconfig httpd on</p>
 <h2>MySQL Configuration<a class="headerlink" href="#mysql-configuration" title="Permalink to this headline">¶</a></h2>
 <p>To run NSTI correctly it is important that you have your mysql set up correctly so NSTI can recieve data from the database.  The most common problem with NSTI not communicating properly with your mysql database is the root user password settings.  It is recommended that you set the password if the install script failed to do so.</p>
 <p>The nsti.py file is located here:</p>
-<div class="highlight-python"><pre>/nsti/nsti/etc/nsti.py</pre>
+<div class="highlight-python"><div class="highlight"><pre>/nsti/nsti/etc/nsti.py
+</pre></div>
 </div>
 <p>This is where you will set your database type, host, name, user and password.  To test if you succesfully configured your database use the runserver.py in the /nsti directory.  It will output any connection errors and you will be able to adjust settings accordingly.</p>
 <p>Another point to be made is that you will need to verify that the database NSTI is writing to was created.  If it wasn&#8217;t you will recieve similar errors to the following:</p>
 <blockquote>
-ERROR 1049 (42000): Unknown database &#8216;snmptt&#8217;
-Unable to add database schema. Does the snmptt exist?</blockquote>
+<div>ERROR 1049 (42000): Unknown database &#8216;snmptt&#8217;
+Unable to add database schema. Does the snmptt exist?</div></blockquote>
 <p>This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to, create the root user and use password &#8216;nsti&#8217; to make sure it is working.</p>
 <p>After you verify everything is working with the database it is recommended that you change your password and update it in the configuration files.</p>
 </div>
 </div>
 
 
-          </div>
-        </div>
-      </div>  
-      <div class="clearer"></div>
     </div>
+      
+  </div>
+</div>
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -139,7 +239,8 @@ Unable to add database schema. Does the snmptt exist?</blockquote>
       
     </p>
     <p>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.<br/>
+        &copy; Copyright 2014, Nicholas Scott, Luke Groschen.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
     </p>
   </div>
 </footer>

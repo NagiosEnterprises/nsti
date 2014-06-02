@@ -20,6 +20,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="NSTI v3.0 documentation" href="index.html" />
+    <link rel="next" title="Filters" href="filters.html" />
     <link rel="prev" title="Introduction" href="introduction.html" /> 
   </head>
   <body>
@@ -29,6 +30,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="filters.html" title="Filters"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="introduction.html" title="Introduction"
              accesskey="P">previous</a> |</li>
@@ -46,7 +50,7 @@
 <p>NSTI performs well with and is designed to run on any Linux distribution.</p>
 <div class="section" id="installing-nsti-using-git-clone">
 <h2>Installing NSTI Using Git Clone<a class="headerlink" href="#installing-nsti-using-git-clone" title="Permalink to this headline">¶</a></h2>
-<p>First you will need to clone the Git repo to retrieve NSTI.  Make sure you are in the directory location you want the clone to be placed in.</p>
+<p>First you will need to clone the Git repo to retrieve NSTI.  Make sure you are in the directory location you want the clone to be placed in.  The main folder will be called &#8216;nsti&#8217;.</p>
 <dl class="docutils">
 <dt>Github clones:</dt>
 <dd><ul class="first last simple">
@@ -56,40 +60,53 @@
 </ul>
 </dd>
 </dl>
-<p>Once you have a clone of NSTI on your local machine there are 6 baseline prerequisits to install first:</p>
+<p>Now that you have the clone go into the nsti folder,</p>
+<blockquote>
+cd /nsti</blockquote>
+<p>and run,</p>
+<blockquote>
+sh install.sh</blockquote>
+<p>Once you have a clone of NSTI on your local machine and run the install script there are some prerequisits that the installer will run using the yum installer.  Support for the other repos will be added in another version.  If you have another repo that does not use yum just install the following packages manually with the installer of your choice:</p>
 <ul class="simple">
 <li>mysql</li>
+<li>mysql-devel</li>
+<li>mysql-server</li>
 <li>httpd</li>
-<li>gcc</li>
-<li>wget</li>
-<li>make</li>
-<li>tar</li>
 </ul>
-<dl class="docutils">
-<dt>To verify and check that these are installed use the install.sh script in the main NSTI directory::</dt>
-<dd>./install.sh</dd>
-</dl>
-<p>If successfull you should see output like the following:</p>
-<div class="highlight-python"><pre>Checking installer prereqs...
------------------------------
-/usr/bin/mysql
-/usr/sbin/httpd
-/usr/bin/gcc
-/usr/bin/wget
-/usr/bin/make
-/bin/tar
-----------------------------
-INSTALLER PREREQS MET
-----------------------------
+<p>Then restart mysqld, set mysql user and password and set mysqld and apache to start on startup</p>
+<blockquote>
+<p>service mysqld start
+/usr/bin/mysqladmin -u root password &#8216;nsti&#8217;
+service mysqld restart</p>
+<p>chkconfig mysqld on
+chkconfig httpd on</p>
+</blockquote>
+<p>Now continues with prerequisite installation</p>
+<ul>
+<li><p class="first">gcc</p>
+</li>
+<li><p class="first">wget</p>
+</li>
+<li><p class="first">make</p>
+</li>
+<li><p class="first">tar</p>
+</li>
+<li><p class="first">mod_wsgi</p>
+</li>
+<li><p class="first">python-devel</p>
+<blockquote>
+<p>curl <a class="reference external" href="https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py">https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py</a> | python</p>
+</blockquote>
+</li>
+</ul>
+<p>If any of the packages failed to install you will see error outputs such as the following:</p>
+<div class="highlight-python"><pre>    'Cannot continue install until all of these prereqs are met.'
 
-Making sure WSGI is installed in Apache...
-------------------------------------------
- wsgi_module (shared)
-----------------------------
-MOD_WSGI INSTALLED
-----------------------------</pre>
+    'mod_wsgi is not installed in Apache. Please use your package manager to install it.'
+
+    'No user `nagios`. Add a user for nagios and make sure it is in the nagcmd group.'
+'Apache must also be in nagcmd.'</pre>
 </div>
-<p>If a message from the install script mentions you do not have wsgi installed, install mod_wsgi using yum or whatever your repo uses as an installer.</p>
 </div>
 <div class="section" id="flask-and-storm">
 <h2>Flask and Storm<a class="headerlink" href="#flask-and-storm" title="Permalink to this headline">¶</a></h2>
@@ -97,16 +114,12 @@ MOD_WSGI INSTALLED
 <p class="first admonition-title">Note</p>
 <p class="last">Both of these are inside the requirements.txt that the install script refers to so they should both be installed at this point, but just in case we will go over them and how to install them if, for some reason, they are missing.</p>
 </div>
-<p>NSTI uses Flask as a lightweight web applicatin framework and uses Werkzeug and Jinja2 for templating engines.  Flask is a great microframework that allows extentions to be added granting it access to form validation and database abstration.  You will need Flask so install it using pip or easy_install.</p>
-<p>Storm is a Python programming library for Object-relational mapping (ORM) between one or more SQL databases and Python objects.  This allows NSTI to make queries and demands off of the datasbases to be able to populate, collect, filter, etc. the traps in the database, but also how the traps are displayed or related.  If you see any errors about Storm missing (you definitely will if it is missing) then simply install</p>
+<p>NSTI uses Flask as a lightweight web applicatin framework and uses Werkzeug and Jinja2 for templating engines.  Flask is a great microframework that allows extentions to be added granting it access to form validation and database abstraction.  You will need Flask so install it using pip or easy_install.</p>
+<p>Storm is a Python programming library for Object-relational mapping (ORM) between one or more SQL databases and Python objects.  This allows NSTI to make queries and demands of the datasbases to be able to populate, collect, filter the traps in the database, but also how the traps are displayed.</p>
 </div>
 <div class="section" id="mysql-configuration">
 <h2>MySQL Configuration<a class="headerlink" href="#mysql-configuration" title="Permalink to this headline">¶</a></h2>
-<p>To run NSTI correctly it is important that you have your mysql set up correctly so NSTI can recieve data from the database.  The most common problem with NSTI not communicating properly with your mysql database is the root user password settings.  It is recommended that you set the password.</p>
-<p>Just like Flask and Storm, MySQL is in the requirements.txt file that the install script uses.  If it is missing be sure to install these packages:</p>
-<blockquote>
-mysql-server
-python-storm-mysql</blockquote>
+<p>To run NSTI correctly it is important that you have your mysql set up correctly so NSTI can recieve data from the database.  The most common problem with NSTI not communicating properly with your mysql database is the root user password settings.  It is recommended that you set the password if the install script failed to do so.</p>
 <p>The nsti.py file is located here:</p>
 <div class="highlight-python"><pre>/nsti/nsti/etc/nsti.py</pre>
 </div>
@@ -115,7 +128,8 @@ python-storm-mysql</blockquote>
 <blockquote>
 ERROR 1049 (42000): Unknown database &#8216;snmptt&#8217;
 Unable to add database schema. Does the snmptt exist?</blockquote>
-<p>This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to.</p>
+<p>This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to, create the root user and use password &#8216;nsti&#8217; to make sure it is working.</p>
+<p>After you verify everything is working with the database it is recommended that you change your password and update it in the configuration files.</p>
 </div>
 </div>
 
@@ -138,6 +152,9 @@ Unable to add database schema. Does the snmptt exist?</blockquote>
             <h4>Previous topic</h4>
             <p class="topless"><a href="introduction.html"
                                   title="previous chapter">Introduction</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="filters.html"
+                                  title="next chapter">Filters</a></p>
             <h3>This Page</h3>
             <ul class="this-page-menu">
               <li><a href="_sources/installation.txt"
@@ -166,6 +183,9 @@ Unable to add database schema. Does the snmptt exist?</blockquote>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="filters.html" title="Filters"
+             >next</a> |</li>
         <li class="right" >
           <a href="introduction.html" title="Introduction"
              >previous</a> |</li>

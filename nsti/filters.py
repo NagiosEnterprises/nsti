@@ -170,6 +170,8 @@ def add_active_filter():
 @app.route('/api/filter/read-active-filter')
 def read_active_filter():
     print session.get('active_filters')
+    #bug that stops the table from loading on the first request.  possibly
+    #from there being no active filters.
     json_result = {'filters': session.get('active_filters', [])}
     json_str = json.dumps(json_result)
 

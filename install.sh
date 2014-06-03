@@ -2,11 +2,13 @@
 
 PREREQS="mysql mysql-devel mysql-server httpd gcc wget make tar snmptt net-snmp net-snmp-utils mod_wsgi python-devel"
 DB_ROOT_PASS='nsti'
-LOG_FILE="install`date +%s`.log"
+LOG_FILE="install-`date +%s`.log"
+BASEPATH=$(dirname `readlink -f $0`)
 
 touch "$LOG_FILE"
 
 . install/libinstall.sh | tee --append "$LOG_FILE"
+. "$BASEPATH/nsti/etc/nsti.py"
 
 # Check to make sure the prereqs are met.
 . install/prereqs.sh | tee --append "$LOG_FILE"

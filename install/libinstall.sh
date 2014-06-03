@@ -13,7 +13,6 @@ is_installed () {
     return 0
 }
 
-BASEPATH=$(dirname `readlink -f $0`)
 
 # Adds specified user if it doesn't exist already
 add_user() {
@@ -54,5 +53,3 @@ add_to_groups() {
 		usermod -a -G "$group" "$user"
 	done
 }
-
-. "$BASEPATH/nsti/etc/nsti.py"

@@ -3,15 +3,35 @@ Installation
 
 NSTI performs well with and is designed to run on any Linux distribution.
 
+.. note ::
+
+   NSTI is designed to work under any environment, but the installer script
+   will only work with yum installer until cross platform support is added in
+   another version
+
+Installing NSTI Using Tarball
+-----------------------------
+If you want to install NSTI using a tarball use the URL below
+
+   http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz
+
+From the command line use wget to install
+.. code-block:: bash
+
+    cd /tmp
+    wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz
+    tar xf nsti-v3.0.tar.gz
+    cd nsti/
+    sh install.sh
 
 Installing NSTI Using Git Clone
 -------------------------------
-First you will need to clone the Git repo to retrieve NSTI.  Make sure you are in the directory location you want the clone to be placed in.  The main folder will be called 'nsti'.
+If you don't want to use a tarball you can download NSTI from github. First you will need to clone the Git repo to retrieve NSTI.  Make sure you are in the directory location you want the clone to be placed in.  The main folder will be called 'nsti'.
 
 Github clones:
-	* HTTPS clone <https://github.com/NagiosEnterprises/nsti.git>
-	* SSH Clone <git@github.com:NagiosEnterprises/nsti.git>
-	* Subversion Clone <https://github.com/NagiosEnterprises/nsti>
+	* HTTPS clone  https://github.com/NagiosEnterprises/nsti.git
+	* SSH Clone  git@github.com:NagiosEnterprises/nsti.git
+	* Subversion Clone  https://github.com/NagiosEnterprises/nsti
 
 To clone a repository with git run the following command in the directory you want nsti to be copied to:
 

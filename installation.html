@@ -86,6 +86,7 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#installing-nsti-using-tarball">Installing NSTI Using Tarball</a></li>
 <li><a class="reference internal" href="#installing-nsti-using-git-clone">Installing NSTI Using Git Clone</a></li>
 <li><a class="reference internal" href="#flask-and-storm">Flask and Storm</a></li>
 <li><a class="reference internal" href="#mysql-configuration">MySQL Configuration</a></li>
@@ -141,15 +142,35 @@
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>NSTI performs well with and is designed to run on any Linux distribution.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">NSTI is designed to work under any environment, but the installer script
+will only work with yum installer until cross platform support is added in
+another version</p>
+</div>
+<div class="section" id="installing-nsti-using-tarball">
+<h2>Installing NSTI Using Tarball<a class="headerlink" href="#installing-nsti-using-tarball" title="Permalink to this headline">¶</a></h2>
+<p>If you want to install NSTI using a tarball use the URL below</p>
+<blockquote>
+<div><a class="reference external" href="http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz">http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz</a></div></blockquote>
+<p>From the command line use wget to install
+.. code-block:: bash</p>
+<blockquote>
+<div>cd /tmp
+wget <a class="reference external" href="http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz">http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz</a>
+tar xf nsti-v3.0.tar.gz
+cd nsti/
+sh install.sh</div></blockquote>
+</div>
 <div class="section" id="installing-nsti-using-git-clone">
 <h2>Installing NSTI Using Git Clone<a class="headerlink" href="#installing-nsti-using-git-clone" title="Permalink to this headline">¶</a></h2>
-<p>First you will need to clone the Git repo to retrieve NSTI.  Make sure you are in the directory location you want the clone to be placed in.  The main folder will be called &#8216;nsti&#8217;.</p>
+<p>If you don&#8217;t want to use a tarball you can download NSTI from github. First you will need to clone the Git repo to retrieve NSTI.  Make sure you are in the directory location you want the clone to be placed in.  The main folder will be called &#8216;nsti&#8217;.</p>
 <dl class="docutils">
 <dt>Github clones:</dt>
 <dd><ul class="first last simple">
-<li>HTTPS clone &lt;<a class="reference external" href="https://github.com/NagiosEnterprises/nsti.git">https://github.com/NagiosEnterprises/nsti.git</a>&gt;</li>
-<li>SSH Clone &lt;<a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:NagiosEnterprises/nsti.git&gt;</li>
-<li>Subversion Clone &lt;<a class="reference external" href="https://github.com/NagiosEnterprises/nsti">https://github.com/NagiosEnterprises/nsti</a>&gt;</li>
+<li>HTTPS clone  <a class="reference external" href="https://github.com/NagiosEnterprises/nsti.git">https://github.com/NagiosEnterprises/nsti.git</a></li>
+<li>SSH Clone  <a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:NagiosEnterprises/nsti.git</li>
+<li>Subversion Clone  <a class="reference external" href="https://github.com/NagiosEnterprises/nsti">https://github.com/NagiosEnterprises/nsti</a></li>
 </ul>
 </dd>
 </dl>
@@ -192,10 +213,13 @@
 <p>If any of the packages failed to install you will see error outputs such as the following possible errors:</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p>&#8216;Cannot continue install until all of these prereqs are met.&#8217;</p>
-<p>&#8216;mod_wsgi is not installed in Apache. Please use your package manager to install it.&#8217;</p>
-<p>&#8216;No user <cite>nagios</cite>. Add a user for nagios and make sure it is in the nagcmd group.&#8217;</p>
-<p class="last">&#8216;Apache must also be in nagcmd.&#8217;</p>
+<div class="last line-block">
+<div class="line">&#8216;Cannot continue install until all of these prereqs are met.&#8217;</div>
+<div class="line">&#8216;mod_wsgi is not installed in Apache. Please use your package manager to install it.&#8217;</div>
+<div class="line"><br /></div>
+<div class="line">&#8216;No user <cite>nagios</cite>. Add a user for nagios and make sure it is in the nagcmd group.&#8217;</div>
+<div class="line">&#8216;Apache must also be in nagcmd.&#8217;</div>
+</div>
 </div>
 </div>
 <div class="section" id="flask-and-storm">

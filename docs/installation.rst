@@ -64,11 +64,11 @@ If any of the packages failed to install you will see error outputs such as the 
 
 .. warning ::
 
-	'Cannot continue install until all of these prereqs are met.'
+    'Cannot continue install until all of these prereqs are met.'
 
-	'mod_wsgi is not installed in Apache. Please use your package manager to install it.'
+    'mod_wsgi is not installed in Apache. Please use your package manager to install it.'
 
-	'No user `nagios`. Add a user for nagios and make sure it is in the nagcmd group.'
+    'No user `nagios`. Add a user for nagios and make sure it is in the nagcmd group.'
 
     'Apache must also be in nagcmd.'
 
@@ -105,9 +105,9 @@ Another point to be made is that you will need to verify that the database NSTI 
 
 .. warning ::
 
-	ERROR 1049 (42000): Unknown database 'snmptt'
+    ERROR 1049 (42000): Unknown database 'snmptt'
 
-	Unable to add database schema. Does the snmptt exist?
+    Unable to add database schema. Does the snmptt exist?
 
 
 This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to, create the root user and use password 'nsti' to make sure it is working.  The default database is Snmptt.

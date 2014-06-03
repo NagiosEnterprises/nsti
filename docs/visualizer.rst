@@ -23,6 +23,5 @@ Plans for updates to this feature are noted here, any suggestions and ideas woul
 
 .. note ::
 
-	Send suggestions of any kind to:
-
-	lgroschen@nagios.com
+    | Send suggestions of any kind to:
+    |    lgroschen@nagios.com

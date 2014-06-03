@@ -11,14 +11,14 @@ touch "$LOG_FILE"
 . "$BASEPATH/nsti/etc/nsti.py"
 
 # Check to make sure the prereqs are met.
-#. install/prereqs.sh | tee --append "$LOG_FILE"
+. install/prereqs.sh | tee --append "$LOG_FILE"
 # Check to make sure Python is of proper version
-#. install/pythonmodules.sh | tee --append "$LOG_FILE"
+. install/pythonmodules.sh | tee --append "$LOG_FILE"
 # Adding the database
 . install/database.sh | tee --append "$LOG_FILE"
 # Edit the SNMPTT defaults
-#. install/snmptt.sh | tee --append "$LOG_FILE"
+. install/snmptt.sh | tee --append "$LOG_FILE"
 # Adding the apache configuration
-#. install/apacheconfig.sh | tee --append "$LOG_FILE"
+. install/apacheconfig.sh | tee --append "$LOG_FILE"
 # Moving the directory structure
-#. install/movedirectory.sh | tee --append "$LOG_FILE"
+. install/movedirectory.sh | tee --append "$LOG_FILE"

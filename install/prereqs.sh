@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PREREQS='mysql httpd gcc wget make tar'
+PREREQS='mysql httpd gcc wget make tar snmptt net-snmp net-snmp-utils'
 
 #install database prereqs- only supporting yum packager FOR NOW
 yum install -y mysql mysql-devel mysql-server httpd

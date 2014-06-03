@@ -1,6 +1,7 @@
 #!/bin/sh
 
 PREREQS="mysql mysql-devel mysql-server httpd gcc wget make tar snmptt net-snmp net-snmp-utils mod_wsgi python-devel"
+DB_ROOT_PASS='nsti'
 
 . install/libinstall.sh
 

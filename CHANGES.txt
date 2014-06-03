@@ -1,0 +1,15 @@
+3.0   06/03/14
+=====================
+- Front end overhaul -LG
+- Add new ORM, reformat database for easier API access -NS
+- Add install script, based on yum installer -NS, LG
+- Install script add prereqs, mysql user/pass, restart services and error outputs -LG
+- Add detailed trap view from UI -NS, LG
+- Add trap filtering -LG
+- Add trap search bar -LG
+- Add trap data visualizer -LG
+- Add sphinx documentation page -LG
+- Add twitter bootstrap to main UI and to sphinx documentation -LG
+- Add filters from main page -LG
+- Add API exclusive access for all traps and filters using API landing URLs -NS
+- Bug fixes for new backend -NS

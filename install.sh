@@ -21,6 +21,6 @@ touch "$LOG_FILE"
 # Adding the apache configuration
 . install/apacheconfig.sh | tee --append "$LOG_FILE"
 # Adding rule to the firewall
-. install/firewall.sh | tree --append "$LOG_FILE"
+. install/firewall.sh | tee --append "$LOG_FILE"
 # Moving the directory structure
 . install/movedirectory.sh | tee --append "$LOG_FILE"

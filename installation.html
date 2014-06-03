@@ -71,6 +71,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualizer.html">SNMP Trap Data Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backendaccess.html">NSTI Backend</a></li>
 </ul>
 </ul>
 </li>
@@ -146,12 +147,15 @@
 <dl class="docutils">
 <dt>Github clones:</dt>
 <dd><ul class="first last simple">
-<li>&#8216;HTTPS clone &lt;<a class="reference external" href="https://github.com/NagiosEnterprises/nsti.git">https://github.com/NagiosEnterprises/nsti.git</a>&gt;&#8217;</li>
-<li>&#8216;SSH Clone &lt;<a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:NagiosEnterprises/nsti.git&gt;&#8217;</li>
-<li>&#8216;Subversion Clone &lt;<a class="reference external" href="https://github.com/NagiosEnterprises/nsti">https://github.com/NagiosEnterprises/nsti</a>&gt;&#8217;</li>
+<li>HTTPS clone &lt;<a class="reference external" href="https://github.com/NagiosEnterprises/nsti.git">https://github.com/NagiosEnterprises/nsti.git</a>&gt;</li>
+<li>SSH Clone &lt;<a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:NagiosEnterprises/nsti.git&gt;</li>
+<li>Subversion Clone &lt;<a class="reference external" href="https://github.com/NagiosEnterprises/nsti">https://github.com/NagiosEnterprises/nsti</a>&gt;</li>
 </ul>
 </dd>
 </dl>
+<p>To clone a repository with git run the following command in the directory you want nsti to be copied to:</p>
+<blockquote>
+<div>git clone <a class="reference external" href="https://github.com/NagiosEnterprises/nsti.git">https://github.com/NagiosEnterprises/nsti.git</a></div></blockquote>
 <p>Now that you have the clone go into the nsti folder,</p>
 <blockquote>
 <div>cd /nsti</div></blockquote>
@@ -167,38 +171,33 @@
 </ul>
 <p>Then restart mysqld, set mysql user and password and set mysqld and apache to start on startup</p>
 <blockquote>
-<div><p>service mysqld start
-/usr/bin/mysqladmin -u root password &#8216;nsti&#8217;
-service mysqld restart</p>
-<p>chkconfig mysqld on
-chkconfig httpd on</p>
+<div><p>service mysqld start</p>
+<p>/usr/bin/mysqladmin -u root password &#8216;nsti&#8217;</p>
+<p>service mysqld restart</p>
+<p>chkconfig mysqld on</p>
+<p>chkconfig httpd on</p>
 </div></blockquote>
-<p>Now continues with prerequisite installation</p>
-<ul>
-<li><p class="first">gcc</p>
-</li>
-<li><p class="first">wget</p>
-</li>
-<li><p class="first">make</p>
-</li>
-<li><p class="first">tar</p>
-</li>
-<li><p class="first">mod_wsgi</p>
-</li>
-<li><p class="first">python-devel</p>
-<blockquote>
-<div><p>curl <a class="reference external" href="https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py">https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py</a> | python</p>
-</div></blockquote>
-</li>
+<p>Now the installer continues with prerequisite installation:</p>
+<ul class="simple">
+<li>gcc</li>
+<li>wget</li>
+<li>make</li>
+<li>tar</li>
+<li>mod_wsgi</li>
+<li>python-devel</li>
 </ul>
-<p>If any of the packages failed to install you will see error outputs such as the following:</p>
-<div class="highlight-python"><div class="highlight"><pre>    &#39;Cannot continue install until all of these prereqs are met.&#39;
-
-    &#39;mod_wsgi is not installed in Apache. Please use your package manager to install it.&#39;
-
-    &#39;No user `nagios`. Add a user for nagios and make sure it is in the nagcmd group.&#39;
-&#39;Apache must also be in nagcmd.&#39;
-</pre></div>
+<p>Then the installer will run the get-pip python script:</p>
+<blockquote>
+<div>curl <a class="reference external" href="https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py">https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py</a> | python</div></blockquote>
+<p>If any of the packages failed to install you will see error outputs such as the following possible errors:</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<blockquote>
+<div><p>&#8216;Cannot continue install until all of these prereqs are met.&#8217;</p>
+<p>&#8216;mod_wsgi is not installed in Apache. Please use your package manager to install it.&#8217;</p>
+<p>&#8216;No user <cite>nagios</cite>. Add a user for nagios and make sure it is in the nagcmd group.&#8217;</p>
+</div></blockquote>
+<p class="last">&#8216;Apache must also be in nagcmd.&#8217;</p>
 </div>
 </div>
 <div class="section" id="flask-and-storm">
@@ -208,22 +207,27 @@ chkconfig httpd on</p>
 <p class="last">Both of these are inside the requirements.txt that the install script refers to so they should both be installed at this point, but just in case we will go over them and how to install them if, for some reason, they are missing.</p>
 </div>
 <p>NSTI uses Flask as a lightweight web applicatin framework and uses Werkzeug and Jinja2 for templating engines.  Flask is a great microframework that allows extentions to be added granting it access to form validation and database abstraction.  You will need Flask so install it using pip or easy_install.</p>
-<p>Storm is a Python programming library for Object-relational mapping (ORM) between one or more SQL databases and Python objects.  This allows NSTI to make queries and demands of the datasbases to be able to populate, collect, filter the traps in the database, but also how the traps are displayed.</p>
+<p>Storm is a Python programming library for Object-Relational Mapping (ORM) between one or more SQL databases and Python objects.  This allows NSTI to make queries and demands of the datasbase to be able to populate, collect and filter the traps in the database, but also how the traps are displayed in the UI.</p>
 </div>
 <div class="section" id="mysql-configuration">
 <h2>MySQL Configuration<a class="headerlink" href="#mysql-configuration" title="Permalink to this headline">¶</a></h2>
-<p>To run NSTI correctly it is important that you have your mysql set up correctly so NSTI can recieve data from the database.  The most common problem with NSTI not communicating properly with your mysql database is the root user password settings.  It is recommended that you set the password if the install script failed to do so.</p>
+<p>To run NSTI correctly it is important that you have your mysql set up correctly so NSTI can read and write data from the database.  The most common problem with NSTI not communicating properly with your mysql database is the root user password settings.  It is recommended that you set the password if the install script failed to do so.</p>
 <p>The nsti.py file is located here:</p>
 <div class="highlight-python"><div class="highlight"><pre>/nsti/nsti/etc/nsti.py
 </pre></div>
 </div>
 <p>This is where you will set your database type, host, name, user and password.  To test if you succesfully configured your database use the runserver.py in the /nsti directory.  It will output any connection errors and you will be able to adjust settings accordingly.</p>
 <p>Another point to be made is that you will need to verify that the database NSTI is writing to was created.  If it wasn&#8217;t you will recieve similar errors to the following:</p>
-<blockquote>
-<div>ERROR 1049 (42000): Unknown database &#8216;snmptt&#8217;
-Unable to add database schema. Does the snmptt exist?</div></blockquote>
-<p>This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to, create the root user and use password &#8216;nsti&#8217; to make sure it is working.</p>
-<p>After you verify everything is working with the database it is recommended that you change your password and update it in the configuration files.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>ERROR 1049 (42000): Unknown database &#8216;snmptt&#8217;</p>
+<p class="last">Unable to add database schema. Does the snmptt exist?</p>
+</div>
+<p>This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to, create the root user and use password &#8216;nsti&#8217; to make sure it is working.  The default database is Snmptt.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">After you verify everything is working with the database it is recommended that you change your password and update it in the configuration files.</p>
+</div>
 </div>
 </div>
 

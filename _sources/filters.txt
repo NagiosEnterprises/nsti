@@ -1,7 +1,7 @@
 Filters
 ========
 
-One of the most asked for features in NSTI and even any SNMP handling is Filters.  Check here on how to use them in the best way.
+One of the most asked for features in NSTI and any other SNMP user interface is being able to filter the SNMP traps.  Learn how to manipulate filters in NSTI using this page.
 
 
 Filtering SNMP traps with NSTI
@@ -19,21 +19,22 @@ Here is the Filter page where you can create, edit and delete filters:
 Adding, Editing and Deleting
 -----------------------------
 
-This page is designed to give you full control of your filters and to make it much faster.  Here is and example of a new filter creation window.  You can select the item you want to be filtered, the comparison and the value to filter against:
+This page is designed to give you full control of your filters and to make creating them much faster.  Here is an example of a new filter creation window.  You can select the item you want to be filtered, the comparison to be made and the value to filter against:
 
 .. image:: filteraddex.png
 	:align: center
 
+.. note::
 
-To edit an existing filter all you have to do is select a single filters' checkbox and click the pen icon.  This will allow you to change anything in the filter other than the title.
+	To edit an existing filter all you have to do is select a single filters' checkbox and click the pen icon.  This will allow you to change anything in the filter other than the title.
 
-You can also add new filters from the traplist where they are applied:
+
+You can also add new filters from the main, or traplist, page where they are applied:
 
 .. image:: trapFilterSelect.png
 	:align: left
 
 Just click the plus sign to add a new filter and you will see the exact same window that you use to add a filter from the filter page.  Once you select add filter you will be able to choose it from the dropdown menu.
-
 
 
 Applying Filters to the Traplist
@@ -48,5 +49,6 @@ Once you have your filters made navigate back to the traplist page.  Now all you
 | 	Hostname 	Contains	.41
 |	Severity	Contains	critical
 
+.. note ::
 
-If you have multiple filters then you can apply them on top of each other to get a more specific trap table.  There is no limit to how many filters you can apply at one time, but you can always create a filter with multiple specifications.
+	If you have multiple filters then you can apply them on top of each other to get a more specific trap table.  There is no limit to how many filters you can apply at one time, but you can always create a filter with multiple specifications.

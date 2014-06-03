@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualizer.html">SNMP Trap Data Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backendaccess.html">NSTI Backend</a></li>
 </ul>
 </ul>
 </li>
@@ -147,7 +148,7 @@
 <dd>Simple Network Management Protocol (SNMP)</dd>
 </dl>
 <p>This is a protocol used in network management to collect information and to configure all varieties of network devices such as servers, routers, switches and printers on an Internet Protocol (IP) network.  SNMP creates packets of data called traps, which NSTI collects and displays in a user friendly method.  It also allows the user to interact with the traps they recieve in a way that wouldn&#8217;t normally be possible other than reading the trap data.</p>
-<p>Here is an example of the main page view with traps in main trap table:</p>
+<p>Here is an example of the main page view with traps in the main trap table:</p>
 <img alt="_images/nstimain.png" class="align-center" src="_images/nstimain.png" />
 <p><em>In this example you can see every recieved trap and apply the filters you created to the table</em></p>
 </div>
@@ -174,12 +175,12 @@
 <dd><div class="first last line-block">
 <div class="line">Trap OID   is exactly                 1.3.6.1.4.1.2681.1.2.102</div>
 <div class="line">Date       is greater than            01/01/2014</div>
-<div class="line">Category   contains                           Status Event</div>
+<div class="line">Category   contains                   Status Event</div>
 </div>
 </dd>
 </dl>
-<p>Using filters in this manner will make sifting through traps a lot more convenient especially when you are getting a large number of traps on a large system.  The search bar does works almost the same as filters but is a quick way to search for what you are looking for.</p>
-<p>If you use the Search on the traplist it will show any of the matching keys that matcht the query. For example if you search for &#8216;.41&#8217; it will return anything that matches the query in all of the Trap columns including OID and Hostname.</p>
+<p>Using filters in this manner will make sifting through traps a lot more convenient especially when you are getting a large number of traps on a large system.  The search bar works almost the same as filters but is a quick way to search for what you are looking for.</p>
+<p>If you use the search function on the traplist it will show any of the matching keys that match the query. For example if you search for &#8216;.41&#8217; it will return anything that matches the query in all of the trap table columns including OID and Hostname.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Find out more about NSTI and naviagte through this documentation by using the index or by using the search feature.</p>

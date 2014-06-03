@@ -71,6 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualizer.html">SNMP Trap Data Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backendaccess.html">NSTI Backend</a></li>
 </ul>
 </ul>
 </li>
@@ -139,7 +140,7 @@
       
   <div class="section" id="filters">
 <h1>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h1>
-<p>One of the most asked for features in NSTI and even any SNMP handling is Filters.  Check here on how to use them in the best way.</p>
+<p>One of the most asked for features in NSTI and any other SNMP user interface is being able to filter the SNMP traps.  Learn how to manipulate filters in NSTI using this page.</p>
 <div class="section" id="filtering-snmp-traps-with-nsti">
 <h2>Filtering SNMP traps with NSTI<a class="headerlink" href="#filtering-snmp-traps-with-nsti" title="Permalink to this headline">¶</a></h2>
 <p>The biggest addition that was made to NSTI 3.0 is that you can now create filters than can be applied to the main traplist.  This allows you to check specific columns and values to be able to understand the SNMP data you have recieved.</p>
@@ -148,10 +149,13 @@
 </div>
 <div class="section" id="adding-editing-and-deleting">
 <h2>Adding, Editing and Deleting<a class="headerlink" href="#adding-editing-and-deleting" title="Permalink to this headline">¶</a></h2>
-<p>This page is designed to give you full control of your filters and to make it much faster.  Here is and example of a new filter creation window.  You can select the item you want to be filtered, the comparison and the value to filter against:</p>
+<p>This page is designed to give you full control of your filters and to make creating them much faster.  Here is an example of a new filter creation window.  You can select the item you want to be filtered, the comparison to be made and the value to filter against:</p>
 <img alt="_images/filteraddex.png" class="align-center" src="_images/filteraddex.png" />
-<p>To edit an existing filter all you have to do is select a single filters&#8217; checkbox and click the pen icon.  This will allow you to change anything in the filter other than the title.</p>
-<p>You can also add new filters from the traplist where they are applied:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To edit an existing filter all you have to do is select a single filters&#8217; checkbox and click the pen icon.  This will allow you to change anything in the filter other than the title.</p>
+</div>
+<p>You can also add new filters from the main, or traplist, page where they are applied:</p>
 <img alt="_images/trapFilterSelect.png" class="align-left" src="_images/trapFilterSelect.png" />
 <p>Just click the plus sign to add a new filter and you will see the exact same window that you use to add a filter from the filter page.  Once you select add filter you will be able to choose it from the dropdown menu.</p>
 </div>
@@ -166,7 +170,10 @@
 <div class="line">Severity        Contains        critical</div>
 </div>
 </div>
-<p>If you have multiple filters then you can apply them on top of each other to get a more specific trap table.  There is no limit to how many filters you can apply at one time, but you can always create a filter with multiple specifications.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you have multiple filters then you can apply them on top of each other to get a more specific trap table.  There is no limit to how many filters you can apply at one time, but you can always create a filter with multiple specifications.</p>
+</div>
 </div>
 </div>
 

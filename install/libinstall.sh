@@ -55,4 +55,4 @@ add_to_groups() {
 	done
 }
 
-. "$BASEPATH/../nsti/etc/nsti.py"
+. "$BASEPATH/nsti/etc/nsti.py"

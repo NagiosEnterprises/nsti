@@ -1,9 +1,5 @@
 #!/bin/bash
 
-. ./libinstall.sh
-
-PREREQS="mysql mysql-devel mysql-server httpd gcc wget make tar snmptt net-snmp net-snmp-utils mod_wsgi python-devel"
-
 #install database prereqs- only supporting yum packager FOR NOW
 yum install -y $PREREQS
 

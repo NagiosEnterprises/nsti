@@ -64,13 +64,11 @@ If any of the packages failed to install you will see error outputs such as the 
 
 .. warning ::
 
-    'Cannot continue install until all of these prereqs are met.'
-
-    'mod_wsgi is not installed in Apache. Please use your package manager to install it.'
-
-    'No user `nagios`. Add a user for nagios and make sure it is in the nagcmd group.'
-
-    'Apache must also be in nagcmd.'
+    | 'Cannot continue install until all of these prereqs are met.'
+    | 'mod_wsgi is not installed in Apache. Please use your package manager to install it.'
+    |
+    | 'No user `nagios`. Add a user for nagios and make sure it is in the nagcmd group.'
+    | 'Apache must also be in nagcmd.'
 
 
 Flask and Storm

@@ -1,9 +1,9 @@
 #!/bin/sh
 
-PREREQS='mysql httpd gcc wget make tar snmptt net-snmp net-snmp-utils'
+PREREQS="mysql mysql-devel mysql-server httpd gcc wget make tar snmptt net-snmp net-snmp-utils 'perl(DBD::mysql)' mod_wsgi python-devel"
 
 #install database prereqs- only supporting yum packager FOR NOW
-yum install -y mysql mysql-devel mysql-server httpd
+yum install -y $PREREQS
 
 #make sure our services are running
 service mysqld start
@@ -15,9 +15,6 @@ service mysqld restart
 #set to start on system startup
 chkconfig mysqld on
 chkconfig httpd on
-
-#install more prereqs
-yum install -y gcc wget make tar mod_wsgi python-devel
 
 #grab pip
 curl https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py | python

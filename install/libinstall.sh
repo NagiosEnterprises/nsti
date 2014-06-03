@@ -2,10 +2,9 @@
 
 # Checks if NSTI has been installed
 is_installed () {
-    local binary="$1"
     for file in $@;
     do
-        if ! which "$file" 2> /dev/null;
+        if ! rpm -qa "$file" 2> /dev/null;
         then
             echo "$file is not installed. You need to install using your distro's package manager."
             return 1
@@ -56,4 +55,4 @@ add_to_groups() {
 	done
 }
 
-. "$BASEPATH/nsti/etc/nsti.py"
+. "$BASEPATH/../nsti/etc/nsti.py"

@@ -14,7 +14,8 @@ Here is an example of the main page view with traps in the main trap table:
 
 .. image:: nstimain.png
 	:align: center
-        *In this example you can see every recieved trap and apply the filters you created to the table*
+
+*In this example you can see every recieved trap and apply the filters you created to the table*
 
 Why use NSTI?
 -------------

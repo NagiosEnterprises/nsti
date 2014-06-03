@@ -7,7 +7,8 @@ Here is an example of the visualizer showing Severity:
 
 .. image:: SNMPvisualizer.png
 	:align: center
-	*Visualizer will access all of the traps in your database and draw a bar and pie graph based on your traplist.*
+
+*Visualizer will access all of the traps in your database and draw a bar and pie graph based on your traplist.*
 
 
 The Future of the Visualizer 

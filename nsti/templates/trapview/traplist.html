@@ -298,8 +298,8 @@ function load_header() {
     switch(TABLE) {
         case 'SnmpttUnknown':
             $('<th>', {text: 'ID', class: 'text-center', href: "javascript:SortTable(0, 'N');"}).appendTo(heading);
-            $('<th>', {html: '<input type="checkbox" id="toggle">', class: 'text-center'}).appendTo(heading);
-            $('<th>', {text: 'Date Received', class: 'text-center', href: "javascript:SortTable(2, 'D', 'mdy');"}).appendTo(heading);
+            $('<th>', {html: '<input type="checkbox" id="toggle">', style: 'width:47px', class: 'text-center'}).appendTo(heading);
+            $('<th>', {text: 'Date Received', class: 'text-center', href: "javascript:SortTable(2, 'D', 'mdy');", style: 'width:135px'}).appendTo(heading);
             $('<th>', {text: 'Trap OID', class: 'text-center', href: "javascript:SortTable(3, 'T');"}).appendTo(heading);
             $('<th>', {text: 'Hostname', class: 'text-center', href: "javascript:SortTable(4, 'T');"}).appendTo(heading);
             $('<th>', {text: 'Uptime', class: 'text-center', href: "javascript:SortTable(5, 'N');"}).appendTo(heading);
@@ -309,8 +309,8 @@ function load_header() {
         case 'SnmpttArchive':
         default:
             $('<th>', {text: 'ID', class: 'text-center', href: "javascript:SortTable(0, 'N');"}).appendTo(heading);
-            $('<th>', {html: '<input type="checkbox" id="toggle">'}).appendTo(heading);
-            $('<th>', {text: 'Date Received', class: 'text-center', href: "javascript:SortTable(2, 'D', 'mdy');"}).appendTo(heading);
+            $('<th>', {html: '<input type="checkbox" id="toggle">', style: 'width:47px', class: 'text-center'}).appendTo(heading);
+            $('<th >', {text: 'Date Received', class: 'text-center', href: "javascript:SortTable(2, 'D', 'mdy');", style: 'width:135px'}).appendTo(heading);
             $('<th>', {text: 'Trap OID', class: 'text-center', href: "javascript:SortTable(3, 'T');"}).appendTo(heading);
             $('<th>', {text: 'Hostname', class: 'text-center', href: "javascript:SortTable(4, 'T');"}).appendTo(heading);
             $('<th>', {text: 'Severity', class: 'text-center', href: "javascript:SortTable(5, 'T');"}).appendTo(heading);
@@ -890,6 +890,7 @@ $(document).ready(function() {
         $('#insert-div').empty();
         $('#filter-name').val("");
         add_new_atom();
+        $('select[name="column_name"]').trigger('change');
         $('#add-filter-modal').modal('show');
     });
 
@@ -899,6 +900,7 @@ $(document).ready(function() {
 
     $('#new-atom-button').click(function() {
         add_new_atom();
+        $('select[name="column_name"]').trigger('change');
     });
 
     //apply filters to traplist page and make tags with 'Apply' button
@@ -939,6 +941,16 @@ $(document).ready(function() {
 
     $('#apply-inspect').click(function() {
         draw_charts();
+    });
+
+    $('#atom-home').on('change', 'select[name="column_name"]', function() {
+        var column_name = $(this).val();
+        console.log(column_name);
+        if (column_name == 'timewritten') {
+            $(this).closest('.row').find('input[name="val"]').datetimepicker({dateFormat: 'mm-dd-yy', timeFormat: 'HH:mm:ss'});
+        } else {
+            $(this).closest('.row').find('input[name="val"]').unbind().removeClass('hasDatepicker');
+        }
     });
 
     $('input[name=table]').change(function() {

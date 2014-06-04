@@ -3,6 +3,7 @@
 <html lang='en'>
     <head>
         <link rel='stylesheet' href='{{ static("css/bootstrap.css") }}' />
+        <link rel='stylesheet' href='{{ static("css/jquery-ui-1.10.4.min.css") }}' />
         <link rel='stylesheet' href='{{ static("css/nsti.css") }}' />
         <title>{{ title or 'NSTI' }}</title>
         <meta charset='utf-8'>
@@ -13,6 +14,8 @@
         <script src='{{ static("js/bootstrap.min.js") }}'></script>
         <script src='{{ static("js/nsti.js") }}'></script>
         <script src='{{ static("js/highcharts.js") }}'></script>
+        <script src='{{ static("js/jquery-ui-1.10.4.min.js") }}'></script>
+        <script src='{{ static("js/jquery-ui-timepicker-addon.js") }}'></script>
         <script>
         var BASE_URL = '{{ request.url_root }}';
         var TRUNCATE = {{ session.TRUNCATE or 100 }};

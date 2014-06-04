@@ -88,8 +88,12 @@
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#installing-nsti-using-tarball">Installing NSTI Using Tarball</a></li>
 <li><a class="reference internal" href="#installing-nsti-using-git-clone">Installing NSTI Using Git Clone</a></li>
+<li><a class="reference internal" href="#nsti-dependency-notes">NSTI Dependency Notes</a></li>
+<li><a class="reference internal" href="#possible-nsti-install-gotcha-s">Possible NSTI Install Gotcha&#8217;s</a><ul>
 <li><a class="reference internal" href="#flask-and-storm">Flask and Storm</a></li>
 <li><a class="reference internal" href="#mysql-configuration">MySQL Configuration</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -145,71 +149,77 @@
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">NSTI is designed to work under any environment, but the installer script
-will only work with yum installer until cross platform support is added in
-another version</p>
+will only work with the yum installer until cross platform support is added in
+another version.</p>
 </div>
 <div class="section" id="installing-nsti-using-tarball">
 <h2>Installing NSTI Using Tarball<a class="headerlink" href="#installing-nsti-using-tarball" title="Permalink to this headline">¶</a></h2>
 <p>If you want to install NSTI using a tarball use the URL below</p>
 <blockquote>
 <div><a class="reference external" href="http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz">http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz</a></div></blockquote>
-<p>From the command line use wget to install
-.. code-block:: bash</p>
-<blockquote>
-<div>cd /tmp
-wget <a class="reference external" href="http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz">http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz</a>
+<p>From the command line use wget to install</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> /tmp
+wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz
 tar xf nsti-v3.0.tar.gz
-cd nsti/
-sh install.sh</div></blockquote>
+<span class="nb">cd </span>nsti/
+sh install.sh
+</pre></div>
+</div>
+<p>Now NSTI should be installed, to verify navigate to this address:</p>
+<div class="highlight-python"><div class="highlight"><pre>http://&lt;NSTI Server IP&gt;/nsti
+</pre></div>
+</div>
 </div>
 <div class="section" id="installing-nsti-using-git-clone">
 <h2>Installing NSTI Using Git Clone<a class="headerlink" href="#installing-nsti-using-git-clone" title="Permalink to this headline">¶</a></h2>
-<p>If you don&#8217;t want to use a tarball you can download NSTI from github. First you will need to clone the Git repo to retrieve NSTI.  Make sure you are in the directory location you want the clone to be placed in.  The main folder will be called &#8216;nsti&#8217;.</p>
-<dl class="docutils">
-<dt>Github clones:</dt>
-<dd><ul class="first last simple">
-<li>HTTPS clone  <a class="reference external" href="https://github.com/NagiosEnterprises/nsti.git">https://github.com/NagiosEnterprises/nsti.git</a></li>
-<li>SSH Clone  <a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:NagiosEnterprises/nsti.git</li>
-<li>Subversion Clone  <a class="reference external" href="https://github.com/NagiosEnterprises/nsti">https://github.com/NagiosEnterprises/nsti</a></li>
-</ul>
-</dd>
-</dl>
+<p>If you don&#8217;t want to use a tarball you can download NSTI from github using git. First you will clone the Git repo to retrieve NSTI.
+The main folder will be called &#8216;nsti&#8217;.</p>
 <p>To clone a repository with git run the following command in the directory you want nsti to be copied to:</p>
-<blockquote>
-<div>git clone <a class="reference external" href="https://github.com/NagiosEnterprises/nsti.git">https://github.com/NagiosEnterprises/nsti.git</a></div></blockquote>
-<p>Now that you have the clone go into the nsti folder,</p>
-<blockquote>
-<div>cd /nsti</div></blockquote>
-<p>and run,</p>
-<blockquote>
-<div>sh install.sh</div></blockquote>
-<p>Once you have a clone of NSTI on your local machine and run the install script there are some prerequisits that the installer will run using the yum installer.  Support for the other repos will be added in another version.  If you have another repo that does not use yum just install the following packages manually with the installer of your choice:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> /tmp
+git clone https://github.com/NagiosEnterprises/nsti.git
+<span class="nb">cd </span>nsti/
+git checkout v3.0^
+sh install.sh
+</pre></div>
+</div>
+<p>Now NSTI should be installed, to verify navigate to this address:</p>
+<div class="highlight-python"><div class="highlight"><pre>http://&lt;NSTI Server IP&gt;/nsti
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the previous install options happen to fail&#8211;the best way to
+troubleshoot is to consult the install log that is generated in the install
+directory.</p>
+</div>
+</div>
+<div class="section" id="nsti-dependency-notes">
+<h2>NSTI Dependency Notes<a class="headerlink" href="#nsti-dependency-notes" title="Permalink to this headline">¶</a></h2>
+<p>If you wish to install NSTI manually the following is a list of components
+that you will need to run NSTI:</p>
 <ul class="simple">
 <li>mysql</li>
 <li>mysql-devel</li>
 <li>mysql-server</li>
 <li>httpd</li>
-</ul>
-<p>Then restart mysqld, set mysql user and password and set mysqld and apache to start on startup</p>
-<blockquote>
-<div><p>service mysqld start</p>
-<p>/usr/bin/mysqladmin -u root password &#8216;nsti&#8217;</p>
-<p>service mysqld restart</p>
-<p>chkconfig mysqld on</p>
-<p>chkconfig httpd on</p>
-</div></blockquote>
-<p>Now the installer continues with prerequisite installation:</p>
-<ul class="simple">
 <li>gcc</li>
 <li>wget</li>
 <li>make</li>
 <li>tar</li>
 <li>mod_wsgi</li>
-<li>python-devel</li>
+<li>snmptt</li>
+<li>net-snmp</li>
+<li>python</li>
 </ul>
-<p>Then the installer will run the get-pip python script:</p>
-<blockquote>
-<div>curl <a class="reference external" href="https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py">https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py</a> | python</div></blockquote>
+<p>In addition to the above, there are python modules that are required.  These
+modules are also included in nsti/install/requirements.txt.  These are easily
+managed if you install using pip:</p>
+<div class="highlight-bash"><div class="highlight"><pre>curl https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py | python
+</pre></div>
+</div>
+</div>
+<div class="section" id="possible-nsti-install-gotcha-s">
+<h2>Possible NSTI Install Gotcha&#8217;s<a class="headerlink" href="#possible-nsti-install-gotcha-s" title="Permalink to this headline">¶</a></h2>
 <p>If any of the packages failed to install you will see error outputs such as the following possible errors:</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -221,9 +231,8 @@ sh install.sh</div></blockquote>
 <div class="line">&#8216;Apache must also be in nagcmd.&#8217;</div>
 </div>
 </div>
-</div>
 <div class="section" id="flask-and-storm">
-<h2>Flask and Storm<a class="headerlink" href="#flask-and-storm" title="Permalink to this headline">¶</a></h2>
+<h3>Flask and Storm<a class="headerlink" href="#flask-and-storm" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Both of these are inside the requirements.txt that the install script refers to so they should both be installed at this point, but just in case we will go over them and how to install them if, for some reason, they are missing.</p>
@@ -232,13 +241,19 @@ sh install.sh</div></blockquote>
 <p>Storm is a Python programming library for Object-Relational Mapping (ORM) between one or more SQL databases and Python objects.  This allows NSTI to make queries and demands of the datasbase to be able to populate, collect and filter the traps in the database, but also how the traps are displayed in the UI.</p>
 </div>
 <div class="section" id="mysql-configuration">
-<h2>MySQL Configuration<a class="headerlink" href="#mysql-configuration" title="Permalink to this headline">¶</a></h2>
+<h3>MySQL Configuration<a class="headerlink" href="#mysql-configuration" title="Permalink to this headline">¶</a></h3>
+<div class="admonition danger">
+<p class="first admonition-title">Danger</p>
+<p class="last">If the installer ran successfully the first time the following section does
+not apply.  It is only relevent if any errors occured or if you are
+installing NSTI manually.</p>
+</div>
 <p>To run NSTI correctly it is important that you have your mysql set up correctly so NSTI can read and write data from the database.  The most common problem with NSTI not communicating properly with your mysql database is the root user password settings.  It is recommended that you set the password if the install script failed to do so.</p>
 <p>The nsti.py file is located here:</p>
-<div class="highlight-python"><div class="highlight"><pre>/nsti/nsti/etc/nsti.py
+<div class="highlight-python"><div class="highlight"><pre><span class="n">nsti</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nsti</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
-<p>This is where you will set your database type, host, name, user and password.  To test if you succesfully configured your database use the runserver.py in the /nsti directory.  It will output any connection errors and you will be able to adjust settings accordingly.</p>
+<p>This is where you will set your database type, host, name, user and password.  To test if you succesfully configured your database use the runserver.py in the nsti directory.  It will output any connection errors and you will be able to adjust settings accordingly.</p>
 <p>Another point to be made is that you will need to verify that the database NSTI is writing to was created.  If it wasn&#8217;t you will recieve similar errors to the following:</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -249,6 +264,7 @@ sh install.sh</div></blockquote>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">After you verify everything is working with the database it is recommended that you change your password and update it in the configuration files.</p>
+</div>
 </div>
 </div>
 </div>

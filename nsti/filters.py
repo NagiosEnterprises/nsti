@@ -9,6 +9,38 @@ try:
 except ImportError:
     import simplejson as json
 
+
+def get_active_filters_as_queryable(all_filters, active_filters):
+    """Used to get the SQL type information out of the filters.
+
+    """
+    additional_args = []
+    for filter_name in active_filters:
+        try:
+            f = all_filters[filter_name]
+        except KeyError:
+            continue
+        for a in f['actions']:
+            instruction = str(a['column_name'] + a['comparison'])
+            value = a['value']
+            additional_args.append((instruction, value))
+    return additional_args
+
+
+def get_requested_filters():
+    if request.args.get('use_session_filters', False):
+        session_filters = session.get('active_filters', [])
+    else:
+        session_filters = []
+    param_filters = request.args.getlist('filters')
+    requested_filters = session_filters + param_filters
+
+    all_filters = read_filter_raw()
+    queryable_filter = get_active_filters_as_queryable(all_filters, requested_filters)
+
+    return queryable_filter
+
+
 @app.route('/filterlist')
 def filter():
     return render_template('/filter/filterlist.html')
@@ -95,6 +127,7 @@ def delete_filter():
 
     json_str = json.dumps(json_result)
     return Response(response=json_str, status=200, mimetype='application/json')
+
 
 def read_filter_raw():
     filt = {}

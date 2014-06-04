@@ -7,6 +7,8 @@ from flask import session
 
 from storm.tracer import debug
 import storm.store
+import storm.expr
+
 
 debug(False)  # The flag enables or disables statement logging
 
@@ -114,13 +116,41 @@ def encode_storm_result_set(storm_obj):
         for attr in info:
             if attr == 'timewritten':
                 try:
-                    trap[attr] = getattr(item, attr).strftime('%x %X')
+                    trap[attr] = getattr(item, attr).strftime('%m-%d-%Y %H:%M:%S')
                 except:
                     trap[attr] = getattr(item, attr)
             else:
                 trap[attr] = getattr(item, attr)
         result.append(trap)
     return result
+
+
+def parse_timewritten(timewritten):
+    return datetime.datetime.strptime(timewritten, '%m-%d-%Y %H:%M:%S')
+
+
+def parse_relative_timewritten(relative):
+    try:
+        coefficient, suffix = int(relative[:-1]), relative[-1].lower()
+    except Exception:
+        coefficient, suffix = 1, 'd'
+
+    now = datetime.datetime.now()
+    offset = {}
+    if suffix == 's':
+        offset['seconds'] = coefficient
+    elif suffix == 'm':
+        offset['minutes'] = coefficient
+    elif suffix == 'h':
+        offset['hours'] = coefficient
+    elif suffix == 'd':
+        offset['days'] = coefficient
+    elif suffix == 'w':
+        offset['weeks'] = coefficient
+    elif suffix == 'M':
+        offset['months'] = coefficient
+
+    return now - datetime.timedelta(**offset)
 
 
 def get_queryable_keys(traptype, arguments):
@@ -130,49 +160,62 @@ def get_queryable_keys(traptype, arguments):
 
     @param arguments - The raw arguments, usually the request variables.
     @param traptype - The type of the trap
-    @returns - A dictionary containing the valid queryable columns.
+    @returns - A list containing the valid queryable columns.
     '''
-    queryable = {}
-    valid_comparisons = ['contains', 'in']
+    queryable = []
+    valid_comparisons = ['contains', 'in', 'gt', 'lt']
 
     for key in arguments.keys():
-        if not getattr(traptype, key, None) is None:
-            queryable[key] = arguments[key]
-        else:
-            try:
-                column, comparison = key.split('__')
-                getattr(traptype, column)
-                assert comparison in valid_comparisons
-                queryable[key] = arguments[key]
-            except:
-                continue
+        all_key_values = arguments.getlist(key)
+        for value in all_key_values:
+            if not getattr(traptype, key, None) is None:
+                if key == 'timewritten':
+                    query = (key, parse_timewritten(value))
+                else:
+                    query = (key, value)
+            else:
+                try:
+                    column, comparison = key.split('__')
+                    actual_column = column
+                    if column == 'relative_timewritten':
+                        actual_column = 'timewritten'
+                    getattr(traptype, actual_column)
+                    assert comparison in valid_comparisons
+                    if column == 'relative_timewritten':
+                        adjusted = parse_relative_timewritten(value)
+                        query = (actual_column + '__' + comparison, adjusted)
+                    elif column == 'timewritten':
+                        query = (key, parse_timewritten(value))
+                    else:
+                        query = (key, value)
+                except Exception:
+                    continue
+            queryable.append(query)
 
     return queryable
 
 
-def get_combiner(arguments):
+def get_combiner(arguments, force_combiner):
     c = arguments.get('combiner', 'AND')
-    if c.upper().strip() == 'OR':
-        return False
+    if c.upper().strip() == 'OR' or force_combiner == 'OR':
+        return storm.expr.Or
     else:
-        return True
+        return storm.expr.And
 
 
-def get_active_filters_as_queryable(all_filters, active_filters):
-    additional_args = {}
-    for filter_name in active_filters:
+def pick_non_columns(traptype, queryable):
+    safe =[]
+    for query in queryable:
         try:
-            f = all_filters[filter_name]
-        except KeyError:
-            continue
-        for a in f['actions']:
-            instruction = str(a['column_name'] + a['comparison'])
-            value = a['value']
-            additional_args[instruction] = value
-    return additional_args
+            column_name = query[0].split('__')[0]
+            getattr(traptype, column_name)
+            safe.append(query)
+        except Exception:
+            logging.info('Could not add query %r to trap filter %r', query, traptype)
+    return safe
 
 
-def sql_where_query(traptype, arguments, use_session_filters=False):
+def sql_where_query(traptype, arguments, parsed_filters=None, force_combiner=None):
     '''Gets the actual query function that will be passed to find
     given the arguments we are searching for.
 
@@ -180,56 +223,44 @@ def sql_where_query(traptype, arguments, use_session_filters=False):
     @param arguments - Dictionary that holds the key values for searching
 
     '''
-    query = None
+    if parsed_filters is None:
+        parsed_filters = []
+
+    logging.debug('Entering sql_where_query...')
+    query = []
     queryable = get_queryable_keys(traptype, arguments)
+    combiner = get_combiner(arguments, force_combiner)
+    complete_queryable = queryable + parsed_filters
+    safe_complete_queryable = pick_non_columns(traptype, complete_queryable)
 
-    if use_session_filters:
-        all_filters = filters.read_filter_raw()
-        active_filters = session.get('active_filters', [])
-        filter_queryable = get_active_filters_as_queryable(all_filters, active_filters)
-        queryable.update(filter_queryable)
-    acombine = get_combiner(arguments)
-
-    for key in queryable:
-        #~ If it ends with contain, we want to do a LIKE
+    for key, value in safe_complete_queryable:
         attribute = key
-        if key == 'timewritten':
-            try:
-                queryable[key] = datetime.datetime.strptime(queryable[key], '%m-%d-%Y %H:%M:%S')
-            except ValueError, e:
-                logging.exception(e)
-                continue
-        
+
         if key.endswith('__contains'):
             new_key = key.replace('__contains', '')
             attribute = getattr(traptype, new_key)
-            cond = attribute.like(u'%%%s%%' % unicode(queryable[key]))
-        #~ If its they want an in
+            query.append(attribute.like(u'%%%s%%' % unicode(value)))
         elif key.endswith('__in'):
             new_key = key.replace('__in', '')
             attribute = getattr(traptype, new_key)
-            cond = attribute.is_in(queryable[key])
+            query.append(attribute.is_in(value))
         elif key.endswith('__gt'):
             new_key = key.replace('__gt', '')
             attribute = getattr(traptype, new_key)
-            cond = attribute.gt(queryable[key])
+            query.append(attribute > value)
         elif key.endswith('__lt'):
             new_key = key.replace('__lt', '')
             attribute = getattr(traptype, new_key)
-            cond = attribute.lt(queryable[key])
+            query.append(attribute < value)
         #~ Otherwise we want to do an exact match
         else:
+            attribute = getattr(traptype, key)
             if(key in ['id']):
-                cond = attribute == int(queryable[key])
+                query.append(attribute == int(value))
             else:
-                cond = attribute == unicode(queryable[key])
-        #~ If a query has already been made, AND this on, otherwise just
-        #~ make query and set our latest condition to be the query.
-        if not query:
-            query = cond
-        else:
-            if acombine:
-                query = query & cond
-            else:
-                query = query | cond
-    return query
+                query.append(attribute == unicode(value))
+
+    if not query:
+        return combiner(True)
+    else:
+        return combiner(*query)

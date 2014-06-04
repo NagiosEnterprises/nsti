@@ -1,4 +1,6 @@
 from nsti import app
+import logging
+import datetime
 import storm.locals as SL
 import filters
 from flask import session
@@ -191,6 +193,13 @@ def sql_where_query(traptype, arguments, use_session_filters=False):
     for key in queryable:
         #~ If it ends with contain, we want to do a LIKE
         attribute = key
+        if key == 'timewritten':
+            try:
+                queryable[key] = datetime.datetime.strptime(queryable[key], '%m-%d-%Y %H:%M:%S')
+            except ValueError, e:
+                logging.exception(e)
+                continue
+        
         if key.endswith('__contains'):
             new_key = key.replace('__contains', '')
             attribute = getattr(traptype, new_key)
@@ -200,6 +209,14 @@ def sql_where_query(traptype, arguments, use_session_filters=False):
             new_key = key.replace('__in', '')
             attribute = getattr(traptype, new_key)
             cond = attribute.is_in(queryable[key])
+        elif key.endswith('__gt'):
+            new_key = key.replace('__gt', '')
+            attribute = getattr(traptype, new_key)
+            cond = attribute.gt(queryable[key])
+        elif key.endswith('__lt'):
+            new_key = key.replace('__lt', '')
+            attribute = getattr(traptype, new_key)
+            cond = attribute.lt(queryable[key])
         #~ Otherwise we want to do an exact match
         else:
             if(key in ['id']):

@@ -3,6 +3,7 @@ from nsti import app
 import database as db
 from flask import render_template, session, request, abort, Response
 import storm.locals as SL
+import logging
 
 try:
     import json
@@ -45,6 +46,7 @@ def get_requested_filters():
 def filter():
     return render_template('/filter/filterlist.html')
 
+
 @app.route('/api/filter/create')
 def create_filter():
     json_result = {}
@@ -59,7 +61,7 @@ def create_filter():
     else:
         #~ Add the filter.
         new_filter = db.Filter(name)
-        result = db.DB.add(new_filter)
+        db.DB.add(new_filter)
         try:
             for atom in request.args.getlist('atoms[]'):
                 atom_info = json.loads(atom)
@@ -86,7 +88,7 @@ def edit_filter():
     if name != '' and existing_count != 0:
         delete_filter()
         new_filter = db.Filter(name)
-        result = db.DB.add(new_filter)
+        db.DB.add(new_filter)
         try:
             for atom in request.args.getlist('atoms[]'):
                 atom_info = json.loads(atom)
@@ -104,6 +106,7 @@ def edit_filter():
 
     json_str = json.dumps(json_result)
     return Response(response=json_str, status=200, mimetype='application/json')
+
 
 @app.route('/api/filter/delete')
 def delete_filter():
@@ -149,6 +152,7 @@ def read_filter_raw():
         filt[f.name] = j
     return filt
 
+
 @app.route('/api/filter/read')
 def read_filter():
     filters = {}
@@ -172,6 +176,7 @@ def read_filter():
 
     json_str = json.dumps(json_result)
     return Response(response=json_str, status=200, mimetype='application/json')
+
 
 @app.route('/api/filter/add-active-filter')
 def add_active_filter():
@@ -200,6 +205,7 @@ def add_active_filter():
     json_str = json.dumps(json_result)
     return Response(response=json_str, status=200, mimetype='application/json')
 
+
 @app.route('/api/filter/read-active-filter')
 def read_active_filter():
     #bug that stops the table from loading on the first request.  possibly
@@ -213,6 +219,7 @@ def read_active_filter():
         json_str = '[]'
 
     return Response(response=json_str, status=200, mimetype='application/json')
+
 
 @app.route('/api/filter/delete-active-filter')
 def delete_active_filter():
@@ -228,7 +235,7 @@ def delete_active_filter():
         if not name:
             json_result['error'] = 'No name was given.'
         elif existing_count == 0:
-           json_result['error'] = 'No filter by that name exists.'
+            json_result['error'] = 'No filter by that name exists.'
         elif existing_count > 1:
             json_result['error'] = 'Filter by that name returns more than one result.'
         else:

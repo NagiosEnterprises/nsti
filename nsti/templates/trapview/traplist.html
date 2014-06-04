@@ -862,19 +862,10 @@ function show_applied_filters() {
     });
 }
 
-//table sort function:
-// to be added at another date, need
-// to sort entire list not just the
-// viewable table
-// function init_table_sort() {
-//     var trapTableSort = new TSorter;
-//     trapTableSort.init('trap-table');
-// }
-// window.onload = init_table_sort;
-
 
 $(document).ready(function() {
 
+    remove_trap_filter_active();
     filter_select_populate();
 
     $('#trap-search').click(do_trap_search);

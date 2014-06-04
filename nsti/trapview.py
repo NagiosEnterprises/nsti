@@ -15,6 +15,7 @@ def traplist():
     '''Renders the page where all of the traps of the given type (specified
     by the SESSION).
     '''
+    print session
     session['TRUNCATE'] = app.config.get('TRUNCATE')
     table = request.args.get('traptype') or session.get('traptype') or 'Snmptt'
     c_tablename = table.capitalize()

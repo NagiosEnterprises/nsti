@@ -153,7 +153,34 @@ def parse_relative_timewritten(relative):
     return now - datetime.timedelta(**offset)
 
 
-def get_queryable_keys(traptype, arguments):
+def prepare_query_tuple(traptype, key, value):
+    valid_comparisons = ['contains', 'in', 'gt', 'lt']
+    if not getattr(traptype, key, None) is None:
+        if key == 'timewritten':
+            query = (key, parse_timewritten(value))
+        else:
+            query = (key, value)
+    else:
+        try:
+            column, comparison = key.split('__')
+            actual_column = column
+            if column == 'relative_timewritten':
+                actual_column = 'timewritten'
+            getattr(traptype, actual_column)
+            assert comparison in valid_comparisons
+            if column == 'relative_timewritten':
+                adjusted = parse_relative_timewritten(value)
+                query = (actual_column + '__' + comparison, adjusted)
+            elif column == 'timewritten':
+                query = (key, parse_timewritten(value))
+            else:
+                query = (key, value)
+        except Exception:
+            query = None
+    return query
+
+
+def get_queryable_keys(traptype, arguments, filter_arguments):
     '''Gets the queryable columns from a dictionary. Looks to see if they are
     valid lookups in the database, and if they are, returns all valid search
     result.
@@ -163,33 +190,17 @@ def get_queryable_keys(traptype, arguments):
     @returns - A list containing the valid queryable columns.
     '''
     queryable = []
-    valid_comparisons = ['contains', 'in', 'gt', 'lt']
 
     for key in arguments.keys():
         all_key_values = arguments.getlist(key)
         for value in all_key_values:
-            if not getattr(traptype, key, None) is None:
-                if key == 'timewritten':
-                    query = (key, parse_timewritten(value))
-                else:
-                    query = (key, value)
-            else:
-                try:
-                    column, comparison = key.split('__')
-                    actual_column = column
-                    if column == 'relative_timewritten':
-                        actual_column = 'timewritten'
-                    getattr(traptype, actual_column)
-                    assert comparison in valid_comparisons
-                    if column == 'relative_timewritten':
-                        adjusted = parse_relative_timewritten(value)
-                        query = (actual_column + '__' + comparison, adjusted)
-                    elif column == 'timewritten':
-                        query = (key, parse_timewritten(value))
-                    else:
-                        query = (key, value)
-                except Exception:
-                    continue
+            query = prepare_query_tuple(traptype, key, value)
+            if not query is None:
+                queryable.append(query)
+
+    for key, value in filter_arguments:
+        query = prepare_query_tuple(traptype, key, value)
+        if not query is None:
             queryable.append(query)
 
     return queryable
@@ -228,12 +239,13 @@ def sql_where_query(traptype, arguments, parsed_filters=None, force_combiner=Non
 
     logging.debug('Entering sql_where_query...')
     query = []
-    queryable = get_queryable_keys(traptype, arguments)
+    queryable = get_queryable_keys(traptype, arguments, parsed_filters)
     combiner = get_combiner(arguments, force_combiner)
-    complete_queryable = queryable + parsed_filters
-    safe_complete_queryable = pick_non_columns(traptype, complete_queryable)
+    safe_queryable = pick_non_columns(traptype, queryable)
 
-    for key, value in safe_complete_queryable:
+    logging.debug('Filtering with: %r', safe_queryable)
+
+    for key, value in safe_queryable:
         attribute = key
 
         if key.endswith('__contains'):

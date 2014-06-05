@@ -1,4 +1,15 @@
-3.0   06/03/14
+NSTI v3.0.1  06/05/14
+=====================
+- Add Filtering by Message column (formatline in the database) -LG
+- Add Filtering by timewritten using the JQuery calender addon datetimepicker to select date and time -LG
+- Add Filtering by traptime in the API using the GET URL parameters -NS, LG
+- Significant reformatting of database, mainly in the sql_where_query function to allow new featuers and more efficient access -NS, LG
+- Updates to Python app route files to work with new database format (specifically trapview.py and filters.py) -NS
+- Allow the GET URL params to be able to use multiple search and filter params using the '&' operator -NS, LG
+- CSS styling and front end updates -LG
+
+
+NSTI v3.0   06/03/14
 =====================
 - Front end overhaul -LG
 - Add new ORM, reformat database for easier API access -NS

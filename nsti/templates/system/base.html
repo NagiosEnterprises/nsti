@@ -11,11 +11,11 @@
         <meta name="description" content="NSTI Frontend">
         <meta name="author" content="Nicholas Scott, Luke Groschen">
         <script src='{{ static("js/jquery-1.10.2.min.js") }}'></script>
-        <script src='{{ static("js/bootstrap.min.js") }}'></script>
-        <script src='{{ static("js/nsti.js") }}'></script>
-        <script src='{{ static("js/highcharts.js") }}'></script>
         <script src='{{ static("js/jquery-ui-1.10.4.min.js") }}'></script>
+        <script src='{{ static("js/bootstrap.min.js") }}'></script>
+        <script src='{{ static("js/highcharts.js") }}'></script>
         <script src='{{ static("js/jquery-ui-timepicker-addon.js") }}'></script>
+        <script src='{{ static("js/nsti.js") }}'></script>
         <script>
         var BASE_URL = '{{ request.url_root }}';
         var TRUNCATE = {{ session.TRUNCATE or 100 }};

@@ -13,7 +13,7 @@ Installing NSTI Using Tarball
 -----------------------------
 If you want to install NSTI using a tarball use the URL below
 
-   http://assets.nagios.com/downloads/nsti/tarballs/nsti-v3.0.tar.gz
+   http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.1.tar.gz
 
 From the command line use wget to install
 

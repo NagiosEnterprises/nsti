@@ -143,18 +143,14 @@
 <p>To access the API from a URL use keywords for getting the JSON formatted data</p>
 <blockquote>
 <div>&lt;ip address&gt;/api/trapview/read/Snmptt</div></blockquote>
-<ul class="simple">
-<li>This example will return every trap that is located in the main snmptt database</li>
-</ul>
+<p>This example will return every trap that is located in the main snmptt database</p>
 <p>Furthermore you can now access the API with multiple search and filtering criteria as stated above.</p>
 <p>Here is a sort by date example:</p>
-<div class="highlight-python"><div class="highlight"><pre>.. code-block ::
+<div class="highlight-html"><div class="highlight"><pre>Time Format for NSTI  MM-DD-YYYY HH:mm:ss
+
+?timewritten__lt=10-10-2014 12:00:00
 </pre></div>
 </div>
-<blockquote>
-<div><p>Time Format for NSTI  MM-DD-YYYY HH:mm:ss</p>
-<p>?timewritten__lt=10-10-2014 12:00:00</p>
-</div></blockquote>
 <p>This will yield all traps that are YOUNGER than the given date. Similar can be done with __gt to yield traps OLDER than the given date. There is also the ability to sort by relative time. A __gt and __lt must still be given, like so:</p>
 <div class="highlight-html"><div class="highlight"><pre>?relative_timewritten__lt=1d
 </pre></div>

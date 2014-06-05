@@ -17,15 +17,14 @@ To access the API from a URL use keywords for getting the JSON formatted data
 
     <ip address>/api/trapview/read/Snmptt
 
-- This example will return every trap that is located in the main snmptt database
+This example will return every trap that is located in the main snmptt database
 
 
 Furthermore you can now access the API with multiple search and filtering criteria as stated above.  
 
-Here is a sort by date example::
+Here is a sort by date example:
 
-
-.. code-block ::
+.. code-block :: html
 
     Time Format for NSTI  MM-DD-YYYY HH:mm:ss
 

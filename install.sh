@@ -7,7 +7,7 @@ BASEPATH=$(dirname `readlink -f $0`)
 
 touch "$LOG_FILE"
 
-. install/libinstall.sh | tee --append "$LOG_FILE"
+. install/libinstall.sh
 . "$BASEPATH/nsti/etc/nsti.py"
 
 # Check to make sure the prereqs are met.

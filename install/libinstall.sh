@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # Checks if NSTI has been installed
 is_installed () {
     for file in $@;

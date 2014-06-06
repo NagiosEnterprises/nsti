@@ -17,12 +17,6 @@ add_yum_repo() {
     local repo url pkg
     repo="$1"
 
-    # See if we need to install the repo...
-    if is_installed "$repo-release"; then
-        echo "$repo-release RPM installed OK"
-        return 0
-    fi
-
     echo "Enabling $repo repo..."
 
     case "$repo" in

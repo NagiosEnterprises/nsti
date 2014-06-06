@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#add repo
+add_yum_repo "epel"
+
 #install database prereqs- only supporting yum packager FOR NOW
 yum install -y $PREREQS
 

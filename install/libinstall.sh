@@ -34,13 +34,9 @@ add_yum_repo() {
             pkg=$(curl -s --connect-timeout 60 "http://dl.fedoraproject.org/pub/epel/$ver/i386/repoview/epel-release.html" | grep -o "epel-release-[0-9.-]\+\.noarch\.rpm")
             url="http://dl.fedoraproject.org/pub/epel/$ver/i386/$pkg"
             ;;
-        cr )
-            if [ "$dist"] = "el6" ] && is_installed centos-release; then
-                yum -y install centos-release-cr
-            fi
     esac
     
-    if [ -n "$url" ] && [ -n "$pkg" ]; then
+    if [ -n "$pkg" ]; then
         curl -L -O --connect-timeout 60 "$url"
         rpm -Uvh "$pkg"
         rm "$pkg"

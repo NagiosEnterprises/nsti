@@ -267,7 +267,7 @@ $(document).ready(function() {
     
     $('#atom-home').on('change', 'select[name="column_name"]', function() {
         var column_name = $(this).val();
-        console.log(column_name);
+        
         if (column_name == 'timewritten') {
             $(this).closest('.row').find('input[name="val"]').datetimepicker({dateFormat: 'mm-dd-yy', timeFormat: 'HH:mm:ss'});
         } else {
@@ -338,9 +338,9 @@ $(document).ready(function() {
         <div id='pagination' class='panel-body text-center'></div>
         <div class='pull-left'>
             <div class='btn-group btn-group-sm trap-controllers'>
-                <button type='button' class='btn btn-default btn-delete'>
+                <label type='button' class='btn btn-default btn-delete'>
                     <a alt='Delete Selected' data-toggle='tooltip' title='Delete Selected' class='delete-selected glyphicon glyphicon-remove'></a>
-                </button>
+                </label>
                 <label class='btn btn-default btn-edit'>
                     <a alt='Edit Selected' data-toggle='tooltip' title='Edit Selected' class='edit-selected glyphicon glyphicon-pencil'></a>
                 </label>

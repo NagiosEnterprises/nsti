@@ -24,3 +24,15 @@ touch "$LOG_FILE"
 . install/firewall.sh | tee --append "$LOG_FILE"
 # Moving the directory structure
 . install/movedirectory.sh | tee --append "$LOG_FILE"
+
+echo "
+=============================
+*NSTI Installed Successfully*
+=============================
+
+Access NSTI here:
+	
+	<IP address>:8080
+	
+=============================
+"

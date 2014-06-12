@@ -21,7 +21,7 @@ From the command line use wget to install
 
     cd /tmp
     wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz
-    tar xf nsti-3.0.2.tar.gz
+    tar zxf nsti-3.0.2.tar.gz
     cd nsti/
     sh install.sh
 

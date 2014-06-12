@@ -9,10 +9,6 @@ yum install -y $PREREQS
 #make sure our services are running
 service mysqld start
 
-#set mysql user and password
-/usr/bin/mysqladmin -u root password 'nsti'
-service mysqld restart
-
 #set to start on system startup
 chkconfig mysqld on
 chkconfig httpd on

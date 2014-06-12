@@ -13,6 +13,7 @@ Contents:
 
    introduction
    installation
+   setup
    filters
    visualizer
    backendaccess

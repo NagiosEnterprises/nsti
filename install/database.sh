@@ -3,23 +3,30 @@
 DB_SCHEMA="${BASEPATH}/nsti/dist/nsti.sql"
 INTERACTIVE="True"
 
-for i in 1 2 3; do
-	if [ "$INTERACTIVE" = "True" ]; then
-		# Ask for the password
-		echo "Enter the MySQL root password to continue..."
-		read -p "MySQL Root Password: " pass
-	fi
 
-	# Test the password
-	if mysqlshow -u root -p"$pass" &>/dev/null; then
-		echo "Password validated."
-		mysqlpass="$pass"
-		break
-	else
-		echo "Password failed." >&2
-		[ $i -eq 3 ] && exit 1
-	fi
-done
+if mysqlshow -u root &>/dev/null; then
+	# Set the password to "nagiosxi"
+	mysqlpass=nagiosxi
+	mysqladmin -u root password "$mysqlpass"
+	echo "MySQL root password is now set to: $mysqlpass"
+else
+	for i in 1 2 3; do
+		if [ "$INTERACTIVE" = "True" ]; then
+			# Ask for the password
+			read -p "Enter MySQL Root Password: " pass
+		fi
+
+		# Test the password
+		if mysqlshow -u root -p"$pass" &>/dev/null; then
+			echo "Password validated."
+			mysqlpass="$pass"
+			break
+		else
+			echo "Password failed." >&2
+			[ $i -eq 3 ] && exit 1
+		fi
+	done
+fi
 
 mysqladmin -s -uroot -p"$mysqlpass" create ${DB_NAME}
 mysql -uroot -p"$mysqlpass" -e 'CREATE USER "'${DB_USER}'"@"'${DB_HOST}'" IDENTIFIED BY "'${DB_PASS}'";'

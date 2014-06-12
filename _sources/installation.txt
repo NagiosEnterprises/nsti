@@ -21,7 +21,7 @@ From the command line use wget to install
 
     cd /tmp
     wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz
-    tar xf nsti-v3.0.tar.gz
+    tar xf nsti-3.0.2.tar.gz
     cd nsti/
     sh install.sh
 
@@ -89,6 +89,7 @@ If any of the packages failed to install you will see error outputs such as the 
 .. warning::
 
     | 'Cannot continue install until all of these prereqs are met.'
+    |
     | 'mod_wsgi is not installed in Apache. Please use your package manager to install it.'
     |
     | 'No user `nagios`. Add a user for nagios and make sure it is in the nagcmd group.'

@@ -18,19 +18,14 @@ For a more detailed explaination check the very thorough Net-SNMP documentation 
 Getting Started with SNMP
 -------------------------
 
-First thing we are going to need to do is set up an SNMP handler.  For this documentation we are going to use the Multi Router Traffic Grapher (MRTG) made by Tobias Oetiker to do all the heavy lifting for us::
+Getting SNMP setup can be daunting, but for this documentation we will go through a simple set up to be able to familiarize yourself with setting up more difficult devices.  Once doing it a few time you will be able to do this with no problem.
 
-	http://oss.oetiker.ch/mrtg/pub/mrtg-2.17.4.tar.gz
-
-Here is the Linux setup guide for MRTG (there are also Windows tutorials)::
-
-	http://oss.oetiker.ch/mrtg/doc/mrtg-unix-guide.en.html
 
 
 Setting Up Your MIB Files
--------------------------
+*************************
 
-MIB stands for Management Information Base and is simply a collection of information.  OIDs or Object Identifiers uniquely identify objects in a MIB 'tree.'  To be able to recieve SNMP traps you will have to configure your MIBs so that Net-SNMP, or another similar program, can read them with a configuration file.
+MIB stands for Management Information Base and is simply a collection of information.  OIDs or Object Identifiers uniquely identify objects in a MIB 'tree.'  To be able to recieve SNMP traps you will have to configure your MIBs so that snmptt can read them with a configuration file.
 
 To do this we are going to use a SNMP Trap Translator called SNMPTTCONVERTMIB, located here::
 
@@ -42,5 +37,9 @@ In the words of the creator of this program::
 
 	SNMPTTCONVERTMIB is a Perl script which will read a MIB file and convert the TRAP-TYPE (v1) or NOTIFICATION-TYPE (v2) definitions into a configuration file readable by SNMPTT.
 
-Exactly what we need to move forward and get our traps to view in NSTI.
+Exactly what we need to move forward and get our traps to view in NSTI.  We will convert the MIB files for our specific device that we will choose, which will usually be done by going to a website like mibdepot::
 
+    http://www.mibdepot.com/index.shtml
+
+
+For this example I am going to use a Linux SNMPv2 MIB to monitor a CentOS VM.

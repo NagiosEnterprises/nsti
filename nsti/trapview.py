@@ -56,7 +56,9 @@ def read(tablename):
     result_dict = db.encode_storm_result_set(results)
 
     json_str = json.dumps(result_dict, default=db.encode_storm_result_set, indent=4)
-    return Response(response=json_str, status=200, mimetype='application/json')
+    response = Response(response=json_str, status=200, mimetype='application/json')
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @app.route('/api/trapview/delete/<tablename>')

@@ -2,7 +2,23 @@ from nsti import app
 import database as db
 import filters
 
-from flask import render_template, session, request, abort, Response
+from flask import render_template, session, request, abort, Response, make_response
+from functools import update_wrapper
+
+
+def origin_access_allow_all(f):
+    '''Support cross browser access for any API route that needs to
+    allow it.
+    '''
+    def wrapper(*args, **kwargs):
+        response = make_response(f(*args, **kwargs))
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        return response
+    f.provide_automatic_options = False
+    return update_wrapper(wrapper, f)
+
 
 try:
     import json
@@ -40,7 +56,8 @@ def trapview(trapid):
     return render_template('trapview/trapview.html', trapid=trapid, table=table)
 
 
-@app.route('/api/trapview/read/<tablename>')
+@app.route('/api/trapview/read/<tablename>', methods=['GET', 'POST', 'OPTIONS'])
+@origin_access_allow_all
 def read(tablename):
     traptype = getattr(db, tablename)
 
@@ -56,9 +73,7 @@ def read(tablename):
     result_dict = db.encode_storm_result_set(results)
 
     json_str = json.dumps(result_dict, default=db.encode_storm_result_set, indent=4)
-    response = Response(response=json_str, status=200, mimetype='application/json')
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
+    return Response(response=json_str, status=200, mimetype='application/json')
 
 
 @app.route('/api/trapview/delete/<tablename>')

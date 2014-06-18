@@ -1,7 +1,8 @@
 from nsti import app
 
 import database as db
-from flask import render_template, session, request, abort, Response
+from flask import render_template, session, request, abort, Response, make_response
+from functools import update_wrapper
 import storm.locals as SL
 import logging
 
@@ -9,6 +10,20 @@ try:
     import json
 except ImportError:
     import simplejson as json
+
+
+def origin_access_allow_all(f):
+    '''Support cross browser access for any API route that needs to
+    allow it.
+    '''
+    def wrapper(*args, **kwargs):
+        response = make_response(f(*args, **kwargs))
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        return response
+    f.provide_automatic_options = False
+    return update_wrapper(wrapper, f)
 
 
 def get_active_filters_as_queryable(all_filters, active_filters):
@@ -153,7 +168,8 @@ def read_filter_raw():
     return filt
 
 
-@app.route('/api/filter/read')
+@app.route('/api/filter/read', methods=['GET', 'POST', 'OPTIONS'])
+@origin_access_allow_all
 def read_filter():
     filters = {}
     json_result = {'filters': filters}

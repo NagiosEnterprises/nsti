@@ -25,9 +25,12 @@ From the command line use wget to install
     cd nsti/
     sh install.sh
 
-Now NSTI should be installed, to verify navigate to this address::
+Now NSTI should be installed, to verify run the runserver.py file and navigate to this address::
+
+    python runserver.py
 
     http://<NSTI Server IP>/nsti
+
 
 Installing NSTI Using Git Clone
 -------------------------------
@@ -41,10 +44,11 @@ To clone a repository with git run the following command in the directory you wa
     cd /tmp
     git clone https://github.com/NagiosEnterprises/nsti.git
     cd nsti/
-    git checkout v3.0^
     sh install.sh
 
-Now NSTI should be installed, to verify navigate to this address::
+Now NSTI should be installed, to verify run the runserver.py file and navigate to this address::
+
+    python runserver.py
 
     http://<NSTI Server IP>/nsti
 

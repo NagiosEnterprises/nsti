@@ -10,7 +10,7 @@ def dump_trap(loop):
     import MySQLdb
     import sys
 
-    db = MySQLdb.connect("localhost" , user = "root" , passwd = "nsti" , db = "snmptt" )
+    db = MySQLdb.connect("localhost" , user = "root" , passwd = "password" , db = "snmptt" )
     c  = db.cursor()
     ente = [ '2021' , '9996' , '2343' , '5675' , '6879' ]
     suff = [ '.13.990.0.17' , '.2.993.1.17' , '.13.991.3.4' , '.45.33.5.6' ]

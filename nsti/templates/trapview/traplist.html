@@ -257,18 +257,20 @@ function delete_traps() {
         id.push($(d).attr('data-index'));
     });
 
-    $.ajax({
-        url: api_url,
-        data: {id: id},
-        traditional: true,
-        success: function(data) {
-            if(data.error) {
-                show_error(data.error);
-            } else {
-                load_table();
+    if ($('.trap-select-toggle:checked').length >= 1) {
+        $.ajax({
+            url: api_url,
+            data: {id: id},
+            traditional: true,
+            success: function(data) {
+                if(data.error) {
+                    show_error(data.error);
+                } else {
+                    load_table();
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 function archive_traps() {
@@ -279,18 +281,20 @@ function archive_traps() {
         id.push($(d).attr('data-index'));
     });
 
-    $.ajax({
-        url: api_url,
-        data: {id: id},
-        traditional: true,
-        success: function(data) {
-            if(data.error) {
-                show_error(data.error);
-            } else {
-                load_table();
+    if ($('.trap-select-toggle:checked').length >= 1) {
+        $.ajax({
+            url: api_url,
+            data: {id: id},
+            traditional: true,
+            success: function(data) {
+                if(data.error) {
+                    show_error(data.error);
+                } else {
+                    load_table();
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 function load_header() {

@@ -13,50 +13,30 @@ Installing NSTI Using Tarball
 -----------------------------
 If you want to install NSTI using a tarball use the URL below
 
-   http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz
+   http://assets.nagios.com/downloads/nsti/tarballs/latest.php
 
 From the command line use wget to install
 
 .. code-block:: bash
 
     cd /tmp
-    wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz
-    tar zxf nsti-3.0.2.tar.gz
-    cd nsti/
+    wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-*.tar.gz
+    tar zxf nsti-*.tar.gz
+    cd nsti-*/
     sh install.sh
 
 Now NSTI should be installed, to verify run the runserver.py file and navigate to this address::
 
     python runserver.py
 
-    http://<NSTI Server IP>/nsti
-
-
-Installing NSTI Using Git Clone
--------------------------------
-If you don't want to use a tarball you can download NSTI from github using git. First you will clone the Git repo to retrieve NSTI. 
-The main folder will be called 'nsti'.
-
-To clone a repository with git run the following command in the directory you want nsti to be copied to:
-
-.. code-block:: bash
-
-    cd /tmp
-    git clone https://github.com/NagiosEnterprises/nsti.git
-    cd nsti/
-    sh install.sh
-
-Now NSTI should be installed, to verify run the runserver.py file and navigate to this address::
-
-    python runserver.py
-
-    http://<NSTI Server IP>/nsti
+    http://<NSTI Server IP>:8080
 
 .. note ::
 
    If the previous install options happen to fail--the best way to
    troubleshoot is to consult the install log that is generated in the install
-   directory.
+   directory.  This will show what the install did and where it failed.
+
 
 NSTI Dependency Notes
 ---------------------
@@ -142,8 +122,29 @@ Another point to be made is that you will need to verify that the database NSTI 
     Unable to add database schema. Does the snmptt exist?
 
 
-This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to, create the root user and use password 'nsti' to make sure it is working.  The default database is Snmptt.
+This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to, create the root user and use the password 'password' to make sure it is working.  The default database is Snmptt.
 
 .. note::
 
     After you verify everything is working with the database it is recommended that you change your password and update it in the configuration files.
+
+
+
+Installing NSTI Using Git Clone (Developers)
+--------------------------------------------
+This section is for developers who would like to clone the NSTI repository to get a look at the front and back end firsthand.  First you will clone the Git repo to retrieve NSTI.
+
+To clone a repository with git run the following command in the directory you want nsti to be copied to:
+
+.. code-block:: bash
+
+    cd /tmp
+    git clone https://github.com/NagiosEnterprises/nsti.git
+    cd nsti/
+    sh install.sh
+
+Now NSTI should be installed, to verify run the runserver.py file and navigate to this address::
+
+    python runserver.py
+
+    http://<NSTI Server IP>:8080

@@ -5,30 +5,30 @@ The new ORM (Object-Relational Mapping) is now more efficient and the database i
 
 
 
-Accessing data from the Backend
+Accessing Data From the Backend
 --------------------------------
 
-To access NSTI normally you qould go to 
+To access NSTI normally you would go to 
 
-    <ip address>/nsti
+    <ip address>:8080
 
 
 To access the API from a URL use keywords for getting the JSON formatted data
 
-    <ip address>/api/trapview/read/Snmptt
+    <ip address>:8080/api/trapview/read/Snmptt
 
 This example will return every trap that is located in the main snmptt database
 
 
 Furthermore you can now access the API with multiple search and filtering criteria as stated above.  
 
-Here is a sort by date example:
+Here is a filter by date example:
 
 .. code-block :: html
 
     Time Format for NSTI  MM-DD-YYYY HH:mm:ss
 
-    ?timewritten__lt=10-10-2014 12:00:00
+    <ip address>:8080/api/trapview/read/Snmptt?timewritten__lt=10-10-2014 12:00:00
 
 
 This will yield all traps that are YOUNGER than the given date. Similar can be done with __gt to yield traps OLDER than the given date. There is also the ability to sort by relative time. A __gt and __lt must still be given, like so:
@@ -36,7 +36,7 @@ This will yield all traps that are YOUNGER than the given date. Similar can be d
 
 .. code-block :: html
 
-    ?relative_timewritten__lt=1d
+    <ip address>:8080/api/trapview/read/Snmptt?relative_timewritten__lt=1d
 
 
 Will yield traps OLDER than 1 day old. The supported date specifiers are:
@@ -53,9 +53,13 @@ Will yield traps OLDER than 1 day old. The supported date specifiers are:
 
 Simply use any of these date suffixes and prefix it with an INTEGER representing the number of seconds, minutes, etc. that you wish to find.
 
-Also, the Filters can now be brought up via the GET URL params just like the relative timewritten. Simply use the ?filters=<name of filter> to apply your filter to the search result.
+Also, the Filters you create via the NSTI web interface can now be used via the GET URL params just like the relative timewritten. Simply use the ?filters=<name of filter> to apply your filter to the search results.
 
-You can now also specify more than one directive for anything in the GET params. For example, if you would specify *&id=1&id=2*, one of these would get removed from the API GET return data. Now both make it through to the query.
+.. code-block :: html
+
+    <ip address>:8080/api/trapview/read/Snmptt?filters=CriticalSeverity
+
+*This will apply the Filter “CriticalSeverity” to the traps retrieved.*
 
 
 API Data Formatting
@@ -84,7 +88,7 @@ Here is what a single SNMP trap looks like in JSON format:
     }
 
 
-<ip address>/api/filter/read
+<ip address>:8080/api/filter/read
 
 - This example will return all the filters that have been created, also in JSON format as seen below.
 

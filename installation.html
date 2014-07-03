@@ -29,7 +29,7 @@
     <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="NSTI 3.0.2 documentation" href="index.html" />
-    <link rel="next" title="SNMP Setup" href="setup.html" />
+    <link rel="next" title="Filters" href="filters.html" />
     <link rel="prev" title="Introduction" href="introduction.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -69,7 +69,6 @@
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="setup.html">SNMP Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualizer.html">SNMP Trap Data Visualizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="backendaccess.html">NSTI Backend</a></li>
@@ -88,13 +87,13 @@
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#installing-nsti-using-tarball">Installing NSTI Using Tarball</a></li>
-<li><a class="reference internal" href="#installing-nsti-using-git-clone">Installing NSTI Using Git Clone</a></li>
 <li><a class="reference internal" href="#nsti-dependency-notes">NSTI Dependency Notes</a></li>
 <li><a class="reference internal" href="#possible-nsti-install-gotcha-s">Possible NSTI Install Gotcha&#8217;s</a><ul>
 <li><a class="reference internal" href="#flask-and-storm">Flask and Storm</a></li>
 <li><a class="reference internal" href="#mysql-configuration">MySQL Configuration</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#installing-nsti-using-git-clone-developers">Installing NSTI Using Git Clone (Developers)</a></li>
 </ul>
 </li>
 </ul>
@@ -110,7 +109,7 @@
     </a>
   </li>
   <li>
-    <a href="setup.html" title="Next Chapter: SNMP Setup"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm">SNMP Setup &raquo;</span>
+    <a href="filters.html" title="Next Chapter: Filters"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm">Filters &raquo;</span>
     </a>
   </li>
               
@@ -157,44 +156,26 @@ another version.</p>
 <h2>Installing NSTI Using Tarball<a class="headerlink" href="#installing-nsti-using-tarball" title="Permalink to this headline">¶</a></h2>
 <p>If you want to install NSTI using a tarball use the URL below</p>
 <blockquote>
-<div><a class="reference external" href="http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz">http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz</a></div></blockquote>
+<div><a class="reference external" href="http://assets.nagios.com/downloads/nsti/tarballs/latest.php">http://assets.nagios.com/downloads/nsti/tarballs/latest.php</a></div></blockquote>
 <p>From the command line use wget to install</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> /tmp
-wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz
-tar zxf nsti-3.0.2.tar.gz
-<span class="nb">cd </span>nsti/
+wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-*.tar.gz
+tar zxf nsti-*.tar.gz
+<span class="nb">cd </span>nsti-*/
 sh install.sh
 </pre></div>
 </div>
 <p>Now NSTI should be installed, to verify run the runserver.py file and navigate to this address:</p>
 <div class="highlight-python"><div class="highlight"><pre>python runserver.py
 
-http://&lt;NSTI Server IP&gt;/nsti
-</pre></div>
-</div>
-</div>
-<div class="section" id="installing-nsti-using-git-clone">
-<h2>Installing NSTI Using Git Clone<a class="headerlink" href="#installing-nsti-using-git-clone" title="Permalink to this headline">¶</a></h2>
-<p>If you don&#8217;t want to use a tarball you can download NSTI from github using git. First you will clone the Git repo to retrieve NSTI.
-The main folder will be called &#8216;nsti&#8217;.</p>
-<p>To clone a repository with git run the following command in the directory you want nsti to be copied to:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> /tmp
-git clone https://github.com/NagiosEnterprises/nsti.git
-<span class="nb">cd </span>nsti/
-sh install.sh
-</pre></div>
-</div>
-<p>Now NSTI should be installed, to verify run the runserver.py file and navigate to this address:</p>
-<div class="highlight-python"><div class="highlight"><pre>python runserver.py
-
-http://&lt;NSTI Server IP&gt;/nsti
+http://&lt;NSTI Server IP&gt;:8080
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If the previous install options happen to fail&#8211;the best way to
 troubleshoot is to consult the install log that is generated in the install
-directory.</p>
+directory.  This will show what the install did and where it failed.</p>
 </div>
 </div>
 <div class="section" id="nsti-dependency-notes">
@@ -265,11 +246,28 @@ installing NSTI manually.</p>
 <p>ERROR 1049 (42000): Unknown database &#8216;snmptt&#8217;</p>
 <p class="last">Unable to add database schema. Does the snmptt exist?</p>
 </div>
-<p>This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to, create the root user and use password &#8216;nsti&#8217; to make sure it is working.  The default database is Snmptt.</p>
+<p>This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to, create the root user and use the password &#8216;password&#8217; to make sure it is working.  The default database is Snmptt.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">After you verify everything is working with the database it is recommended that you change your password and update it in the configuration files.</p>
 </div>
+</div>
+</div>
+<div class="section" id="installing-nsti-using-git-clone-developers">
+<h2>Installing NSTI Using Git Clone (Developers)<a class="headerlink" href="#installing-nsti-using-git-clone-developers" title="Permalink to this headline">¶</a></h2>
+<p>This section is for developers who would like to clone the NSTI repository to get a look at the front and back end firsthand.  First you will clone the Git repo to retrieve NSTI.</p>
+<p>To clone a repository with git run the following command in the directory you want nsti to be copied to:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> /tmp
+git clone https://github.com/NagiosEnterprises/nsti.git
+<span class="nb">cd </span>nsti/
+sh install.sh
+</pre></div>
+</div>
+<p>Now NSTI should be installed, to verify run the runserver.py file and navigate to this address:</p>
+<div class="highlight-python"><div class="highlight"><pre>python runserver.py
+
+http://&lt;NSTI Server IP&gt;:8080
+</pre></div>
 </div>
 </div>
 </div>

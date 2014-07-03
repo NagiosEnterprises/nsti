@@ -87,7 +87,7 @@
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Filters</a><ul>
 <li><a class="reference internal" href="#filtering-snmp-traps-with-nsti">Filtering SNMP traps with NSTI</a></li>
-<li><a class="reference internal" href="#adding-editing-and-deleting">Adding, Editing and Deleting</a></li>
+<li><a class="reference internal" href="#adding-editing-and-deleting-filters">Adding, Editing and Deleting Filters</a></li>
 <li><a class="reference internal" href="#applying-filters-to-the-traplist">Applying Filters to the Traplist</a></li>
 </ul>
 </li>
@@ -140,39 +140,37 @@
       
   <div class="section" id="filters">
 <h1>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h1>
-<p>One of the most asked for features in NSTI and any other SNMP user interface is being able to filter the SNMP traps.  Learn how to manipulate filters in NSTI using this page.</p>
+<p>One of the most asked for features in NSTI and any other SNMP user interface is being able to filter the SNMP traps.  This page will teach you how to create and manipulate filters in NSTI.</p>
 <div class="section" id="filtering-snmp-traps-with-nsti">
 <h2>Filtering SNMP traps with NSTI<a class="headerlink" href="#filtering-snmp-traps-with-nsti" title="Permalink to this headline">¶</a></h2>
-<p>The biggest addition that was made to NSTI 3.0 is that you can now create filters than can be applied to the main traplist.  This allows you to check specific columns and values to be able to understand the SNMP data you have recieved.</p>
-<p>Here is the Filter page where you can create, edit and delete filters:</p>
+<p>The biggest addition that was made to NSTI 3.0 is that you can now create filters than can be applied to the main traplist.  This allows you to check specific columns and values to be able to understand the SNMP data you have received.</p>
+<p>Below is the Filter page where you can create, edit and delete filters:</p>
 <img alt="_images/filtermain.png" class="align-center" src="_images/filtermain.png" />
 </div>
-<div class="section" id="adding-editing-and-deleting">
-<h2>Adding, Editing and Deleting<a class="headerlink" href="#adding-editing-and-deleting" title="Permalink to this headline">¶</a></h2>
-<p>This page is designed to give you full control of your filters and to make creating them much faster.  Here is an example of a new filter creation window.  You can select the item you want to be filtered, the comparison to be made and the value to filter against:</p>
+<div class="section" id="adding-editing-and-deleting-filters">
+<h2>Adding, Editing and Deleting Filters<a class="headerlink" href="#adding-editing-and-deleting-filters" title="Permalink to this headline">¶</a></h2>
+<p>The Filters page is designed to give you full control of your filters and to make creating them much faster. Below is an example of the new filter creation window which is accessed by clicking the Add New Filter button. Enter a New Filter Name, in this example we used “New Filter”. Then you can select different conditions which you want to use to limit your trap results.  You can select the item you want to be filtered, the comparison to be made, and the value to filter against:</p>
 <img alt="_images/filteraddex.png" class="align-center" src="_images/filteraddex.png" />
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">To edit an existing filter all you have to do is select a single filters&#8217; checkbox and click the pen icon.  This will allow you to change anything in the filter other than the title.</p>
+<p class="last">To edit an existing filter all you have to do is select a single filters’ checkbox and click the pen icon. This will allow you to change anything in the filter other than the Filter Name.  To delete a filter, use the same checkbox but select the filter and then click the X icon.</p>
 </div>
-<p>You can also add new filters from the main, or traplist, page where they are applied:</p>
+<p>You can also add new filters from the Traplist page where they are applied:</p>
 <img alt="_images/trapFilterSelect.png" class="align-left" src="_images/trapFilterSelect.png" />
-<p>Just click the plus sign to add a new filter and you will see the exact same window that you use to add a filter from the filter page.  Once you select add filter you will be able to choose it from the dropdown menu.</p>
+<p>Just click the plus sign to add a new filter and the exact same window that you used above will open. Once you select Add New Filter you will be able to choose it from the dropdown menu on the Traplist page.</p>
 </div>
 <div class="section" id="applying-filters-to-the-traplist">
 <h2>Applying Filters to the Traplist<a class="headerlink" href="#applying-filters-to-the-traplist" title="Permalink to this headline">¶</a></h2>
-<p>Once you have your filters made navigate back to the traplist page.  Now all you have to do to apply it is use the &#8216;Select Filter&#8217; dropdown and select the filter you want to apply.  Once a filter has been applied you will see a green tag in the left side above the trap table.  This tag means that the filter you selected and applied is currently active on the traplist page.  To remove a filter tag simply click the &#8216;X&#8217; on the tag to delete it.</p>
+<p>From the Traplist page you can select filters you have created from the Select Filter dropdown and click the Apply button. Once a filter has been applied you will see a green tag in the left side above the trap table. This tag means that the filter you selected and applied is currently active on the traplist page. To remove a filter tag simply click the ‘X’ on the tag to delete it.</p>
 <img alt="_images/traplistApplyFilter.png" class="align-center" src="_images/traplistApplyFilter.png" />
 <div class="line-block">
-<div class="line">As you can see above the table has been filtered with the following:</div>
-<div class="line-block">
-<div class="line">Hostname        Contains        .41</div>
-<div class="line">Severity        Contains        critical</div>
-</div>
+<div class="line">As you can see above the table has been filtered with the following 2 Filters:</div>
+<div class="line">Host Filter: which limits results by  Hostname  Contains  .41</div>
+<div class="line">Test Filter: which limits results by  Severity  Contains  CRITICAL</div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If you have multiple filters then you can apply them on top of each other to get a more specific trap table.  There is no limit to how many filters you can apply at one time, but you can always create a filter with multiple specifications.</p>
+<p class="last">If you have multiple filters, you can apply them on top of each other to limit results in the Traplist even more. There is no limit to how many filters you can apply at one time.  An alternative to applying multiple filters is to create one filter with multiple filter criteria.</p>
 </div>
 </div>
 </div>

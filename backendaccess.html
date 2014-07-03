@@ -85,7 +85,7 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">NSTI Backend</a><ul>
-<li><a class="reference internal" href="#accessing-data-from-the-backend">Accessing data from the Backend</a></li>
+<li><a class="reference internal" href="#accessing-data-from-the-backend">Accessing Data From the Backend</a></li>
 <li><a class="reference internal" href="#api-data-formatting">API Data Formatting</a></li>
 </ul>
 </li>
@@ -136,23 +136,23 @@
 <h1>NSTI Backend<a class="headerlink" href="#nsti-backend" title="Permalink to this headline">¶</a></h1>
 <p>The new ORM (Object-Relational Mapping) is now more efficient and the database is queryable without using the front-end at all.  You can use the GET URL parameters to return JSON formatted data in your web browser.  You can also combine any number of search parameters or even filters created from the UI to drill down the search results as needed.</p>
 <div class="section" id="accessing-data-from-the-backend">
-<h2>Accessing data from the Backend<a class="headerlink" href="#accessing-data-from-the-backend" title="Permalink to this headline">¶</a></h2>
-<p>To access NSTI normally you qould go to</p>
+<h2>Accessing Data From the Backend<a class="headerlink" href="#accessing-data-from-the-backend" title="Permalink to this headline">¶</a></h2>
+<p>To access NSTI normally you would go to</p>
 <blockquote>
-<div>&lt;ip address&gt;/nsti</div></blockquote>
+<div>&lt;ip address&gt;:8080</div></blockquote>
 <p>To access the API from a URL use keywords for getting the JSON formatted data</p>
 <blockquote>
-<div>&lt;ip address&gt;/api/trapview/read/Snmptt</div></blockquote>
+<div>&lt;ip address&gt;:8080/api/trapview/read/Snmptt</div></blockquote>
 <p>This example will return every trap that is located in the main snmptt database</p>
 <p>Furthermore you can now access the API with multiple search and filtering criteria as stated above.</p>
-<p>Here is a sort by date example:</p>
+<p>Here is a filter by date example:</p>
 <div class="highlight-html"><div class="highlight"><pre>Time Format for NSTI  MM-DD-YYYY HH:mm:ss
 
-?timewritten__lt=10-10-2014 12:00:00
+<span class="nt">&lt;ip</span> <span class="na">address</span><span class="nt">&gt;</span>:8080/api/trapview/read/Snmptt?timewritten__lt=10-10-2014 12:00:00
 </pre></div>
 </div>
 <p>This will yield all traps that are YOUNGER than the given date. Similar can be done with __gt to yield traps OLDER than the given date. There is also the ability to sort by relative time. A __gt and __lt must still be given, like so:</p>
-<div class="highlight-html"><div class="highlight"><pre>?relative_timewritten__lt=1d
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;ip</span> <span class="na">address</span><span class="nt">&gt;</span>:8080/api/trapview/read/Snmptt?relative_timewritten__lt=1d
 </pre></div>
 </div>
 <p>Will yield traps OLDER than 1 day old. The supported date specifiers are:</p>
@@ -165,8 +165,11 @@ M - Months
 </pre></div>
 </div>
 <p>Simply use any of these date suffixes and prefix it with an INTEGER representing the number of seconds, minutes, etc. that you wish to find.</p>
-<p>Also, the Filters can now be brought up via the GET URL params just like the relative timewritten. Simply use the ?filters=&lt;name of filter&gt; to apply your filter to the search result.</p>
-<p>You can now also specify more than one directive for anything in the GET params. For example, if you would specify <em>&amp;id=1&amp;id=2</em>, one of these would get removed from the API GET return data. Now both make it through to the query.</p>
+<p>Also, the Filters you create via the NSTI web interface can now be used via the GET URL params just like the relative timewritten. Simply use the ?filters=&lt;name of filter&gt; to apply your filter to the search results.</p>
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;ip</span> <span class="na">address</span><span class="nt">&gt;</span>:8080/api/trapview/read/Snmptt?filters=CriticalSeverity
+</pre></div>
+</div>
+<p><em>This will apply the Filter “CriticalSeverity” to the traps retrieved.</em></p>
 </div>
 <div class="section" id="api-data-formatting">
 <h2>API Data Formatting<a class="headerlink" href="#api-data-formatting" title="Permalink to this headline">¶</a></h2>
@@ -190,7 +193,7 @@ M - Months
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>&lt;ip address&gt;/api/filter/read</p>
+<p>&lt;ip address&gt;:8080/api/filter/read</p>
 <ul class="simple">
 <li>This example will return all the filters that have been created, also in JSON format as seen below.</li>
 </ul>

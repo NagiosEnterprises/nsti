@@ -46,6 +46,10 @@ mysql -uroot -p"$mysqlpass" -e 'ALTER TABLE snmptt_unknown ADD `timewritten` tim
 # rename and preserve old filter table - snmptt.filters_1_4
 mysql -uroot -p"$mysqlpass" -e 'RENAME TABLE `snmptt.filters` TO `snmptt.filters_1_4`'
 
+# get data from filters_1_4 table to include in new filter tables
+mysqldump -uroot -p"$mysqlpass" snmptt filters_1_4 --compact > filters_1_4.sql
+
+
 # create new snmptt.filter snmptt.filter_atom tables
 mysql -uroot -p"$mysqlpass" < table_upgrade.sql
 

@@ -1,3 +1,6 @@
+
+USE `snmptt`;
+
 --
 -- Table structure for table `filter_atom`
 --
@@ -29,8 +32,6 @@ CREATE TABLE IF NOT EXISTS `filter` (
 --
 -- Insert old filter table data into new filter tables
 --
-USE `snmptt`;
-
 --
 -- filter table import
 --
@@ -47,33 +48,62 @@ SET @column_name_array = 'eventname, eventid, trapoid, enterprise, hostname, cat
 SET @column_query_array = 'eventnamequery, eventidquery, trapoidquery, enterprisequery, hostnamequery, categoryquery, severityquery, formatlinequery';
 SET @column_val_array = 'eventname, eventid, trapoid, enterprise, hostname, category, severity, formatline';
 
-CREATE PROCEDURE atomwhile()
-BEGIN
+-- DELIMITER //
+-- 
+-- CREATE FUNCTION atomwhile()
+-- BEGIN
+--   DECLARE V;
+--   WHILE(LOCATE(',', @column_val_array) > 0) DO
 
-  WHILE(LOCATE(',', @column_name_array) > 0) DO
+--     IF (LOCATE(',', @column_val_array) == '') THEN
 
-  END WHILE
-  
-END
+--     END IF;
+
+--   END WHILE;
+-- END//
+insert into filter_atom ('comparison')
+select concat('eventnamequery',),
+       ('eventidquery'), 
+       ('trapoidquery'), 
+       ('enterprisequery'), 
+       ('hostnamequery'), 
+       ('categoryquery'), 
+       ('severityquery'), 
+       ('formatlinequery')
+from filters
+where '%query' not in (select column_name from filter_atom);
+
+select eventname,
+       eventid,
+       trapoid,
+       enterprise,
+       hostname,
+       category,
+       severity,
+       formatline
+from filters 
+where trapoidquery not in (select column_name from filter_atom);
 
 
-
-INSERT INTO `filter_atom` (`filter_id`)
-SELECT
-  `id` AS `filter_id`
-FROM `filters_1_4`;
-
-
-
-INSERT INTO `filter_atom` (`comparison`)
-SELECT
-  
-FROM `filters_1_4`;
+# Old insert into method
+-- INSERT INTO `filter_atom` (`filter_id`, `comparison`, `val`)
+-- SELECT
+--   `id` AS `filter_id`
+-- FROM `filters_1_4` WHERE * != '' OR NULL;
 
 
-
-INSERT INTO `filter_atom` (`val`)
-SELECT
-  
-FROM `filters_1_4` WHERE * != '' OR NULL;
-
+# new insert into method
+-- insert into newTable
+-- select oldNames.ItemID,
+--        oldNames.Name,
+--        oldStreets.data,
+--        oldCities.data
+-- from   oldNames
+--     inner join oldData as oldStreets on oldNames.ItemID = oldStreets.ItemID
+--     inner join oldData as oldCities on oldNames.ItemID = oldCities.ItemID
+--     inner join oldFields as streetsFields 
+--         on oldStreets.FieldID = streetsFields.FieldID
+--         and streetsFields.Name = 'Street'
+--     inner join oldFields as citiesFields 
+--         on oldCities.FieldID = citiesFields.Field
+--         and citiesFields.Name = 'City'

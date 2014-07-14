@@ -49,8 +49,7 @@ mysql -uroot -p"$mysqlpass" -e 'RENAME TABLE `snmptt.filters` TO `snmptt.filters
 # get data from filters_1_4 table to include in new filter tables
 mysqldump -uroot -p"$mysqlpass" snmptt filters_1_4 --compact > filters_1_4.sql
 
-
-# create new snmptt.filter snmptt.filter_atom tables
+# create new snmptt.filter and snmptt.filter_atom tables and import old filters
 mysql -uroot -p"$mysqlpass" < table_upgrade.sql
 
 

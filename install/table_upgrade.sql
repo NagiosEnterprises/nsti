@@ -44,66 +44,59 @@ FROM `filters_1_4`;
 --
 -- filter_atom table import
 --
-SET @column_name_array = 'eventname, eventid, trapoid, enterprise, hostname, category, severity, formatline';
-SET @column_query_array = 'eventnamequery, eventidquery, trapoidquery, enterprisequery, hostnamequery, categoryquery, severityquery, formatlinequery';
-SET @column_val_array = 'eventname, eventid, trapoid, enterprise, hostname, category, severity, formatline';
+insert into filter_atom (comparison)
+ (select eventnamequery from filters_1_4)
+union
+ (select eventidquery from filters_1_4)
+union
+ (select trapoidquery from filters_1_4)
+union
+ (select enterprisequery from filters_1_4)
+union
+ (select hostnamequery from filters_1_4)
+union
+ (select categoryquery from filters_1_4) 
+union 
+ (select severityquery from filters_1_4) 
+union
+ (select formatlinequery from filters_1_4);
 
--- DELIMITER //
--- 
--- CREATE FUNCTION atomwhile()
--- BEGIN
---   DECLARE V;
---   WHILE(LOCATE(',', @column_val_array) > 0) DO
+insert into filter_atom (column_name)
+ (select 'eventname' from filters_1_4 where (`eventname` != ''))
+union
+ (select 'eventid' from filters_1_4 where (`eventid` != ''))
+union
+ (select 'trapoid' from filters_1_4 where (`trapoid` != ''))
+union
+ (select 'enterprise' from filters_1_4 where (`enterprise` != ''))
+union
+ (select 'hostname' from filters_1_4 where (`hostname` != ''))
+union
+ (select 'category' from filters_1_4 where (`category` != '')) 
+union 
+ (select 'severity' from filters_1_4 where (`severity` != '')) 
+union
+ (select 'formatline' from filters_1_4 where (`formatline` != ''));
 
---     IF (LOCATE(',', @column_val_array) == '') THEN
-
---     END IF;
-
---   END WHILE;
--- END//
-insert into filter_atom ('comparison')
-select concat('eventnamequery',),
-       ('eventidquery'), 
-       ('trapoidquery'), 
-       ('enterprisequery'), 
-       ('hostnamequery'), 
-       ('categoryquery'), 
-       ('severityquery'), 
-       ('formatlinequery')
-from filters
-where '%query' not in (select column_name from filter_atom);
-
-select eventname,
-       eventid,
-       trapoid,
-       enterprise,
-       hostname,
-       category,
-       severity,
-       formatline
-from filters 
-where trapoidquery not in (select column_name from filter_atom);
+insert into filter_atom (val)
+ (select eventname from filters_1_4)
+union
+ (select eventid from filters_1_4)
+union
+ (select trapoid from filters_1_4)
+union
+ (select enterprise from filters_1_4)
+union
+ (select hostname from filters_1_4)
+union
+ (select category from filters_1_4) 
+union 
+ (select severity from filters_1_4) 
+union
+ (select formatline from filters_1_4);
 
 
-# Old insert into method
--- INSERT INTO `filter_atom` (`filter_id`, `comparison`, `val`)
--- SELECT
---   `id` AS `filter_id`
--- FROM `filters_1_4` WHERE * != '' OR NULL;
-
-
-# new insert into method
--- insert into newTable
--- select oldNames.ItemID,
---        oldNames.Name,
---        oldStreets.data,
---        oldCities.data
--- from   oldNames
---     inner join oldData as oldStreets on oldNames.ItemID = oldStreets.ItemID
---     inner join oldData as oldCities on oldNames.ItemID = oldCities.ItemID
---     inner join oldFields as streetsFields 
---         on oldStreets.FieldID = streetsFields.FieldID
---         and streetsFields.Name = 'Street'
---     inner join oldFields as citiesFields 
---         on oldCities.FieldID = citiesFields.Field
---         and citiesFields.Name = 'City'
+INSERT INTO `filter_atom` (`filter_id`)
+SELECT 
+  `id` as `filter_id`
+FROM `filters_1_4`;

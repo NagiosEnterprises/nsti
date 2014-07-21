@@ -9,7 +9,7 @@ echo "Database being upgraded....
 	 ****************************** !WARNING! ********************************
 	 It is very important that you backup your databases before running this 
 	 upgrade script.  The origional trap data will be kept in the new database
-	 and the old filters will be kept in the new snmptt table filters-1.4 for
+	 and the old filters will be kept in the new snmptt table filters_1_4 for
 	 backup.
 	 *************************************************************************
 	 "
@@ -47,7 +47,7 @@ mysql -uroot -p"$mysqlpass" -e 'ALTER TABLE snmptt_unknown ADD `timewritten` tim
 mysql -uroot -p"$mysqlpass" -e 'RENAME TABLE `snmptt.filters` TO `snmptt.filters_1_4`'
 
 # get data from filters_1_4 table to include in new filter tables
-mysqldump -uroot -p"$mysqlpass" snmptt filters_1_4 --compact > filters_1_4.sql
+# mysqldump -uroot -p"$mysqlpass" snmptt filters_1_4 --compact > filters_1_4.sql
 
 # create new snmptt.filter and snmptt.filter_atom tables and import old filters
 mysql -uroot -p"$mysqlpass" < table_upgrade.sql

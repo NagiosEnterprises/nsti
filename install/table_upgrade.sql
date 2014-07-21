@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS `filter_atom` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-
 --
 -- Table structure for table `filter`
 --
@@ -28,7 +27,6 @@ CREATE TABLE IF NOT EXISTS `filter` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-
 --
 -- Insert old filter table data into new filter tables
 --
@@ -37,66 +35,72 @@ CREATE TABLE IF NOT EXISTS `filter` (
 --
 INSERT INTO `filter` (`id`, `name`)
 SELECT 
-  `id` as `id`, 
-  `filtername` as `name`
+  id as id, 
+  filtername as name
 FROM `filters_1_4`;
 
 --
 -- filter_atom table import
 --
-insert into filter_atom (comparison)
- (select eventnamequery from filters_1_4)
-union
- (select eventidquery from filters_1_4)
-union
- (select trapoidquery from filters_1_4)
-union
- (select enterprisequery from filters_1_4)
-union
- (select hostnamequery from filters_1_4)
-union
- (select categoryquery from filters_1_4) 
-union 
- (select severityquery from filters_1_4) 
-union
- (select formatlinequery from filters_1_4);
-
-insert into filter_atom (column_name)
- (select 'eventname' from filters_1_4 where (`eventname` != ''))
-union
- (select 'eventid' from filters_1_4 where (`eventid` != ''))
-union
- (select 'trapoid' from filters_1_4 where (`trapoid` != ''))
-union
- (select 'enterprise' from filters_1_4 where (`enterprise` != ''))
-union
- (select 'hostname' from filters_1_4 where (`hostname` != ''))
-union
- (select 'category' from filters_1_4 where (`category` != '')) 
-union 
- (select 'severity' from filters_1_4 where (`severity` != '')) 
-union
- (select 'formatline' from filters_1_4 where (`formatline` != ''));
-
-insert into filter_atom (val)
- (select eventname from filters_1_4)
-union
- (select eventid from filters_1_4)
-union
- (select trapoid from filters_1_4)
-union
- (select enterprise from filters_1_4)
-union
- (select hostname from filters_1_4)
-union
- (select category from filters_1_4) 
-union 
- (select severity from filters_1_4) 
-union
- (select formatline from filters_1_4);
+insert into filter_atom (comparison, column_name, val, filter_id)
+select eventnamequery,
+       'eventname',
+       eventname,
+       id
+from filters_1_4 where (`eventname` != '');
 
 
-INSERT INTO `filter_atom` (`filter_id`)
-SELECT 
-  `id` as `filter_id`
-FROM `filters_1_4`;
+insert into filter_atom (comparison, column_name, val, filter_id)
+select eventidquery,
+       'eventid',
+       eventid,
+       id
+from filters_1_4 where (`eventid` != '');
+
+
+insert into filter_atom (comparison, column_name, val, filter_id)
+select trapoidquery,
+       'trapoid',
+       trapoid,
+       id
+from filters_1_4 where (`trapoid` != '');
+
+
+insert into filter_atom (comparison, column_name, val, filter_id)
+select enterprisequery,
+       'enterprise',
+       enterprise,
+       id
+from filters_1_4 where (`enterprise` != '');
+
+
+insert into filter_atom (comparison, column_name, val, filter_id)
+select hostnamequery,
+       'hostname',
+       hostname,
+       id
+from filters_1_4 where (`hostname` != '');
+
+
+insert into filter_atom (comparison, column_name, val, filter_id)
+select categoryquery,
+       'category',
+       category,
+       id
+from filters_1_4 where (`category` != '');
+
+
+insert into filter_atom (comparison, column_name, val, filter_id)
+select severityquery,
+       'severity',
+       severity,
+       id
+from filters_1_4 where (`severity` != '');
+
+
+insert into filter_atom (comparison, column_name, val, filter_id)
+select formatlinequery,
+       'formatline',
+       formatline,
+       id
+from filters_1_4 where (`formatline` != '');

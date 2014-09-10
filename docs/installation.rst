@@ -13,23 +13,21 @@ Installing NSTI Using Tarball
 -----------------------------
 If you want to install NSTI using a tarball use the URL below
 
-   http://assets.nagios.com/downloads/nsti/tarballs/latest.php
+   http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz
 
 From the command line use wget to install
 
 .. code-block:: bash
 
     cd /tmp
-    wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-*.tar.gz
-    tar zxf nsti-*.tar.gz
-    cd nsti-*/
+    wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz
+    tar zxf nsti-3.0.2.tar.gz
+    cd nsti-3.0.2/
     sh install.sh
 
-Now NSTI should be installed, to verify run the runserver.py file and navigate to this address::
+Now NSTI should be installed, to verify navigate to this address::
 
-    python runserver.py
-
-    http://<NSTI Server IP>:8080
+    http://<NSTI Server IP>/nsti
 
 .. note ::
 
@@ -143,8 +141,15 @@ To clone a repository with git run the following command in the directory you wa
     cd nsti/
     sh install.sh
 
-Now NSTI should be installed, to verify run the runserver.py file and navigate to this address::
+Now NSTI should be installed, to verify navigate to this address::
 
-    python runserver.py
+    http://<NSTI Server IP>/nsti
 
-    http://<NSTI Server IP>:8080
+
+While developing use the runserver.py to launch the server and get apache request output from the commandline and access NSTI as shown below:
+
+  cd /tmp/nsti/
+  
+  python runserver.py
+
+  http://<NSTI Server IP>:8080/nsti

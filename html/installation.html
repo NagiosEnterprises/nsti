@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; NSTI v3.0.2 documentation</title>
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '3.0.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="NSTI v3.0.2 documentation" href="index.html" />
+    <link rel="next" title="Filters" href="filters.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>NSTI performs well with and is designed to run on any Linux distribution.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">NSTI is designed to work under any environment, but the installer script
+will only work with the yum installer until cross platform support is added in
+another version.</p>
+</div>
+<div class="section" id="installing-nsti-using-tarball">
+<h2>Installing NSTI Using Tarball<a class="headerlink" href="#installing-nsti-using-tarball" title="Permalink to this headline">¶</a></h2>
+<p>If you want to install NSTI using a tarball use the URL below</p>
+<blockquote>
+<a class="reference external" href="http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz">http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz</a></blockquote>
+<p>From the command line use wget to install</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> /tmp
+wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz
+tar zxf nsti-3.0.2.tar.gz
+<span class="nb">cd </span>nsti-3.0.2/
+sh install.sh
+</pre></div>
+</div>
+<p>Now NSTI should be installed, to verify navigate to this address:</p>
+<div class="highlight-python"><pre>http://&lt;NSTI Server IP&gt;/nsti</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the previous install options happen to fail&#8211;the best way to
+troubleshoot is to consult the install log that is generated in the install
+directory.  This will show what the install did and where it failed.</p>
+</div>
+</div>
+<div class="section" id="nsti-dependency-notes">
+<h2>NSTI Dependency Notes<a class="headerlink" href="#nsti-dependency-notes" title="Permalink to this headline">¶</a></h2>
+<p>If you wish to install NSTI manually the following is a list of components
+that you will need to run NSTI:</p>
+<ul class="simple">
+<li>mysql</li>
+<li>mysql-devel</li>
+<li>mysql-server</li>
+<li>httpd</li>
+<li>gcc</li>
+<li>wget</li>
+<li>make</li>
+<li>tar</li>
+<li>mod_wsgi</li>
+<li>snmptt</li>
+<li>net-snmp</li>
+<li>python</li>
+</ul>
+<p>In addition to the above, there are python modules that are required.  These
+modules are also included in nsti/install/requirements.txt.  These are easily
+managed if you install using pip:</p>
+<div class="highlight-bash"><div class="highlight"><pre>curl https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py | python
+</pre></div>
+</div>
+</div>
+<div class="section" id="possible-nsti-install-gotcha-s">
+<h2>Possible NSTI Install Gotcha&#8217;s<a class="headerlink" href="#possible-nsti-install-gotcha-s" title="Permalink to this headline">¶</a></h2>
+<p>If any of the packages failed to install you will see error outputs such as the following possible errors:</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<div class="last line-block">
+<div class="line">&#8216;Cannot continue install until all of these prereqs are met.&#8217;</div>
+<div class="line"><br /></div>
+<div class="line">&#8216;mod_wsgi is not installed in Apache. Please use your package manager to install it.&#8217;</div>
+<div class="line"><br /></div>
+<div class="line">&#8216;No user <cite>nagios</cite>. Add a user for nagios and make sure it is in the nagcmd group.&#8217;</div>
+<div class="line">&#8216;Apache must also be in nagcmd.&#8217;</div>
+</div>
+</div>
+<div class="section" id="flask-and-storm">
+<h3>Flask and Storm<a class="headerlink" href="#flask-and-storm" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Both of these are inside the requirements.txt that the install script refers to so they should both be installed at this point, but just in case we will go over them and how to install them if, for some reason, they are missing.</p>
+</div>
+<p>NSTI uses Flask as a lightweight web applicatin framework and uses Werkzeug and Jinja2 for templating engines.  Flask is a great microframework that allows extentions to be added granting it access to form validation and database abstraction.  You will need Flask so install it using pip or easy_install.</p>
+<p>Storm is a Python programming library for Object-Relational Mapping (ORM) between one or more SQL databases and Python objects.  This allows NSTI to make queries and demands of the datasbase to be able to populate, collect and filter the traps in the database, but also how the traps are displayed in the UI.</p>
+</div>
+<div class="section" id="mysql-configuration">
+<h3>MySQL Configuration<a class="headerlink" href="#mysql-configuration" title="Permalink to this headline">¶</a></h3>
+<div class="admonition danger">
+<p class="first admonition-title">Danger</p>
+<p class="last">If the installer ran successfully the first time the following section does
+not apply.  It is only relevent if any errors occured or if you are
+installing NSTI manually.</p>
+</div>
+<p>To run NSTI correctly it is important that you have your mysql set up correctly so NSTI can read and write data from the database.  The most common problem with NSTI not communicating properly with your mysql database is the root user password settings.  It is recommended that you set the password if the install script failed to do so.</p>
+<p>The nsti.py file is located here:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">nsti</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nsti</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>This is where you will set your database type, host, name, user and password.  To test if you succesfully configured your database use the runserver.py in the nsti directory.  It will output any connection errors and you will be able to adjust settings accordingly.</p>
+<p>Another point to be made is that you will need to verify that the database NSTI is writing to was created.  If it wasn&#8217;t you will recieve similar errors to the following:</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>ERROR 1049 (42000): Unknown database &#8216;snmptt&#8217;</p>
+<p class="last">Unable to add database schema. Does the snmptt exist?</p>
+</div>
+<p>This means that the installer did not create the database so you will need to run the installer again or manually add the database that will be written to, create the root user and use the password &#8216;password&#8217; to make sure it is working.  The default database is Snmptt.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">After you verify everything is working with the database it is recommended that you change your password and update it in the configuration files.</p>
+</div>
+</div>
+</div>
+<div class="section" id="installing-nsti-using-git-clone-developers">
+<h2>Installing NSTI Using Git Clone (Developers)<a class="headerlink" href="#installing-nsti-using-git-clone-developers" title="Permalink to this headline">¶</a></h2>
+<p>This section is for developers who would like to clone the NSTI repository to get a look at the front and back end firsthand.  First you will clone the Git repo to retrieve NSTI.</p>
+<p>To clone a repository with git run the following command in the directory you want nsti to be copied to:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> /tmp
+git clone https://github.com/NagiosEnterprises/nsti.git
+<span class="nb">cd </span>nsti/
+sh install.sh
+</pre></div>
+</div>
+<p>Now NSTI should be installed, to verify navigate to this address:</p>
+<div class="highlight-python"><pre>http://&lt;NSTI Server IP&gt;/nsti</pre>
+</div>
+<p>While developing use the runserver.py to launch the server and get apache request output from the commandline and access NSTI as shown below:</p>
+<blockquote>
+<p>cd /tmp/nsti/</p>
+<p>python runserver.py</p>
+<p><a class="reference external" href="http:/">http:/</a>/&lt;NSTI Server IP&gt;:8080/nsti</p>
+</blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>  
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

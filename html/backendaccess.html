@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>NSTI Backend &mdash; NSTI v3.0.2 documentation</title>
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '3.0.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="NSTI v3.0.2 documentation" href="index.html" />
+    <link rel="prev" title="SNMP Trap Data Visualizer" href="visualizer.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nsti-backend">
+<h1>NSTI Backend<a class="headerlink" href="#nsti-backend" title="Permalink to this headline">¶</a></h1>
+<p>The new ORM (Object-Relational Mapping) is now more efficient and the database is queryable without using the front-end at all.  You can use the GET URL parameters to return JSON formatted data in your web browser.  You can also combine any number of search parameters or even filters created from the UI to drill down the search results as needed.</p>
+<div class="section" id="accessing-data-from-the-backend">
+<h2>Accessing Data From the Backend<a class="headerlink" href="#accessing-data-from-the-backend" title="Permalink to this headline">¶</a></h2>
+<p>To access NSTI normally you would go to</p>
+<blockquote>
+&lt;ip address&gt;:8080</blockquote>
+<p>To access the API from a URL use keywords for getting the JSON formatted data</p>
+<blockquote>
+&lt;ip address&gt;:8080/api/trapview/read/Snmptt</blockquote>
+<p>This example will return every trap that is located in the main snmptt database</p>
+<p>Furthermore you can now access the API with multiple search and filtering criteria as stated above.</p>
+<p>Here is a filter by date example:</p>
+<div class="highlight-html"><div class="highlight"><pre>Time Format for NSTI  MM-DD-YYYY HH:mm:ss
+
+<span class="nt">&lt;ip</span> <span class="na">address</span><span class="nt">&gt;</span>:8080/api/trapview/read/Snmptt?timewritten__lt=10-10-2014 12:00:00
+</pre></div>
+</div>
+<p>This will yield all traps that are YOUNGER than the given date. Similar can be done with __gt to yield traps OLDER than the given date. There is also the ability to sort by relative time. A __gt and __lt must still be given, like so:</p>
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;ip</span> <span class="na">address</span><span class="nt">&gt;</span>:8080/api/trapview/read/Snmptt?relative_timewritten__lt=1d
+</pre></div>
+</div>
+<p>Will yield traps OLDER than 1 day old. The supported date specifiers are:</p>
+<div class="highlight-html"><div class="highlight"><pre>s - Seconds
+m - Minutes
+h - Hours
+d - Days
+w - Weeks
+M - Months
+</pre></div>
+</div>
+<p>Simply use any of these date suffixes and prefix it with an INTEGER representing the number of seconds, minutes, etc. that you wish to find.</p>
+<p>Also, the Filters you create via the NSTI web interface can now be used via the GET URL params just like the relative timewritten. Simply use the ?filters=&lt;name of filter&gt; to apply your filter to the search results.</p>
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;ip</span> <span class="na">address</span><span class="nt">&gt;</span>:8080/api/trapview/read/Snmptt?filters=CriticalSeverity
+</pre></div>
+</div>
+<p><em>This will apply the Filter “CriticalSeverity” to the traps retrieved.</em></p>
+</div>
+<div class="section" id="api-data-formatting">
+<h2>API Data Formatting<a class="headerlink" href="#api-data-formatting" title="Permalink to this headline">¶</a></h2>
+<p>Here is what a single SNMP trap looks like in JSON format:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s2">&quot;eventid&quot;</span><span class="o">:</span> <span class="s2">&quot;.1.3.6.1.4.1.2021.13.991.3.4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;category&quot;</span><span class="o">:</span> <span class="s2">&quot;Closure&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;uptime&quot;</span><span class="o">:</span> <span class="s2">&quot;2014-04-11 14:27:50&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;severity&quot;</span><span class="o">:</span> <span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;traptime&quot;</span><span class="o">:</span> <span class="s2">&quot;2014-04-11 14:27:50&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timewritten&quot;</span><span class="o">:</span> <span class="s2">&quot;04\/11\/14 14:27:50&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;formatline&quot;</span><span class="o">:</span> <span class="s2">&quot;Oh no the fire hydrant blew up&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hostname&quot;</span><span class="o">:</span> <span class="s2">&quot;192.168.5.2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;community&quot;</span><span class="o">:</span> <span class="s2">&quot;private&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;agentip&quot;</span><span class="o">:</span> <span class="s2">&quot;192.168.5.2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;eventname&quot;</span><span class="o">:</span> <span class="s2">&quot;demoTrap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;trapoid&quot;</span><span class="o">:</span> <span class="s2">&quot;.1.3.6.1.4.1.2021.13.991.3.4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;trapread&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;enterprise&quot;</span><span class="o">:</span> <span class="s2">&quot;.1.3.6.1.4.1.2021&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">151</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>&lt;ip address&gt;:8080/api/filter/read</p>
+<ul class="simple">
+<li>This example will return all the filters that have been created, also in JSON format as seen below.</li>
+</ul>
+<p>Here is an example of the api/filter/read request in JSON format:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s2">&quot;Test Filter&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">65</span><span class="p">,</span>
+        <span class="s2">&quot;actions&quot;</span><span class="o">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;comparison&quot;</span><span class="o">:</span> <span class="s2">&quot;__contains&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;.41&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;column_name&quot;</span><span class="o">:</span> <span class="s2">&quot;hostname&quot;</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;Host Filter&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">66</span><span class="p">,</span>
+        <span class="s2">&quot;actions&quot;</span><span class="o">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;comparison&quot;</span><span class="o">:</span> <span class="s2">&quot;__contains&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="s2">&quot;critical&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;column_name&quot;</span><span class="o">:</span> <span class="s2">&quot;severity&quot;</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>  
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

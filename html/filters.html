@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Filters &mdash; NSTI v3.0.2 documentation</title>
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '3.0.2',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="NSTI v3.0.2 documentation" href="index.html" />
+    <link rel="next" title="SNMP Trap Data Visualizer" href="visualizer.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="filters">
+<h1>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h1>
+<p>One of the most asked for features in NSTI and any other SNMP user interface is being able to filter the SNMP traps.  This page will teach you how to create and manipulate filters in NSTI.</p>
+<div class="section" id="filtering-snmp-traps-with-nsti">
+<h2>Filtering SNMP traps with NSTI<a class="headerlink" href="#filtering-snmp-traps-with-nsti" title="Permalink to this headline">¶</a></h2>
+<p>The biggest addition that was made to NSTI 3.0 is that you can now create filters than can be applied to the main traplist.  This allows you to check specific columns and values to be able to understand the SNMP data you have received.</p>
+<p>Below is the Filter page where you can create, edit and delete filters:</p>
+<div align="center" class="align-center"><img alt="_images/filtermain.png" class="align-center" src="_images/filtermain.png" /></div>
+</div>
+<div class="section" id="adding-editing-and-deleting-filters">
+<h2>Adding, Editing and Deleting Filters<a class="headerlink" href="#adding-editing-and-deleting-filters" title="Permalink to this headline">¶</a></h2>
+<p>The Filters page is designed to give you full control of your filters and to make creating them much faster. Below is an example of the new filter creation window which is accessed by clicking the Add New Filter button. Enter a New Filter Name, in this example we used “New Filter”. Then you can select different conditions which you want to use to limit your trap results.  You can select the item you want to be filtered, the comparison to be made, and the value to filter against:</p>
+<div align="center" class="align-center"><img alt="_images/filteraddex.png" class="align-center" src="_images/filteraddex.png" /></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To edit an existing filter all you have to do is select a single filters’ checkbox and click the pen icon. This will allow you to change anything in the filter other than the Filter Name.  To delete a filter, use the same checkbox but select the filter and then click the X icon.</p>
+</div>
+<p>You can also add new filters from the Traplist page where they are applied:</p>
+<img align="left" alt="_images/trapFilterSelect.png" class="align-left" src="_images/trapFilterSelect.png" />
+<p>Just click the plus sign to add a new filter and the exact same window that you used above will open. Once you select Add New Filter you will be able to choose it from the dropdown menu on the Traplist page.</p>
+</div>
+<div class="section" id="applying-filters-to-the-traplist">
+<h2>Applying Filters to the Traplist<a class="headerlink" href="#applying-filters-to-the-traplist" title="Permalink to this headline">¶</a></h2>
+<p>From the Traplist page you can select filters you have created from the Select Filter dropdown and click the Apply button. Once a filter has been applied you will see a green tag in the left side above the trap table. This tag means that the filter you selected and applied is currently active on the traplist page. To remove a filter tag simply click the ‘X’ on the tag to delete it.</p>
+<div align="center" class="align-center"><img alt="_images/traplistApplyFilter.png" class="align-center" src="_images/traplistApplyFilter.png" /></div>
+<div class="line-block">
+<div class="line">As you can see above the table has been filtered with the following 2 Filters:</div>
+<div class="line">Host Filter: which limits results by  Hostname  Contains  .41</div>
+<div class="line">Test Filter: which limits results by  Severity  Contains  CRITICAL</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you have multiple filters, you can apply them on top of each other to limit results in the Traplist even more. There is no limit to how many filters you can apply at one time.  An alternative to applying multiple filters is to create one filter with multiple filter criteria.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>  
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

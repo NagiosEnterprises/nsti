@@ -889,6 +889,7 @@ $(document).ready(function() {
         $('#add-filter-modal').modal('show');
     });
 
+
     $('#add-new-filter').click(function() {
         add_filter();
     });
@@ -980,6 +981,9 @@ $(document).ready(function() {
         archive_traps();
     });
 
+    $('#trapview-modal').on('hide.bs.modal', function () {
+        $('#trapview-modal').removeData();
+    });
 });
 </script>
 {% endblock header %}

@@ -32,7 +32,7 @@ echo "
 
 Access NSTI here:
 	
-	<IP address>:8080
+	<IP address>/nsti
 	
 =============================
 "

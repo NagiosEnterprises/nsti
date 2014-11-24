@@ -20,10 +20,10 @@ var TRANSLATE = {
     
 function render_trap() {
 
-    var api_url = "";
+    
     var api_url = BASE_URL + 'api/trapview/read/{{ table }}';
     
-    var query = "";
+    
     var query = {id: {{ trapid }}};
     
     $.getJSON(api_url, query, function(data) {
@@ -56,6 +56,8 @@ function render_trap() {
 }
 
 $(document).ready(function() {
+    var query = "";
+    var api_url = "";
     render_trap();
 });
 </script>

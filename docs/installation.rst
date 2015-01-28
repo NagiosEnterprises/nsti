@@ -11,16 +11,20 @@ NSTI performs well with and is designed to run on any Linux distribution.
 
 Installing NSTI Using Tarball
 -----------------------------
+Here is the Official Nagios NSTI Tarball page to track releases: 
+
+   http://assets.nagios.com/downloads/nsti/tarballs/
+
 If you want to install NSTI using a tarball use the URL below
 
-   http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz
+   http://assets.nagios.com/downloads/nsti/tarballs/latest.php
 
 From the command line use wget to install
 
 .. code-block:: bash
 
     cd /tmp
-    wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-3.0.2.tar.gz
+    wget http://assets.nagios.com/downloads/nsti/tarballs/latest.php
     tar zxf nsti-3.0.2.tar.gz
     cd nsti-3.0.2/
     sh install.sh

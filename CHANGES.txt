@@ -1,3 +1,11 @@
+NSTI v3.0.2  07/06/14
+=====================
+- Bug fix for install.sh which broke all other installations when trying to 'tree' instead of 'tee'
+- Remove install check for repo RPM, which is now not required
+- Fix for iptables commit in firewall.sh, use -I to insert instead of -A for append
+- Fix pagination from becoming corrupted and allowing user to click next when at the end of the table list
+
+
 NSTI v3.0.1  06/05/14
 =====================
 - Add Filtering by Message column (formatline in the database) -LG
@@ -9,7 +17,7 @@ NSTI v3.0.1  06/05/14
 - CSS styling and front end updates -LG
 
 
-NSTI v3.0   06/03/14
+NSTI v3.0.0   06/03/14
 =====================
 - Front end overhaul -LG
 - Add new ORM, reformat database for easier API access -NS

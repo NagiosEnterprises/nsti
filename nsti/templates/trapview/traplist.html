@@ -135,14 +135,17 @@ function normal_row(row) {
     switch(row.severity) {
         case 'warning':
         case 'Warning':
+        case 'WARNING':
             klass = 'warning';
             break;
         case 'critical':
         case 'Critical':
+        case 'CRITICAL':
             klass = 'danger';
             break;
         case 'ok':
         case 'Ok':
+        case 'OK':
             klass = 'success';
             break;
     }
@@ -318,7 +321,7 @@ function load_header() {
             $('<th>', {text: 'Trap OID', class: 'text-center', href: "javascript:SortTable(3, 'T');"}).appendTo(heading);
             $('<th>', {text: 'Hostname', class: 'text-center', href: "javascript:SortTable(4, 'T');"}).appendTo(heading);
             $('<th>', {text: 'Severity', class: 'text-center', href: "javascript:SortTable(5, 'T');"}).appendTo(heading);
-            $('<th>', {text: 'Category', class: 'text-center', href: "javascript:SortTable(6, 'T');"}).appendTo(heading);
+            $('<th>', {text: 'Category', style: 'min-width:85px', class: 'text-center', href: "javascript:SortTable(6, 'T');"}).appendTo(heading);
             $('<th>', {text: 'Message', class: 'text-center message-column'}).appendTo(heading);
             break;
     }
@@ -623,114 +626,76 @@ function draw_charts() {
             switch (inspect_target) {
 
                 case 'category':
-                //******may need to account for other possible categories******
-                    var value1 = trap.category;
-                    var value2 = trap.category;
-
-                    if (value1 == 'Closure') {
-                        bar_count1++;
-                    } else if (value2 == 'Status Event') {
-                        bar_count2++;
-                    } else if (value2 == 'Other Event') {
-                        bar_count3++;
-                    }
-
-                    if (value2 == 'Closure') {
-                        pie_count1++;
-                    } else if (value2 == 'Status Event') {
-                        pie_count2++;
-                    } else if (value2 == 'Other Event') {
-                        pie_count3++;
-                    }
+                    container.push(trap.category);
 
                     if (count >= traps.length) {
+                        counter = {};
+                        for (var i = 0; i < container.length; i++) {
+
+                            if(counter[container[i]]) {
+                                counter[container[i]] = counter[container[i]] + 1;
+                            } else {
+                                counter[container[i]] = 1;
+                            }
+                        }
+
+                        var ipdata = [];
+                        $.each(counter, function(ip, num) {
+                            obj = {
+                                name: ip,
+                                y: num
+                            }
+                            ipdata.push(obj);
+                        });
+
                         graphObject1 = {
-                            data: [{
-                                name: 'Closure',
-                                color: '#75d175',
-                                y: bar_count1
-                            }, {
-                                name: 'Status Event',
-                                color: '#428bca',
-                                y: bar_count2
-                            }, {
-                                name: 'Other Event',
-                                color: '#f0ad4e',
-                                y: bar_count3
-                            }]
+                            type: 'bar',
+                            data: ipdata
                         }
 
                         graphObject2 = {
                             type: 'pie',
-                            name: 'Category',
-                            data: [
-                                ['Closure', pie_count1],
-                                ['Status Event', pie_count2],
-                                ['Other Event', pie_count3]
-                            ]
+                            data: ipdata
                         }
                     }
 
-                    break;
+                break;
 
                 case 'severity':
-                    var value1 = trap.severity;
-                    var value2 = trap.severity;
-
-                    if (value1 == 'ok') {
-                        bar_count1++;
-                    } else if (value2 == 'normal') {
-                        bar_count2++;
-                    } else if (value2 == 'warning') {
-                        bar_count3++;
-                    } else if (value2 == 'critical') {
-                        bar_count4++;
-                    }
-
-                    if (value2 == 'ok') {
-                        pie_count1++;
-                    } else if (value2 == 'normal') {
-                        pie_count2++;
-                    } else if (value2 == 'warning') {
-                        pie_count3++;
-                    } else if (value2 == 'critical') {
-                        pie_count4++;
-                    }
+                    container.push(trap.severity);
 
                     if (count >= traps.length) {
+                        counter = {};
+                        for (var i = 0; i < container.length; i++) {
+
+                            if(counter[container[i]]) {
+                                counter[container[i]] = counter[container[i]] + 1;
+                            } else {
+                                counter[container[i]] = 1;
+                            }
+                        }
+
+                        var ipdata = [];
+                        $.each(counter, function(ip, num) {
+                            obj = {
+                                name: ip,
+                                y: num
+                            }
+                            ipdata.push(obj);
+                        });
+
                         graphObject1 = {
-                            data: [{
-                                name: 'OK',
-                                color: '#75d175',
-                                y: bar_count1
-                            }, {
-                                name: 'Normal',
-                                color: '#428bca',
-                                y: bar_count2
-                            }, {
-                                name: 'Warning',
-                                color: '#f0ad4e',
-                                y: bar_count3
-                            }, {
-                                name: 'Critical',
-                                color: '#d9534f',
-                                y: bar_count4
-                            }]
+                            type: 'bar',
+                            data: ipdata
                         }
 
                         graphObject2 = {
                             type: 'pie',
-                            name: 'Severity',
-                            data: [
-                                ['OK', pie_count1],
-                                ['Normal', pie_count2],
-                                ['Warning', pie_count3],
-                                ['Critical', pie_count4]
-                            ]
+                            data: ipdata
                         }
                     }
 
-                    break;
+                break;
 
                 case 'hostname':
                     container.push(trap.hostname);

@@ -211,7 +211,7 @@ function load_body(page) {
             var app;
 
             app = func(d);
-            app.appendTo(tbody);
+            app.prependTo(tbody);
         });
     }
     hide_throbber('#trap-table');

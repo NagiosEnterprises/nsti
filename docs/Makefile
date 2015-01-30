@@ -5,7 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = ../../nsti-docs
+BUILDDIR      = ../../nsti-docs/nsti
 PDFBUILDDIR   = /tmp
 PDF	      = ../manual.pdf
 

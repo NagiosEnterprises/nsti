@@ -143,7 +143,6 @@ set_os_info() {
 
     httpd='httpd'
     mysql='mysql'
-    mysqld-server='mysqld-server'
 
     apacheuser='apache'
     apachegroup='apache'

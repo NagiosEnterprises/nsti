@@ -9,7 +9,7 @@ touch "$LOG_FILE"
 . install/libinstall.sh
 . "$BASEPATH/nsti/etc/nsti.py"
 
-PREREQS="$mysql $mysql-devel $mysql-server httpd gcc wget make tar snmptt net-snmp net-snmp-utils net-snmp-perl mod_wsgi python-devel"
+PREREQS="$mysql $mysql-devel $mysql-server httpd gcc wget make tar snmptt net-snmp net-snmp-utils net-snmp-perl mod_wsgi python-devel epel-release"
 
 # Check to make sure the prereqs are met.
 . install/prereqs.sh | tee --append "$LOG_FILE"

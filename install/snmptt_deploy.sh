@@ -13,11 +13,11 @@ chmod +x /usr/sbin/snmptthandler
 # add SNMPTT config files
 cp snmptt.ini /etc/snmp/
 touch /etc/snmp/snmptt.conf
-mkdir /var/log/snmptt/
+mkdir -p /var/log/snmptt/
 
 # NSTI daemon mode (you must uncomment of add authorization for the daemon
 echo -e '#disableAuthorization yes\n#authCommunity    log,execute,net    public\ntraphandle default /usr/sbin/snmptthandler' >> /etc/snmp/snmptrad.conf
-mkdir /var/spool/snmptt
+mkdir -p /var/spool/snmptt
 
 # startup script
 cp snmptt-init.d /etc/rc.d/init.d/snmptt

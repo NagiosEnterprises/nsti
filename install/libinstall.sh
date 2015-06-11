@@ -142,7 +142,7 @@ set_os_info() {
     fi
 
     httpd='httpd'
-    mysqld='mysqld'
+    mysql='mysql'
 
     apacheuser='apache'
     apachegroup='apache'
@@ -157,9 +157,12 @@ set_os_info() {
     mrtgcfg='/etc/mrtg/mrtg.cfg'
 
     case "$dist" in
-        el5 | el6 )
+        el5 | el6 | el7 )
             if [ "$arch" = "x86_64" ]; then
                 php_extension_dir="/usr/lib64/php/modules"
+            fi
+            if [ "$dist" == "el7" ]; then
+                mysql="mariadb"
             fi
             ;;
         debian6 )

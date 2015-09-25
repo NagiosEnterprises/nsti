@@ -1,5 +1,6 @@
 Sphinx==1.2.2
 sphinx-bootstrap-theme
+wheel
 Flask
 MySQL-python
 storm

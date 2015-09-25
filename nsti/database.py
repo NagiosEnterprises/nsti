@@ -24,12 +24,8 @@ db_connect = '%s://%s:%s@%s:%s/%s' % (app.config.get('DB_TYPE'),
                                       app.config.get('DB_NAME'))
 
 #~ Establish the database connection
-def database_monitor():
-    try:
-        DATABASE = SL.create_database(db_connect)
-        DB = SL.Store(DATABASE)
-    except DisconnectionError:
-        DB = SL.Store(DATABASE).rollback()
+DATABASE = SL.create_database(db_connect)
+DB = SL.Store(DATABASE)
 
 
 class Snmptt(object):

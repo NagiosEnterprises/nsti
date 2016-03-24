@@ -16,7 +16,7 @@ touch /etc/snmp/snmptt.conf
 mkdir -p /var/log/snmptt/
 
 # NSTI daemon mode (you must uncomment of add authorization for the daemon
-echo -e '#disableAuthorization yes\n#authCommunity    log,execute,net    public\ntraphandle default /usr/sbin/snmptthandler' >> /etc/snmp/snmptrad.conf
+echo -e '#disableAuthorization yes\n#authCommunity    log,execute,net    public\ntraphandle default /usr/sbin/snmptthandler' >> /etc/snmp/snmptrapd.conf
 mkdir -p /var/spool/snmptt
 
 # startup script

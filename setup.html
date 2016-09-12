@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SNMP Setup &#8212; NSTI 3.0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.3.6/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="NSTI 3.0.2 documentation" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          NSTI</a>
+        <span class="navbar-text navbar-version pull-left"><b>3.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualizer.html">SNMP Trap Data Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backendaccess.html">NSTI Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snmpttsetup.html">Setting Up Watchguard Device to Report to NSTI 3.0.2, Guided Instructions:</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">SNMP Setup</a><ul>
+<li><a class="reference internal" href="#getting-started-with-snmp">Getting Started with SNMP</a><ul>
+<li><a class="reference internal" href="#setting-up-your-mib-files">Setting Up Your MIB Files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/setup.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="snmp-setup">
+<h1>SNMP Setup<a class="headerlink" href="#snmp-setup" title="Permalink to this headline">¶</a></h1>
+<p>Once you have gone through the installation and all the dependencies are installed without error you will want to set up SNMP traps on your devices.  This section of the documentation is designed as a low level user guide on how to set up SNMP on some devices so you can recieve traps for NSTI.  This part of the documentation assumes that you installed NSTI with no errors and can access the landing page with no error codes.</p>
+<div class="admonition danger">
+<p class="first admonition-title">Danger</p>
+<p class="last">Make sure that your NSTI install is accessible to be sure that all the files and database configurations have compeleted successfully.  This part of the documentation will not be of any use if you cannot access NSTI.</p>
+</div>
+<p>For a more detailed explaination check the very thorough Net-SNMP documentation and Tutorial pages:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">net</span><span class="o">-</span><span class="n">snmp</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">man</span><span class="o">/</span>
+
+<span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">net</span><span class="o">-</span><span class="n">snmp</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="n">index</span><span class="o">.</span><span class="n">php</span><span class="o">/</span><span class="n">Tutorials</span>
+</pre></div>
+</div>
+<div class="section" id="getting-started-with-snmp">
+<h2>Getting Started with SNMP<a class="headerlink" href="#getting-started-with-snmp" title="Permalink to this headline">¶</a></h2>
+<p>Getting SNMP setup can be daunting, but for this documentation we will go through a simple set up to be able to familiarize yourself with setting up more difficult devices.  Once doing it a few time you will be able to do this with no problem.</p>
+<div class="section" id="setting-up-your-mib-files">
+<h3>Setting Up Your MIB Files<a class="headerlink" href="#setting-up-your-mib-files" title="Permalink to this headline">¶</a></h3>
+<p>MIB stands for Management Information Base and is simply a collection of information.  OIDs or Object Identifiers uniquely identify objects in a MIB &#8216;tree.&#8217;  To be able to recieve SNMP traps you will have to configure your MIBs so that snmptt can read them with a configuration file.</p>
+<p>To do this we are going to use a SNMP Trap Translator called SNMPTTCONVERTMIB, located here:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">snmptt</span><span class="o">.</span><span class="n">sourceforge</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">snmpttconvertmib</span><span class="o">.</span><span class="n">shtml</span>
+</pre></div>
+</div>
+<p>In the words of the creator of this program:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">code</span><span class="o">-</span><span class="n">block</span><span class="p">::</span> <span class="n">bash</span>
+</pre></div>
+</div>
+<blockquote>
+<div>SNMPTTCONVERTMIB is a Perl script which will read a MIB file and convert the TRAP-TYPE (v1) or NOTIFICATION-TYPE (v2) definitions into a configuration file readable by SNMPTT.</div></blockquote>
+<p>Exactly what we need to move forward and get our traps to view in NSTI.  We will convert the MIB files for our specific device that we will choose, which will usually be done by going to a website like mibdepot:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">mibdepot</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">index</span><span class="o">.</span><span class="n">shtml</span>
+</pre></div>
+</div>
+<p>For this example I am going to use a Linux SNMPv2 MIB to monitor a CentOS VM.</p>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2016, Nagios Enterprises LLC, Luke Groschen, Nicholas Scott.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

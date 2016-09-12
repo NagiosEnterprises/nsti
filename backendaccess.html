@@ -5,11 +5,11 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>NSTI Backend &mdash; NSTI 3.0.2 documentation</title>
+    <title>NSTI Backend &#8212; NSTI 3.0.2 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootswatch-3.1.0/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.3.6/spacelab/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     
     <script type="text/javascript">
@@ -26,9 +26,10 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="top" title="NSTI 3.0.2 documentation" href="index.html" />
+    <link rel="next" title="Setting Up Watchguard Device to Report to NSTI 3.0.2, Guided Instructions:" href="snmpttsetup.html" />
     <link rel="prev" title="SNMP Trap Data Visualizer" href="visualizer.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -36,7 +37,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
-  <body>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -54,7 +55,6 @@
 
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="divider-vertical"></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -70,7 +70,8 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualizer.html">SNMP Trap Data Visualizer</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">NSTI Backend</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">NSTI Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snmpttsetup.html">Setting Up Watchguard Device to Report to NSTI 3.0.2, Guided Instructions:</a></li>
 </ul>
 </ul>
 </li>
@@ -98,7 +99,11 @@
               
                 
   <li>
-    <a href="visualizer.html" title="Previous Chapter: SNMP Trap Data Visualizer"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm">&laquo; SNMP Trap Data V...</span>
+    <a href="visualizer.html" title="Previous Chapter: SNMP Trap Data Visualizer"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; SNMP Trap Dat...</span>
+    </a>
+  </li>
+  <li>
+    <a href="snmpttsetup.html" title="Next Chapter: Setting Up Watchguard Device to Report to NSTI 3.0.2, Guided Instructions:"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Setting Up Wa... &raquo;</span>
     </a>
   </li>
               
@@ -130,7 +135,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 content">
       
   <div class="section" id="nsti-backend">
 <h1>NSTI Backend<a class="headerlink" href="#nsti-backend" title="Permalink to this headline">¶</a></h1>
@@ -139,24 +144,24 @@
 <h2>Accessing Data From the Backend<a class="headerlink" href="#accessing-data-from-the-backend" title="Permalink to this headline">¶</a></h2>
 <p>To access NSTI normally you would go to</p>
 <blockquote>
-<div>&lt;ip address&gt;:8080</div></blockquote>
+<div>&lt;ip address&gt;/nsti</div></blockquote>
 <p>To access the API from a URL use keywords for getting the JSON formatted data</p>
 <blockquote>
 <div>&lt;ip address&gt;:8080/api/trapview/read/Snmptt</div></blockquote>
 <p>This example will return every trap that is located in the main snmptt database</p>
 <p>Furthermore you can now access the API with multiple search and filtering criteria as stated above.</p>
 <p>Here is a filter by date example:</p>
-<div class="highlight-html"><div class="highlight"><pre>Time Format for NSTI  MM-DD-YYYY HH:mm:ss
+<div class="highlight-html"><div class="highlight"><pre><span></span>Time Format for NSTI  MM-DD-YYYY HH:mm:ss
 
-<span class="nt">&lt;ip</span> <span class="na">address</span><span class="nt">&gt;</span>:8080/api/trapview/read/Snmptt?timewritten__lt=10-10-2014 12:00:00
+<span class="p">&lt;</span><span class="nt">ip</span> <span class="na">address</span><span class="p">&gt;</span>:8080/api/trapview/read/Snmptt?timewritten__lt=10-10-2014 12:00:00
 </pre></div>
 </div>
 <p>This will yield all traps that are YOUNGER than the given date. Similar can be done with __gt to yield traps OLDER than the given date. There is also the ability to sort by relative time. A __gt and __lt must still be given, like so:</p>
-<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;ip</span> <span class="na">address</span><span class="nt">&gt;</span>:8080/api/trapview/read/Snmptt?relative_timewritten__lt=1d
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ip</span> <span class="na">address</span><span class="p">&gt;</span>:8080/api/trapview/read/Snmptt?relative_timewritten__lt=1d
 </pre></div>
 </div>
 <p>Will yield traps OLDER than 1 day old. The supported date specifiers are:</p>
-<div class="highlight-html"><div class="highlight"><pre>s - Seconds
+<div class="highlight-html"><div class="highlight"><pre><span></span>s - Seconds
 m - Minutes
 h - Hours
 d - Days
@@ -166,7 +171,7 @@ M - Months
 </div>
 <p>Simply use any of these date suffixes and prefix it with an INTEGER representing the number of seconds, minutes, etc. that you wish to find.</p>
 <p>Also, the Filters you create via the NSTI web interface can now be used via the GET URL params just like the relative timewritten. Simply use the ?filters=&lt;name of filter&gt; to apply your filter to the search results.</p>
-<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;ip</span> <span class="na">address</span><span class="nt">&gt;</span>:8080/api/trapview/read/Snmptt?filters=CriticalSeverity
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">ip</span> <span class="na">address</span><span class="p">&gt;</span>:8080/api/trapview/read/Snmptt?filters=CriticalSeverity
 </pre></div>
 </div>
 <p><em>This will apply the Filter “CriticalSeverity” to the traps retrieved.</em></p>
@@ -174,7 +179,7 @@ M - Months
 <div class="section" id="api-data-formatting">
 <h2>API Data Formatting<a class="headerlink" href="#api-data-formatting" title="Permalink to this headline">¶</a></h2>
 <p>Here is what a single SNMP trap looks like in JSON format:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;eventid&quot;</span><span class="o">:</span> <span class="s2">&quot;.1.3.6.1.4.1.2021.13.991.3.4&quot;</span><span class="p">,</span>
     <span class="s2">&quot;category&quot;</span><span class="o">:</span> <span class="s2">&quot;Closure&quot;</span><span class="p">,</span>
     <span class="s2">&quot;uptime&quot;</span><span class="o">:</span> <span class="s2">&quot;2014-04-11 14:27:50&quot;</span><span class="p">,</span>
@@ -198,7 +203,7 @@ M - Months
 <li>This example will return all the filters that have been created, also in JSON format as seen below.</li>
 </ul>
 <p>Here is an example of the api/filter/read request in JSON format:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">&quot;Test Filter&quot;</span><span class="o">:</span> <span class="p">{</span>
         <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">65</span><span class="p">,</span>
         <span class="s2">&quot;actions&quot;</span><span class="o">:</span> <span class="p">[</span>
@@ -237,8 +242,8 @@ M - Months
       
     </p>
     <p>
-        &copy; Copyright 2014, Nicholas Scott, Luke Groschen.<br/>
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.<br/>
+        &copy; Copyright 2016, Nagios Enterprises LLC, Luke Groschen, Nicholas Scott.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.<br/>
     </p>
   </div>
 </footer>

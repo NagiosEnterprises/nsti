@@ -16,3 +16,4 @@ Contents:
    filters
    visualizer
    backendaccess
+   snmpttsetup

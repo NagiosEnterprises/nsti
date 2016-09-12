@@ -1,12 +1,16 @@
 Installation
 ============
 
-NSTI performs well with and is designed to run on any Linux distribution.
+NSTI performs well with and is designed to run on CentOS, RHEL and most Linux distributions that utilize the yum package manager.  It is important to note that NSTI was designed to be installed on a clean server with no other software installed.
+
+.. danger::
+
+   If you install NSTI on a server that has Nagios XI or Nagios Core installed on it there will be further configuration involved with snmp and snmptt based on what was used to configure the Nagios trap setup.
 
 .. note::
 
    NSTI is designed to work under any environment, but the installer script
-   will only work with the yum installer until cross platform support is added in
+   will only work with the yum package manager until cross platform support is added in
    another version.
 
 Installing NSTI Using Tarball
@@ -150,7 +154,7 @@ Now NSTI should be installed, to verify navigate to this address::
     http://<NSTI Server IP>/nsti
 
 
-While developing use the runserver.py to launch the server and get apache request output from the commandline and access NSTI as shown below:
+While developing use the runserver.py to launch the server and get apache request output from the commandline and access NSTI as shown below (Note: runserver.py is used to launch the nsti program for debugging and development- if you want to access the nsti page as normal just use the <IP>/nsti URL):
 
   cd /tmp/nsti/
   

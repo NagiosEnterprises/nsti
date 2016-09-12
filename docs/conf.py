@@ -38,7 +38,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'NSTI'
-copyright = u'2014, Nagios Enterprises LLC, Luke Groschen, Nicholas Scott'
+copyright = u'2016, Nagios Enterprises LLC, Luke Groschen, Nicholas Scott'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

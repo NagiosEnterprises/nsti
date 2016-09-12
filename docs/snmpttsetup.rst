@@ -1,6 +1,8 @@
 Setting Up Watchguard Device to Report to NSTI 3.0.2, Guided Instructions:
 ==========================================================================
 
+This section is a good starting place for getting different types of devices to send trap data to NSTI.  More coming in the future.
+
 1. Configure SNMPTT
 -------------------
 

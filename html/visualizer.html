@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SNMP Trap Data Visualizer &mdash; NSTI 3.0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.2.0/spacelab/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '3.0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="NSTI 3.0.2 documentation" href="index.html" />
+    <link rel="next" title="NSTI Backend" href="backendaccess.html" />
+    <link rel="prev" title="Filters" href="filters.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          NSTI</a>
+        <span class="navbar-text navbar-version pull-left"><b>3.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">SNMP Trap Data Visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backendaccess.html">NSTI Backend</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">SNMP Trap Data Visualizer</a><ul>
+<li><a class="reference internal" href="#the-future-of-the-visualizer">The Future of the Visualizer</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="filters.html" title="Previous Chapter: Filters"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Filters</span>
+    </a>
+  </li>
+  <li>
+    <a href="backendaccess.html" title="Next Chapter: NSTI Backend"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">NSTI Backend &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/visualizer.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      
+  <div class="section" id="snmp-trap-data-visualizer">
+<h1>SNMP Trap Data Visualizer<a class="headerlink" href="#snmp-trap-data-visualizer" title="Permalink to this headline">¶</a></h1>
+<p>This is the newest feature of NSTI 3.0 and it will be getting updated more in the future.  For now it is a simple way to visualize the overall trap data you have in your table to get a better overall view of what your traps are doing.  This combined with filters and the search function will make reading and troubleshooting trap data much easier.</p>
+<p>Here is an example of the visualizer showing a Graph of Severity:</p>
+<img alt="_images/SNMPvisualizer.png" class="align-center" src="_images/SNMPvisualizer.png" />
+<p><em>Visualizer will access all of the traps in your database and draw a bar and pie graph based on your Graph By selection.  Filters are not applied to the Trap Data Visualizer.</em></p>
+<div class="section" id="the-future-of-the-visualizer">
+<h2>The Future of the Visualizer<a class="headerlink" href="#the-future-of-the-visualizer" title="Permalink to this headline">¶</a></h2>
+<p>Below is a list of our future plans for the Visualizer:</p>
+<ul class="simple">
+<li>Adding the ability to choose the type of graph you want to display (line, bar, pie, scatter)</li>
+<li>Choose the type of trap data to compare against a certain time period or date range</li>
+<li>The ability to limit the number of traps displayed by ID range, number, date, status, etc.</li>
+</ul>
+<p>Any suggestions and ideas for future development of the Visualizer would be very much appreciated.  You can get them to us through github or email.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<div class="last line-block">
+<div class="line">Send suggestions of any kind to:</div>
+<div class="line-block">
+<div class="line"><a class="reference external" href="mailto:lgroschen&#37;&#52;&#48;nagios&#46;com">lgroschen<span>&#64;</span>nagios<span>&#46;</span>com</a></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2014, Nagios Enterprises LLC, Luke Groschen, Nicholas Scott.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

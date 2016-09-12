@@ -1,24 +1,16 @@
 Installation
 ============
 
-NSTI performs well with and is designed to run on CentOS, RHEL and most Linux distributions that utilize the yum package manager.  It is important to note that NSTI was designed to be installed on a clean server with no other software installed.
-
-.. danger::
-
-   If you install NSTI on a server that has Nagios XI or Nagios Core installed on it there will be further configuration involved with snmp and snmptt based on what was used to configure the Nagios trap setup.
+NSTI performs well with and is designed to run on any Linux distribution.
 
 .. note::
 
    NSTI is designed to work under any environment, but the installer script
-   will only work with the yum package manager until cross platform support is added in
+   will only work with the yum installer until cross platform support is added in
    another version.
 
 Installing NSTI Using Tarball
 -----------------------------
-Here is the Official Nagios NSTI Tarball page to track releases: 
-
-   http://assets.nagios.com/downloads/nsti/tarballs/
-
 If you want to install NSTI using a tarball use the URL below
 
    http://assets.nagios.com/downloads/nsti/tarballs/latest.php
@@ -28,14 +20,16 @@ From the command line use wget to install
 .. code-block:: bash
 
     cd /tmp
-    wget http://assets.nagios.com/downloads/nsti/tarballs/latest.php
-    tar zxf nsti-3.0.2.tar.gz
-    cd nsti-3.0.2/
+    wget http://assets.nagios.com/downloads/nsti/tarballs/nsti-*.tar.gz
+    tar zxf nsti-*.tar.gz
+    cd nsti-*/
     sh install.sh
 
-Now NSTI should be installed, to verify navigate to this address::
+Now NSTI should be installed, to verify run the runserver.py file and navigate to this address::
 
-    http://<NSTI Server IP>/nsti
+    python runserver.py
+
+    http://<NSTI Server IP>:8080
 
 .. note ::
 
@@ -149,15 +143,12 @@ To clone a repository with git run the following command in the directory you wa
     cd nsti/
     sh install.sh
 
-Now NSTI should be installed, to verify navigate to this address::
+Now NSTI should be installed, to verify run the runserver.py file and navigate to this address::
 
-    http://<NSTI Server IP>/nsti
+    python runserver.py
 
-
-While developing use the runserver.py to launch the server and get apache request output from the commandline and access NSTI as shown below (Note: runserver.py is used to launch the nsti program for debugging and development- if you want to access the nsti page as normal just use the <IP>/nsti URL):
-
-  cd /tmp/nsti/
-  
-  python runserver.py
-
+<<<<<<< HEAD
   http://<NSTI Server IP>:8080/nsti
+=======
+    http://<NSTI Server IP>:8080
+>>>>>>> parent of 1f1a845... rebuild nsti docs -Luke's servbot

@@ -32,3 +32,10 @@ There have been 4 big additions to NSTI 3.0:
         | Trap List Search: The search bar works almost the same as filters but is a quick way to search through your traplist. For example if you enter ‘.41’ into the search field, it will return any traps that contain '.41' in any of the traplist columns: including Trap OID, Message and Hostname.
 
         | Trap Detailed View: The Trap Detailed View is accessed via the eyeball icon on each trap record.  Clicking this icon will pop up more details about the specific trap.
+
+
+Further Documentation
+---------------------
+If you're looking for more information about NSTI check out the public Nagios Knowledge Base documentation index for NSTI located here: https://support.nagios.com/kb/category.php?id=16
+
+Also, detailed information about NSTI Architecture and how everything works in NSTI is available on the Nagios Knowledge Base here: https://support.nagios.com/kb/article.php?id=30&show_category=49

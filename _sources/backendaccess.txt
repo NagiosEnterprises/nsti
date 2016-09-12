@@ -10,7 +10,7 @@ Accessing Data From the Backend
 
 To access NSTI normally you would go to 
 
-    <ip address>:8080
+    <ip address>/nsti
 
 
 To access the API from a URL use keywords for getting the JSON formatted data

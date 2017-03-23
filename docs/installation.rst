@@ -117,7 +117,7 @@ The nsti.py file is located here::
     nsti/etc/nsti.py
 
 
-This is where you will set your database type, host, name, user and password.  To test if you succesfully configured your database use the runserver.py in the nsti directory.  It will output any connection errors and you will be able to adjust settings accordingly.
+This is where you will set your database type, host, name, user and password.  To test if you successfully configured your database use the runserver.py in the nsti directory.  It will output any connection errors and you will be able to adjust settings accordingly.
 
 Another point to be made is that you will need to verify that the database NSTI is writing to was created.  If it wasn't you will receive similar errors to the following:
 

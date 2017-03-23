@@ -1,7 +1,7 @@
 SNMP Setup
 ==========
 
-Once you have gone through the installation and all the dependencies are installed without error you will want to set up SNMP traps on your devices.  This section of the documentation is designed as a low level user guide on how to set up SNMP on some devices so you can recieve traps for NSTI.  This part of the documentation assumes that you installed NSTI with no errors and can access the landing page with no error codes.
+Once you have gone through the installation and all the dependencies are installed without error you will want to set up SNMP traps on your devices.  This section of the documentation is designed as a low level user guide on how to set up SNMP on some devices so you can receive traps for NSTI.  This part of the documentation assumes that you installed NSTI with no errors and can access the landing page with no error codes.
 
 .. danger::
 
@@ -25,7 +25,7 @@ Getting SNMP setup can be daunting, but for this documentation we will go throug
 Setting Up Your MIB Files
 *************************
 
-MIB stands for Management Information Base and is simply a collection of information.  OIDs or Object Identifiers uniquely identify objects in a MIB 'tree.'  To be able to recieve SNMP traps you will have to configure your MIBs so that snmptt can read them with a configuration file.
+MIB stands for Management Information Base and is simply a collection of information.  OIDs or Object Identifiers uniquely identify objects in a MIB 'tree.'  To be able to receive SNMP traps you will have to configure your MIBs so that snmptt can read them with a configuration file.
 
 To do this we are going to use a SNMP Trap Translator called SNMPTTCONVERTMIB, located here::
 

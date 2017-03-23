@@ -107,7 +107,7 @@ MySQL Configuration
 .. danger::
 
    If the installer ran successfully the first time the following section does
-   not apply.  It is only relevent if any errors occured or if you are
+   not apply.  It is only relevent if any errors occurred or if you are
    installing NSTI manually.
 
 To run NSTI correctly it is important that you have your mysql set up correctly so NSTI can read and write data from the database.  The most common problem with NSTI not communicating properly with your mysql database is the root user password settings.  It is recommended that you set the password if the install script failed to do so.

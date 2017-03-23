@@ -5,7 +5,7 @@ Once you have gone through the installation and all the dependencies are install
 
 .. danger::
 
-    Make sure that your NSTI install is accessible to be sure that all the files and database configurations have compeleted successfully.  This part of the documentation will not be of any use if you cannot access NSTI.
+    Make sure that your NSTI install is accessible to be sure that all the files and database configurations have completed successfully.  This part of the documentation will not be of any use if you cannot access NSTI.
 
 
 For a more detailed explaination check the very thorough Net-SNMP documentation and Tutorial pages::

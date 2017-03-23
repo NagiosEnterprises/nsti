@@ -94,7 +94,7 @@ Flask and Storm
     Both of these are inside the requirements.txt that the install script refers to so they should both be installed at this point, but just in case we will go over them and how to install them if, for some reason, they are missing.
 
 
-NSTI uses Flask as a lightweight web applicatin framework and uses Werkzeug and Jinja2 for templating engines.  Flask is a great microframework that allows extentions to be added granting it access to form validation and database abstraction.  You will need Flask so install it using pip or easy_install.
+NSTI uses Flask as a lightweight web application framework and uses Werkzeug and Jinja2 for templating engines.  Flask is a great microframework that allows extentions to be added granting it access to form validation and database abstraction.  You will need Flask so install it using pip or easy_install.
 
 
 Storm is a Python programming library for Object-Relational Mapping (ORM) between one or more SQL databases and Python objects.  This allows NSTI to make queries and demands of the datasbase to be able to populate, collect and filter the traps in the database, but also how the traps are displayed in the UI.

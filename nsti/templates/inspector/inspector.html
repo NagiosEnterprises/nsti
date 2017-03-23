@@ -390,7 +390,7 @@ function set_inspectable(set) {
     $('#add-data option:selected').text(set);
 }
 
-function load_insepctable() {
+function load_inspectable() {
     API_URL = BASE_URL + 'api/inspector/read/' + TABLE;
 
     $.getJSON(API_URL, function(d) {
@@ -411,7 +411,7 @@ $(document).ready(function() {
         colors: ['#428bca', '#5cb85c', '#f0ad4e', '#d9534f', '#5bc0de', '#2bd34e', '#f5c989', '#dd765a']
     });
 
-    load_insepctable();
+    load_inspectable();
     draw_charts();
 
     $("#add-data").change(function() {

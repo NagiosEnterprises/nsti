@@ -1,0 +1,40 @@
+NSTI
+====
+
+## Nagios SNMP Trap Interface
+
+The Open Source Nagios SNMP Trap Interface is designed to be a smart user interface and organized database for all your SNMP needs.
+
+Installation
+------------
+
+We're working on getting this document up to date! Until then, you can use the documentation [found elsewhere](https://assets.nagios.com/downloads/nagiosti/documentation/installation.html).
+
+
+License Notice
+--------------
+
+Copyright (c) 2014-2017 Nagios Enterprises, LLC
+
+This work is made available to you under the terms of Version 2 of
+the GNU General Public License. A copy of that license should have
+been provided with this software, but in any event can be obtained
+from http://www.fsf.org.
+
+This work is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+02110-1301 or visit their web page on the internet at
+http://www.fsf.org.
+
+Questions?
+----------
+
+If you have questions about this addon, or encounter problems getting things
+working along the way, your best bet for an answer or quick resolution is to check the
+[Nagios Support Forums](https://support.nagios.com/forum/viewforum.php?f=5).

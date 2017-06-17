@@ -8,7 +8,7 @@ echo "Database being upgraded....
 
 	 ****************************** !WARNING! ********************************
 	 It is very important that you backup your databases before running this 
-	 upgrade script.  The origional trap data will be kept in the new database
+	 upgrade script.  The original trap data will be kept in the new database
 	 and the old filters will be kept in the new snmptt table filters_1_4 for
 	 backup.
 	 *************************************************************************

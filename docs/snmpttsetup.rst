@@ -35,7 +35,7 @@ Now we can create the script we refer to above to handle the MIBS we want to tra
 * WATCHGUARD-SYSTEM-CONFIG-MIB
 * WATCHGUARD-SYSTEM-STATISTICS-MIB
 
-Remember to do your research to be sure that you have all of the dependancy MIBS, some of them may not actually be in your mibs directory by deafult and will cause errors.  For our example I already added my WatchGuard dependancy MIBs to the  /usr/share/snmp/mibs  directory (some of the are in the directory by default):
+Remember to do your research to be sure that you have all of the dependancy MIBS, some of them may not actually be in your mibs directory by default and will cause errors.  For our example I already added my WatchGuard dependancy MIBs to the  /usr/share/snmp/mibs  directory (some of the are in the directory by default):
 
 * IF-MIB
 * IP-MIB

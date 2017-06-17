@@ -20,7 +20,7 @@ def dump_trap(loop):
              'Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long Very long',
              'Out of pizza, send backup.' , 'Chassis fan is dead.' ,
              'Another sample message' , 'Do not forget to eat.' ,
-             'Doggon it, people like me.' , 'Coldstart detected.' ]
+             'Doggone it, people like me.' , 'Coldstart detected.' ]
     comm = 'private'
     name = 'demoTrap'
 
